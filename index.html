@@ -2563,6 +2563,8 @@
     }
 
     .journey-rail-dot .icon{
+      display:block;
+      flex-shrink:0;
       width:40px;
       height:40px;
       margin:0 auto;
@@ -2600,6 +2602,7 @@
     .journey-rail-dot .icon img{
       width:100%;
       height:100%;
+      max-width:100%;
       object-fit:cover;
       display:block;
       filter:saturate(1.08);
@@ -2648,10 +2651,11 @@
 
       .journey-rail-panel{
         width:100%;
-        max-height:none;
+        max-height:52px;
         padding:8px 10px;
         border-radius:999px;
         box-shadow:0 10px 30px rgba(15,23,42,0.18);
+        overflow:hidden;
       }
 
       .journey-rail-title{
@@ -2665,9 +2669,11 @@
       .journey-rail-track{
         flex-direction:row;
         flex-wrap:nowrap;
+        align-items:center;
         gap:6px;
         padding:0;
         overflow-x:auto;
+        overflow-y:hidden;
         scrollbar-width:none;
         -webkit-overflow-scrolling:touch;
       }
@@ -5257,7 +5263,12 @@
       if(isMobileRail && showRail && active >= 0 && dots[active]){
         if(active !== updateJourneyRail.lastActive){
           updateJourneyRail.lastActive = active;
-          dots[active].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          var mobileTrack = document.getElementById('journeyRailTrack');
+          var activeDot = dots[active];
+          if(mobileTrack && activeDot){
+            var scrollLeft = activeDot.offsetLeft - (mobileTrack.clientWidth / 2) + (activeDot.offsetWidth / 2);
+            mobileTrack.scrollTo({ left: Math.max(0, scrollLeft), behavior: 'smooth' });
+          }
         }
       }
       if(isMobileRail && active < 0){ updateJourneyRail.lastActive = -1; }
