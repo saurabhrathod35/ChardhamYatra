@@ -845,7 +845,6 @@
       font-size:0;
     }
 
-    .journey-dot span{
     .temple-gallery{
       display:grid;
       grid-template-columns:repeat(4,1fr);
@@ -2233,12 +2232,23 @@
   const loader = document.getElementById('loader');
   const progress = document.getElementById('scrollProgress');
 
+  function initPage(){
+    loader.classList.add('hide');
+    animateCounters();
+    document.querySelectorAll('.reveal:not(.visible)').forEach(function(el, i){
+      if(el.getBoundingClientRect().top < window.innerHeight * 0.92){
+        el.classList.add('visible');
+      }
+    });
+  }
+
   window.addEventListener('load', function(){
-    setTimeout(function(){
-      loader.classList.add('hide');
-      animateCounters();
-    }, 900);
+    setTimeout(initPage, 900);
   });
+
+  if(document.readyState === 'complete'){
+    setTimeout(initPage, 100);
+  }
 
   window.addEventListener('scroll', function(){
     const h = document.documentElement;
