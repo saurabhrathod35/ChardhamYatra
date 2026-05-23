@@ -36,6 +36,7 @@
     html{
       scroll-behavior:smooth;
       overflow-x:hidden;
+      overflow-y:auto;
     }
 
     body{
@@ -46,7 +47,6 @@
       padding-left:max(30px, env(safe-area-inset-left));
       padding-right:max(30px, env(safe-area-inset-right));
       padding-bottom:max(30px, env(safe-area-inset-bottom));
-      overflow-x:hidden;
       position:relative;
       -webkit-text-size-adjust:100%;
       text-size-adjust:100%;
@@ -484,7 +484,8 @@
 
     /* ── Photo showcase (graphic design gallery) ── */
     .photo-showcase{
-      margin-bottom:30px;
+      margin-top:40px;
+      margin-bottom:10px;
     }
 
     .showcase-intro{
@@ -990,6 +991,15 @@
       white-space:nowrap;
     }
 
+    .schedule-note a{
+      color:#1d4ed8;
+      font-weight:600;
+      text-decoration:none;
+      border-bottom:1px dashed #93c5fd;
+    }
+
+    .schedule-note a:hover{ color:#1e40af; }
+
     .time-est-note{
       margin-top:14px;
       padding:14px 16px;
@@ -1477,64 +1487,113 @@
 
     .journey-track{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      position:relative;
-      flex-wrap:wrap;
+      flex-direction:column;
+      align-items:stretch;
       gap:12px;
+      position:relative;
     }
 
     .journey-track::before{
       content:'';
       position:absolute;
-      top:28px;
-      left:8%;
-      right:8%;
-      height:4px;
-      background:linear-gradient(90deg,#2563eb,#f97316,#22c55e,#7c3aed,#ea580c);
+      top:12px;
+      bottom:12px;
+      left:31px;
+      width:4px;
+      background:linear-gradient(180deg,#2563eb,#f97316,#22c55e,#7c3aed,#ea580c);
       border-radius:999px;
       z-index:0;
+      opacity:0.35;
     }
 
     .journey-dot{
-      flex:1;
-      min-width:100px;
-      text-align:center;
-      position:relative;
-      z-index:1;
+      flex:none;
+      min-width:0;
+      width:100%;
+      display:flex;
+      align-items:center;
+      gap:16px;
+      text-align:left;
+      background:#f8fafc;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid #e2e8f0;
+      transition:transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
     }
 
     .journey-dot .icon{
       width:64px;
       height:64px;
-      margin:0 auto 10px;
+      margin:0;
+      flex-shrink:0;
       border-radius:50%;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:26px;
-      background:white;
-      background-size:cover;
-      background-position:center;
+      overflow:hidden;
       box-shadow:0 8px 25px rgba(0,0,0,0.15);
       border:3px solid #e2e8f0;
-      animation:dotBounce 2s ease-in-out infinite;
-      overflow:hidden;
     }
 
-    .journey-dot:nth-child(2) .icon{ background-image:var(--img-haridwar); border-color:#2563eb; animation-delay:0s; }
-    .journey-dot:nth-child(3) .icon{ background-image:var(--img-yamunotri); border-color:#dc2626; animation-delay:0.35s; }
-    .journey-dot:nth-child(4) .icon{ background-image:var(--img-gangotri); border-color:#0891b2; animation-delay:0.7s; }
-    .journey-dot:nth-child(5) .icon{ background-image:var(--img-kedarnath); border-color:#7c3aed; animation-delay:1.05s; }
-    .journey-dot:nth-child(6) .icon{ background-image:var(--img-badrinath); border-color:#ea580c; animation-delay:1.4s; }
-
-    .journey-dot:nth-child(2) .icon,
-    .journey-dot:nth-child(3) .icon,
-    .journey-dot:nth-child(4) .icon,
-    .journey-dot:nth-child(5) .icon,
-    .journey-dot:nth-child(6) .icon{
-      font-size:0;
+    .journey-dot.reveal-step{
+      opacity:0;
+      transform:translateX(-24px);
+      transition:opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1);
     }
+
+    .journey-map.visible .journey-dot.reveal-step{
+      opacity:1;
+      transform:translateX(0);
+    }
+
+    .journey-map.visible .journey-dot:nth-child(1).reveal-step{ transition-delay:0.05s; }
+    .journey-map.visible .journey-dot:nth-child(2).reveal-step{ transition-delay:0.12s; }
+    .journey-map.visible .journey-dot:nth-child(3).reveal-step{ transition-delay:0.19s; }
+    .journey-map.visible .journey-dot:nth-child(4).reveal-step{ transition-delay:0.26s; }
+    .journey-map.visible .journey-dot:nth-child(5).reveal-step{ transition-delay:0.33s; }
+
+    .journey-dot:hover{
+      transform:translateX(4px);
+      box-shadow:0 10px 28px rgba(15,23,42,0.08);
+      border-color:#bfdbfe;
+    }
+
+    .journey-dot span{
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      color:#475569;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+
+    .journey-dot small{
+      display:block;
+      font-size:12px;
+      color:#94a3b8;
+      margin-top:2px;
+    }
+
+    .journey-dot-label{
+      flex:1;
+      min-width:0;
+    }
+
+    a.journey-dot{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    a.journey-dot:focus-visible{
+      outline:3px solid #93c5fd;
+      outline-offset:3px;
+    }
+
+    .journey-dot:nth-child(1) .icon{ border-color:#2563eb; }
+    .journey-dot:nth-child(2) .icon{ border-color:#dc2626; }
+    .journey-dot:nth-child(3) .icon{ border-color:#0891b2; }
+    .journey-dot:nth-child(4) .icon{ border-color:#7c3aed; }
+    .journey-dot:nth-child(5) .icon{ border-color:#ea580c; }
 
     .temple-gallery{
       display:grid;
@@ -1600,41 +1659,193 @@
     .photo-kedarnath{ background-image:var(--img-kedarnath); }
     .photo-badrinath{ background-image:var(--img-badrinath); }
 
-    .journey-dot span{
-      display:block;
-      font-size:12px;
-      font-weight:600;
-      color:#475569;
-      text-transform:uppercase;
-      letter-spacing:0.5px;
+    /* ── Sticky vertical journey rail (on scroll) ── */
+    .journey-scroll-rail{
+      position:fixed;
+      left:max(14px, env(safe-area-inset-left));
+      top:50%;
+      transform:translateY(-50%) translateX(calc(-100% - 24px));
+      z-index:850;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.35s ease, visibility 0.35s;
     }
 
-    .journey-dot small{
-      font-size:11px;
-      color:#94a3b8;
+    .journey-scroll-rail.visible{
+      transform:translateY(-50%) translateX(0);
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
     }
 
-    .traveler{
+    .journey-rail-decor{
       position:absolute;
-      top:18px;
-      left:8%;
-      font-size:22px;
-      z-index:2;
-      animation:travelPath 8s ease-in-out infinite;
+      inset:0;
+      pointer-events:none;
+    }
+
+    .journey-rail-panel{
+      background:rgba(255,255,255,0.96);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      border-radius:18px;
+      padding:14px 12px 16px;
+      box-shadow:0 16px 45px rgba(15,23,42,0.16);
+      border:1px solid rgba(226,232,240,0.95);
+      width:78px;
+    }
+
+    .journey-rail-title{
+      display:block;
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+      color:#64748b;
+      text-align:center;
+      margin-bottom:12px;
+      line-height:1.3;
+    }
+
+    .journey-rail-track{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+      padding:4px 0;
+      min-height:280px;
+    }
+
+    .journey-rail-line{
+      position:absolute;
+      left:21px;
+      top:10px;
+      bottom:10px;
+      width:3px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#2563eb,#f97316,#22c55e,#7c3aed,#ea580c);
+      opacity:0.22;
+    }
+
+    .journey-rail-progress{
+      position:absolute;
+      left:21px;
+      top:10px;
+      width:3px;
+      height:0;
+      border-radius:999px;
+      background:linear-gradient(180deg,#2563eb,#f97316,#ea580c);
+      box-shadow:0 0 10px rgba(249,115,22,0.35);
+      transition:height 0.35s ease;
+    }
+
+    .journey-rail-traveler{
+      position:absolute;
+      left:8px;
+      top:10px;
+      font-size:16px;
+      z-index:3;
       filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      transition:top 0.35s cubic-bezier(0.22,1,0.36,1);
+      pointer-events:none;
+    }
+
+    .journey-rail-dot{
+      position:relative;
+      z-index:2;
+      display:block;
+      text-decoration:none;
+      color:inherit;
+    }
+
+    .journey-rail-dot .icon{
+      width:44px;
+      height:44px;
+      margin:0 auto;
+      border-radius:50%;
+      overflow:hidden;
+      border:3px solid #e2e8f0;
+      background:white;
+      box-shadow:0 6px 18px rgba(15,23,42,0.12);
+      transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .journey-rail-dot .icon img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter:saturate(1.08);
+    }
+
+    .journey-rail-dot span,
+    .journey-rail-dot small{
+      display:none;
+    }
+
+    .journey-rail-dot:hover .icon,
+    .journey-rail-dot:focus-visible .icon{
+      transform:scale(1.08);
+      border-color:#93c5fd;
+    }
+
+    .journey-rail-dot.active .icon{
+      transform:scale(1.12);
+      border-color:var(--saffron);
+      box-shadow:0 0 0 4px rgba(249,115,22,0.25), 0 10px 24px rgba(249,115,22,0.25);
+    }
+
+    .journey-rail-dot.passed .icon{
+      border-color:#86efac;
+    }
+
+    .journey-rail-dot:nth-child(1) .icon{ border-color:#2563eb; }
+    .journey-rail-dot:nth-child(2) .icon{ border-color:#dc2626; }
+    .journey-rail-dot:nth-child(3) .icon{ border-color:#0891b2; }
+    .journey-rail-dot:nth-child(4) .icon{ border-color:#7c3aed; }
+    .journey-rail-dot:nth-child(5) .icon{ border-color:#ea580c; }
+
+    @media(max-width:768px){
+      .journey-scroll-rail{
+        top:auto;
+        bottom:max(76px, calc(env(safe-area-inset-bottom) + 68px));
+        transform:translateX(calc(-100% - 20px));
+      }
+
+      .journey-scroll-rail.visible{
+        transform:translateX(0);
+      }
+
+      .journey-rail-panel{
+        width:62px;
+        padding:10px 8px 12px;
+      }
+
+      .journey-rail-title{
+        font-size:8px;
+        margin-bottom:8px;
+      }
+
+      .journey-rail-track{ gap:14px; }
+
+      .journey-rail-dot .icon{
+        width:38px;
+        height:38px;
+      }
+
+      .journey-rail-line,
+      .journey-rail-progress{ left:18px; }
+
+      .journey-rail-traveler{
+        left:5px;
+        font-size:14px;
+      }
     }
 
     @keyframes dotBounce{
       0%,100%{ transform:translateY(0); }
       50%{ transform:translateY(-8px); }
-    }
-
-    @keyframes travelPath{
-      0%{ left:8%; transform:scaleX(1); }
-      45%{ left:78%; transform:scaleX(1); }
-      50%{ left:78%; transform:scaleX(-1); }
-      95%{ left:8%; transform:scaleX(-1); }
-      100%{ left:8%; transform:scaleX(1); }
     }
 
     /* ── Mobile quick nav ── */
@@ -1649,7 +1860,7 @@
       backdrop-filter:blur(10px);
       -webkit-overflow-scrolling:touch;
       overflow:hidden;
-      max-width:100vw;
+      max-width:100%;
     }
 
     .mobile-nav-inner{
@@ -1755,34 +1966,21 @@
       .journey-map{ padding:20px 16px; border-radius:18px; }
       .journey-map h3{ font-size:18px; margin-bottom:16px; }
 
-      .journey-track{
-        flex-direction:column;
-        align-items:stretch;
-        gap:10px;
-      }
-
-      .journey-track::before{ display:none; }
-      .traveler{ display:none; }
+      .journey-track::before{ left:25px; }
 
       .journey-dot{
-        min-width:0;
-        width:100%;
-        display:flex;
-        align-items:center;
-        gap:14px;
-        text-align:left;
-        background:#f8fafc;
         padding:10px 12px;
         border-radius:14px;
-        border:1px solid #e2e8f0;
+        gap:14px;
       }
 
       .journey-dot .icon{
         width:52px;
         height:52px;
-        margin:0;
-        flex-shrink:0;
       }
+
+      .journey-dot span{ font-size:13px; }
+      .journey-dot small{ font-size:11px; }
 
       .footer{
         padding:20px 16px;
@@ -2076,6 +2274,8 @@
         transition-duration:0.01ms !important;
       }
       .reveal{ opacity:1; transform:none; }
+      .journey-dot.reveal-step{ opacity:1; transform:none; }
+      .journey-scroll-rail{ transition:none; }
     }
 
   </style>
@@ -2168,7 +2368,6 @@
       <div class="toc-group">
         <h3>📸 Overview</h3>
         <ul class="toc-list">
-          <li><a href="#photo-gallery">Sacred Himalaya Gallery</a></li>
           <li><a href="#journey-route">Journey Route Map</a></li>
         </ul>
       </div>
@@ -2208,89 +2407,35 @@
           <li><a href="#senior-care">Mom & Dad — Sugar Care</a></li>
           <li><a href="#bp-care">Wife — BP Care</a></li>
           <li><a href="#kedarnath-trek">Kedarnath Trek Plan</a></li>
+          <li><a href="#photo-gallery">Sacred Himalaya Gallery</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <section class="photo-showcase reveal" id="photo-gallery" aria-label="Sacred destinations gallery">
-    <div class="showcase-intro">
-      <span>Visual Journey</span>
-      <h2>Sacred Himalaya · Four Dhams</h2>
-    </div>
-    <div class="showcase-grid">
-      <article class="showcase-card wide">
-        <img src="assets/images/haridwar.jpg" alt="Ganga Aarti at Har Ki Pauri, Haridwar" class="img-haridwar-wide" loading="eager" decoding="async"/>
-        <div class="showcase-caption">
-          <span class="dham-num">Gateway · Day 1</span>
-          <strong>Har Ki Pauri · Haridwar</strong>
-          <span>Evening Ganga Aarti on the holy ghats</span>
-        </div>
-      </article>
-      <article class="showcase-card">
-        <img src="assets/images/yamunotri.jpg" alt="Yamunotri Temple in the Himalayas" class="img-yamunotri" loading="lazy" decoding="async"/>
-        <div class="showcase-caption">
-          <span class="dham-num">1st Dham · Day 3</span>
-          <strong>Yamunotri</strong>
-          <span>Source of River Yamuna</span>
-        </div>
-      </article>
-      <article class="showcase-card">
-        <img src="assets/images/gangotri.jpg" alt="Gangotri Temple" class="img-gangotri" loading="lazy" decoding="async"/>
-        <div class="showcase-caption">
-          <span class="dham-num">2nd Dham · Day 5</span>
-          <strong>Gangotri</strong>
-          <span>Origin of River Ganga</span>
-        </div>
-      </article>
-      <article class="showcase-card">
-        <img src="assets/images/kedarnath.jpg" alt="Kedarnath Temple in monsoon mist" class="img-kedarnath" loading="lazy" decoding="async"/>
-        <div class="showcase-caption">
-          <span class="dham-num">3rd Dham · Day 7</span>
-          <strong>Kedarnath</strong>
-          <span>Abode of Lord Shiva</span>
-        </div>
-      </article>
-      <article class="showcase-card">
-        <img src="assets/images/badrinath.jpg" alt="Badrinath Temple" class="img-badrinath" loading="lazy" decoding="async"/>
-        <div class="showcase-caption">
-          <span class="dham-num">4th Dham · Day 10</span>
-          <strong>Badrinath</strong>
-          <span>Abode of Lord Vishnu</span>
-        </div>
-      </article>
-    </div>
-  </section>
-
   <div class="journey-map reveal" id="journey-route">
     <h3>🗺️ Your Sacred Journey Route</h3>
     <div class="journey-track">
-      <span class="traveler">🚐</span>
-      <div class="journey-dot">
+      <a class="journey-dot reveal-step" href="#day-1">
         <div class="icon"><img src="assets/images/haridwar.jpg" alt="Haridwar" loading="lazy"/></div>
-        <span>Haridwar</span>
-        <small>Day 1</small>
-      </div>
-      <div class="journey-dot">
+        <div class="journey-dot-label"><span>Haridwar</span><small>Day 1 · Gateway</small></div>
+      </a>
+      <a class="journey-dot reveal-step" href="#day-3">
         <div class="icon"><img src="assets/images/yamunotri.jpg" alt="Yamunotri" loading="lazy"/></div>
-        <span>Yamunotri</span>
-        <small>Day 3</small>
-      </div>
-      <div class="journey-dot">
+        <div class="journey-dot-label"><span>Yamunotri</span><small>Day 3 · 1st Dham</small></div>
+      </a>
+      <a class="journey-dot reveal-step" href="#day-5">
         <div class="icon"><img src="assets/images/gangotri.jpg" alt="Gangotri" loading="lazy"/></div>
-        <span>Gangotri</span>
-        <small>Day 5</small>
-      </div>
-      <div class="journey-dot">
+        <div class="journey-dot-label"><span>Gangotri</span><small>Day 5 · 2nd Dham</small></div>
+      </a>
+      <a class="journey-dot reveal-step" href="#day-7">
         <div class="icon"><img src="assets/images/kedarnath.jpg" alt="Kedarnath" loading="lazy"/></div>
-        <span>Kedarnath</span>
-        <small>Day 7</small>
-      </div>
-      <div class="journey-dot">
+        <div class="journey-dot-label"><span>Kedarnath</span><small>Day 7 · 3rd Dham</small></div>
+      </a>
+      <a class="journey-dot reveal-step" href="#day-10">
         <div class="icon"><img src="assets/images/badrinath.jpg" alt="Badrinath" loading="lazy"/></div>
-        <span>Badrinath</span>
-        <small>Day 10</small>
-      </div>
+        <div class="journey-dot-label"><span>Badrinath</span><small>Day 10 · 4th Dham</small></div>
+      </a>
     </div>
   </div>
 
@@ -2387,105 +2532,107 @@
 
       <div class="check check-border-sky" style="grid-column:1/-1;">
         <h3>🕐 Day-wise Ertiga Time Plan</h3>
+        <p class="schedule-note" style="margin-bottom:12px;">Matched to <a href="#time-plan">📅 12-Day Agent Itinerary</a> &amp; <a href="#daily-plan">day-wise plan</a> below · Road times for private Ertiga</p>
         <div class="time-est-table-wrap">
           <table class="time-est-table">
             <thead>
-              <tr><th>Day</th><th>Route (Ertiga)</th><th>Distance</th><th>Est. Drive Time</th><th>Reach By</th></tr>
+              <tr><th>Day</th><th>Route (Ertiga)</th><th>Distance</th><th>Est. Time</th><th>Reach By</th></tr>
             </thead>
             <tbody>
               <tr>
                 <td><strong>D1 · 30 May</strong></td>
-                <td data-label="Route">Delhi Airport → Haridwar (NH-334)</td>
+                <td data-label="Route">Delhi Airport → Haridwar · 🙏 Ganga Aarti · <em>Night: Haridwar</em></td>
                 <td data-label="Distance">~220 km</td>
-                <td data-label="Drive Time">5–6 hrs</td>
+                <td data-label="Est. Time">Flight ✓ · Road 5–6 hrs</td>
                 <td data-label="Reach By">~04:30–05:30 PM</td>
               </tr>
               <tr>
                 <td><strong>D2 · 31 May</strong></td>
-                <td data-label="Route">Haridwar → Barkot (via Mussoorie)</td>
+                <td data-label="Route">Haridwar → Barkot (via Mussoorie) · <em>Night: Barkot</em></td>
                 <td data-label="Distance">~210 km</td>
-                <td data-label="Drive Time">7–8 hrs</td>
-                <td data-label="Reach By">~03:00–04:00 PM</td>
+                <td data-label="Est. Time">~8 hrs</td>
+                <td data-label="Reach By">~03:00 PM</td>
               </tr>
               <tr class="trek-row">
                 <td><strong>D3 · 01 Jun</strong></td>
-                <td data-label="Route">Barkot → Janki Chatti (~1.5 hrs) · <em>Yamunotri trek on foot</em></td>
-                <td data-label="Distance">~45 km + trek</td>
-                <td data-label="Drive Time">Car 3 hrs · Trek 5–7 hrs</td>
+                <td data-label="Route">Barkot → Yamunotri → Barkot · Trek/pony darshan · <em>Night: Barkot</em></td>
+                <td data-label="Distance">~45 km car + trek</td>
+                <td data-label="Est. Time">Trek · Car ~3 hrs</td>
                 <td data-label="Reach By">~07:00 PM Barkot</td>
               </tr>
               <tr>
                 <td><strong>D4 · 02 Jun</strong></td>
-                <td data-label="Route">Barkot → Uttarkashi</td>
+                <td data-label="Route">Barkot → Uttarkashi · 🙏 Kashi Vishwanath · Ganga dip · <em>Night: Uttarkashi</em></td>
                 <td data-label="Distance">~105 km</td>
-                <td data-label="Drive Time">5–6 hrs</td>
-                <td data-label="Reach By">~01:00–02:00 PM</td>
+                <td data-label="Est. Time">~5 hrs</td>
+                <td data-label="Reach By">~01:00 PM</td>
               </tr>
               <tr class="dham-row">
                 <td><strong>D5 · 03 Jun</strong></td>
-                <td data-label="Route">Uttarkashi → Gangotri → Uttarkashi (day trip)</td>
+                <td data-label="Route">Uttarkashi → Gangotri darshan → Uttarkashi (day trip) · <em>Night: Uttarkashi</em></td>
                 <td data-label="Distance">~200 km round</td>
-                <td data-label="Drive Time">6–7 hrs driving</td>
+                <td data-label="Est. Time">Day trip ~6 hrs</td>
                 <td data-label="Reach By">~02:00 PM back</td>
               </tr>
               <tr>
                 <td><strong>D6 · 04 Jun</strong></td>
-                <td data-label="Route">Uttarkashi → Guptkashi · Rudraprayag · Karnaprayag</td>
+                <td data-label="Route">Uttarkashi → Guptkashi · 🙏 Rudraprayag · Karnaprayag · <em>Night: Guptkashi</em></td>
                 <td data-label="Distance">~220 km</td>
-                <td data-label="Drive Time">8–9 hrs</td>
-                <td data-label="Reach By">~03:00–04:00 PM</td>
+                <td data-label="Est. Time">~8 hrs</td>
+                <td data-label="Reach By">~03:00 PM</td>
               </tr>
               <tr class="trek-row">
                 <td><strong>D7 · 05 Jun</strong></td>
-                <td data-label="Route">Guptkashi → Sonprayag/Gaurikund (~45 min) · <em>Kedarnath trek</em></td>
-                <td data-label="Distance">~30 km + trek</td>
-                <td data-label="Drive Time">Car 1 hr · Trek 6–8 hrs</td>
+                <td data-label="Route">Guptkashi → Kedarnath trek/helicopter · Darshan · <em>Night: near temple*</em></td>
+                <td data-label="Distance">~30 km car + trek</td>
+                <td data-label="Est. Time">Trek · Car ~1 hr</td>
                 <td data-label="Reach By">~02:00 PM darshan</td>
               </tr>
               <tr class="trek-row">
                 <td><strong>D8 · 06 Jun</strong></td>
-                <td data-label="Route">Trek down Kedarnath → Gaurikund → Guptkashi</td>
-                <td data-label="Distance">Trek + ~30 km</td>
-                <td data-label="Drive Time">Trek 4–5 hrs · Car 1 hr</td>
+                <td data-label="Route">Kedarnath → Guptkashi return trek · <em>Night: Guptkashi</em></td>
+                <td data-label="Distance">Trek + ~30 km car</td>
+                <td data-label="Est. Time">Trek · Car ~1 hr</td>
                 <td data-label="Reach By">~04:00 PM Guptkashi</td>
               </tr>
               <tr>
                 <td><strong>D9 · 07 Jun</strong></td>
-                <td data-label="Route">Guptkashi → Pipalkoti (via Chopta) · Nandaprayag</td>
+                <td data-label="Route">Guptkashi → Badrinath route · 🙏 Nandaprayag · <em>Night: Pipalkoti</em></td>
                 <td data-label="Distance">~180 km</td>
-                <td data-label="Drive Time">9–10 hrs</td>
-                <td data-label="Reach By">~05:00–06:00 PM</td>
+                <td data-label="Est. Time">~9 hrs</td>
+                <td data-label="Reach By">~05:00 PM</td>
               </tr>
               <tr class="dham-row">
                 <td><strong>D10 · 08 Jun</strong></td>
-                <td data-label="Route">Pipalkoti → Badrinath → Mana → Pipalkoti</td>
+                <td data-label="Route">Badrinath darshan · Tapt Kund · Mana · 🙏 Vishnuprayag · <em>Night: Pipalkoti</em></td>
                 <td data-label="Distance">~150 km round</td>
-                <td data-label="Drive Time">5–6 hrs driving</td>
+                <td data-label="Est. Time">Day trip ~5–6 hrs</td>
                 <td data-label="Reach By">~04:00 PM back</td>
               </tr>
               <tr>
                 <td><strong>D11 · 09 Jun</strong></td>
-                <td data-label="Route">Pipalkoti → Joshimath → Devprayag → Haridwar</td>
+                <td data-label="Route">Return via Joshimath · 🙏 Devprayag · Rishikesh/Haridwar · <em>Night: Haridwar</em></td>
                 <td data-label="Distance">~280 km</td>
-                <td data-label="Drive Time">10–11 hrs</td>
-                <td data-label="Reach By">~06:00–07:00 PM</td>
+                <td data-label="Est. Time">~10 hrs</td>
+                <td data-label="Reach By">~06:00 PM</td>
               </tr>
               <tr>
                 <td><strong>D12 · 10 Jun</strong></td>
-                <td data-label="Route">Haridwar → Delhi Airport (return flight)</td>
+                <td data-label="Route">Haridwar → Delhi Airport → ✈️ Ahmedabad (return flight)</td>
                 <td data-label="Distance">~220 km</td>
-                <td data-label="Drive Time">5–6 hrs</td>
-                <td data-label="Reach By">Allow 3 hrs pre-flight</td>
+                <td data-label="Est. Time">~5–6 hrs road</td>
+                <td data-label="Reach By">Delhi ~12:00 PM · fly after 04:00 PM</td>
               </tr>
               <tr class="grand">
                 <td colspan="2"><strong>Total (Ertiga · private car)</strong></td>
                 <td data-label="Distance">~1,450 km</td>
-                <td data-label="Drive Time">~65–70 hrs</td>
+                <td data-label="Est. Time">~65–70 hrs driving</td>
                 <td data-label="Duration">12 days</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p class="schedule-note" style="margin-top:10px;">* Kedarnath near-temple stay extra cost — not in agent package</p>
       </div>
 
     </div>
@@ -2738,7 +2885,7 @@
       </div>
       <div class="schedule-row estimated highlight">
         <div class="schedule-time">Day 5 · 03 Jun</div>
-        <div>Gangotri temple darshan · <em>Night: Uttarkashi</em></div>
+        <div>Uttarkashi → Gangotri darshan → Uttarkashi (day trip) · <em>Night: Uttarkashi</em></div>
         <div class="schedule-duration">Day trip</div>
       </div>
       <div class="schedule-row estimated">
@@ -2754,7 +2901,7 @@
       <div class="schedule-row estimated">
         <div class="schedule-time">Day 8 · 06 Jun</div>
         <div>Kedarnath → Guptkashi return trek · <em>Night: Guptkashi</em></div>
-        <div class="schedule-duration">~8 hrs</div>
+        <div class="schedule-duration">Trek</div>
       </div>
       <div class="schedule-row estimated">
         <div class="schedule-time">Day 9 · 07 Jun</div>
@@ -2773,7 +2920,7 @@
       </div>
       <div class="schedule-row estimated highlight">
         <div class="schedule-time">Day 12 · 10 Jun</div>
-        <div>Return Delhi / Haridwar → ✈️ Ahmedabad (book return flight)</div>
+        <div>Haridwar → Delhi Airport → ✈️ Ahmedabad · <em>Book return flight after 04:00 PM</em></div>
         <div class="schedule-duration">Return</div>
       </div>
 
@@ -2989,9 +3136,7 @@
         </div>
       </div>
 
-      <div class="route">
-        🥾 Barkot → Yamunotri Darshan → Barkot · Reach hotel ~07:00 PM
-      </div>
+      <div class="route">🥾 Barkot → Yamunotri darshan → Barkot · Night: Barkot · Reach ~07:00 PM</div>
 
       <div class="schedule">
         <h3>🕐 Day 3 Timeline</h3>
@@ -3159,9 +3304,7 @@
         </div>
       </div>
 
-      <div class="route">
-        🛕 Gaurikund 05:00 → Kedarnath Darshan ~02:00 PM · Night stay Kedarnath
-      </div>
+      <div class="route">🛕 Gaurikund → Kedarnath trek · Darshan ~02:00 PM · Night: near temple*</div>
 
       <div class="schedule">
         <h3>🕐 Day 7 Timeline</h3>
@@ -3228,7 +3371,7 @@
         <div class="date-box"><h2>06 June 2026</h2><p>Saturday · Day 8</p></div>
         <div class="weather">❄️ Cold | 2°C - 10°C</div>
       </div>
-      <div class="route">🥾 Kedarnath 08:00 AM ↓ → Guptkashi ~04:00 PM</div>
+      <div class="route">🥾 Kedarnath → Guptkashi return trek · Night: Guptkashi · Reach ~04:00 PM</div>
       <div class="schedule">
         <h3>🕐 Day 8 Timeline</h3>
         <p class="schedule-note">Agent Day 8 — Return trek Kedarnath → Guptkashi</p>
@@ -3307,7 +3450,7 @@
         <div class="date-box"><h2>09 June 2026</h2><p>Tuesday · Day 11</p></div>
         <div class="weather">☀️ Mild | 12°C - 24°C</div>
       </div>
-      <div class="route">🚌 Return Badrinath · Joshimath · 🙏 Devprayag · Haridwar ~06:00 PM</div>
+      <div class="route">🚌 Pipalkoti → Joshimath · 🙏 Devprayag · Haridwar ~06:00 PM · Night: Haridwar</div>
       <div class="schedule">
         <h3>🕐 Day 11 Timeline</h3>
         <p class="schedule-note">Agent Day 11 — Cover Joshimath · Last Prayag Devprayag · Night Haridwar/Rishikesh</p>
@@ -3333,7 +3476,7 @@
         <div class="date-box"><h2>10 June 2026</h2><p>Wednesday · Day 12</p></div>
         <div class="weather">☀️ Hot | 28°C - 40°C</div>
       </div>
-      <div class="route">🚗 Agent: Return Delhi/Haridwar → ✈️ Ahmedabad home (book return flight)</div>
+      <div class="route">🚗 Haridwar 06:00 AM → Delhi ~12:00 PM → ✈️ Ahmedabad (book return flight after 04:00 PM)</div>
       <div class="schedule">
         <h3>🕐 Day 12 Timeline</h3>
         <p class="schedule-note">Agent Day 12 — Return to Delhi · Connect flight to Ahmedabad</p>
@@ -3700,6 +3843,55 @@
 
   </div>
 
+  <section class="photo-showcase reveal" id="photo-gallery" aria-label="Sacred destinations gallery">
+    <div class="showcase-intro">
+      <span>Visual Journey</span>
+      <h2>Sacred Himalaya · Four Dhams</h2>
+    </div>
+    <div class="showcase-grid">
+      <article class="showcase-card wide">
+        <img src="assets/images/haridwar.jpg" alt="Ganga Aarti at Har Ki Pauri, Haridwar" class="img-haridwar-wide" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">Gateway · Day 1</span>
+          <strong>Har Ki Pauri · Haridwar</strong>
+          <span>Evening Ganga Aarti on the holy ghats</span>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/images/yamunotri.jpg" alt="Yamunotri Temple in the Himalayas" class="img-yamunotri" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">1st Dham · Day 3</span>
+          <strong>Yamunotri</strong>
+          <span>Source of River Yamuna</span>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/images/gangotri.jpg" alt="Gangotri Temple" class="img-gangotri" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">2nd Dham · Day 5</span>
+          <strong>Gangotri</strong>
+          <span>Origin of River Ganga</span>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/images/kedarnath.jpg" alt="Kedarnath Temple in monsoon mist" class="img-kedarnath" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">3rd Dham · Day 7</span>
+          <strong>Kedarnath</strong>
+          <span>Abode of Lord Shiva</span>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/images/badrinath.jpg" alt="Badrinath Temple" class="img-badrinath" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">4th Dham · Day 10</span>
+          <strong>Badrinath</strong>
+          <span>Abode of Lord Vishnu</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
 </div>
 
 <a href="#table-of-contents" class="toc-shortcut" id="tocShortcut" aria-label="Jump to table of contents" title="Table of Contents (Alt+T)">
@@ -3707,6 +3899,24 @@
   <span>TOC</span>
   <kbd>Alt+T</kbd>
 </a>
+
+<aside class="journey-scroll-rail" id="journeyScrollRail" aria-label="Sacred journey route progress">
+  <div class="journey-rail-panel">
+    <span class="journey-rail-title">🗺️ Sacred Route</span>
+    <div class="journey-rail-track" id="journeyRailTrack">
+      <div class="journey-rail-decor" aria-hidden="true">
+        <span class="journey-rail-line"></span>
+        <span class="journey-rail-progress" id="journeyRailProgress"></span>
+        <span class="journey-rail-traveler" id="journeyRailTraveler">🚐</span>
+      </div>
+      <a class="journey-rail-dot" href="#day-1" title="Haridwar · Day 1"><span class="icon"><img src="assets/images/haridwar.jpg" alt="" loading="lazy"/></span></a>
+      <a class="journey-rail-dot" href="#day-3" title="Yamunotri · Day 3"><span class="icon"><img src="assets/images/yamunotri.jpg" alt="" loading="lazy"/></span></a>
+      <a class="journey-rail-dot" href="#day-5" title="Gangotri · Day 5"><span class="icon"><img src="assets/images/gangotri.jpg" alt="" loading="lazy"/></span></a>
+      <a class="journey-rail-dot" href="#day-7" title="Kedarnath · Day 7"><span class="icon"><img src="assets/images/kedarnath.jpg" alt="" loading="lazy"/></span></a>
+      <a class="journey-rail-dot" href="#day-10" title="Badrinath · Day 10"><span class="icon"><img src="assets/images/badrinath.jpg" alt="" loading="lazy"/></span></a>
+    </div>
+  </div>
+</aside>
 
 <script>
 (function(){
@@ -3739,7 +3949,95 @@
     const h = document.documentElement;
     const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
     progress.style.width = pct + '%';
-  });
+    updateJourneyRail();
+  }, { passive: true });
+
+  const journeyDayIds = ['day-1','day-3','day-5','day-7','day-10'];
+
+  function getActiveJourneyIndex(){
+    const vh = window.innerHeight;
+    const probe = vh * 0.38;
+    let active = -1;
+
+    journeyDayIds.forEach(function(id, i){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const rect = el.getBoundingClientRect();
+      if(rect.top <= probe && rect.bottom >= probe){ active = i; }
+    });
+
+    if(active < 0){
+      let bestDist = Infinity;
+      journeyDayIds.forEach(function(id, i){
+        const el = document.getElementById(id);
+        if(!el) return;
+        const rect = el.getBoundingClientRect();
+        if(rect.bottom < 0 || rect.top > vh) return;
+        const center = rect.top + rect.height / 2;
+        const dist = Math.abs(center - probe);
+        if(dist < bestDist){
+          bestDist = dist;
+          active = i;
+        }
+      });
+    }
+
+    return active;
+  }
+
+  function isDailySectionVisible(){
+    const vh = window.innerHeight;
+    return journeyDayIds.some(function(id){
+      const el = document.getElementById(id);
+      if(!el) return false;
+      const rect = el.getBoundingClientRect();
+      return rect.bottom > 50 && rect.top < vh - 30;
+    });
+  }
+
+  function updateJourneyRail(){
+    const rail = document.getElementById('journeyScrollRail');
+    const dailyPlan = document.getElementById('daily-plan');
+    const journeyRoute = document.getElementById('journey-route');
+    if(!rail || !dailyPlan || !journeyRoute) return;
+
+    const vh = window.innerHeight;
+    const routeRect = journeyRoute.getBoundingClientRect();
+    const lastDay = document.getElementById('day-12');
+    const lastDayRect = lastDay ? lastDay.getBoundingClientRect() : null;
+
+    const pastTrip = lastDayRect ? lastDayRect.bottom < 80 : false;
+    const routeOverlapping = routeRect.bottom > 120 && routeRect.top < vh * 0.45;
+    const showRail = isDailySectionVisible() && !pastTrip && !routeOverlapping;
+    rail.classList.toggle('visible', showRail);
+
+    const active = getActiveJourneyIndex();
+
+    const dots = rail.querySelectorAll('.journey-rail-dot');
+    dots.forEach(function(dot, i){
+      dot.classList.toggle('active', showRail && i === active);
+      dot.classList.toggle('passed', showRail && active >= 0 && i < active);
+    });
+
+    const progressBar = document.getElementById('journeyRailProgress');
+    const traveler = document.getElementById('journeyRailTraveler');
+    if(!progressBar || !dots.length || !showRail || active < 0){
+      if(progressBar) progressBar.style.height = '0';
+      if(traveler) traveler.style.top = '10px';
+      return;
+    }
+
+    const dot = dots[active];
+    const icon = dot.querySelector('.icon');
+    if(!icon) return;
+    const y = dot.offsetTop + icon.offsetHeight / 2;
+    progressBar.style.height = Math.max(0, y - 6) + 'px';
+    if(traveler) traveler.style.top = (y - 8) + 'px';
+  }
+
+  window.addEventListener('resize', updateJourneyRail, { passive: true });
+  window.addEventListener('load', function(){ setTimeout(updateJourneyRail, 950); });
+  updateJourneyRail();
 
   document.querySelectorAll('.day-card, .footer, .journey-map, .photo-showcase, .toc').forEach(function(el){
     el.classList.add('reveal');
