@@ -18,12 +18,12 @@
       --glass:rgba(255,255,255,0.08);
       --shadow:0 20px 50px rgba(15,23,42,0.12);
       --radius:22px;
-      --img-haridwar:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Har-ki-Pauri.jpg/1280px-Har-ki-Pauri.jpg');
-      --img-yamunotri:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Yamunotri_Temple.jpg/1280px-Yamunotri_Temple.jpg');
-      --img-gangotri:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Gangotri_temple.jpg/1280px-Gangotri_temple.jpg');
-      --img-kedarnath:url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Kedarnath_Temple.jpg/1280px-Kedarnath_Temple.jpg');
-      --img-badrinath:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Badrinath_Temple_%28September_2021%29.jpg/1280px-Badrinath_Temple_%28September_2021%29.jpg');
-      --img-himalaya:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Kedarnath_Temple_%26_Mandakini_River.jpg/1280px-Kedarnath_Temple_%26_Mandakini_River.jpg');
+      --img-haridwar:url('assets/images/haridwar.jpg');
+      --img-yamunotri:url('assets/images/yamunotri.jpg');
+      --img-gangotri:url('assets/images/gangotri.jpg');
+      --img-kedarnath:url('assets/images/kedarnath.jpg');
+      --img-badrinath:url('assets/images/badrinath.jpg');
+      --img-himalaya:url('assets/images/himalaya.jpg');
     }
 
     *{
@@ -2232,7 +2232,11 @@
   const loader = document.getElementById('loader');
   const progress = document.getElementById('scrollProgress');
 
+  let pageReady = false;
+
   function initPage(){
+    if(pageReady) return;
+    pageReady = true;
     loader.classList.add('hide');
     animateCounters();
     document.querySelectorAll('.reveal:not(.visible)').forEach(function(el, i){

@@ -19,6 +19,8 @@ xdg-open index.html
 
 Or double-click `index.html` in the `ChardhamYatra` folder.
 
+Temple photos are bundled in `assets/images/` — no internet needed for backgrounds.
+
 ## GitHub Pages
 
 After pushing, enable **Pages** in repo settings → deploy from `main` branch → root.
