@@ -858,15 +858,15 @@
       color:#0f172a;
     }
 
-    /* ── Cost estimate (private car) ── */
-    .cost-summary{
+    /* ── Time estimate (private car) ── */
+    .time-est-summary{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
       gap:14px;
       margin-bottom:24px;
     }
 
-    .cost-summary-card{
+    .time-est-card{
       background:linear-gradient(145deg,#fff7ed,#ffedd5);
       border:1px solid #fed7aa;
       border-radius:16px;
@@ -874,12 +874,12 @@
       text-align:center;
     }
 
-    .cost-summary-card.highlight{
+    .time-est-card.highlight{
       background:linear-gradient(145deg,#eff6ff,#dbeafe);
       border-color:#93c5fd;
     }
 
-    .cost-summary-card span{
+    .time-est-card span{
       display:block;
       font-size:11px;
       text-transform:uppercase;
@@ -888,7 +888,7 @@
       margin-bottom:6px;
     }
 
-    .cost-summary-card strong{
+    .time-est-card strong{
       display:block;
       font-family:'Playfair Display',serif;
       font-size:clamp(22px,3vw,28px);
@@ -896,37 +896,37 @@
       line-height:1.1;
     }
 
-    .cost-summary-card.highlight strong{ color:#1d4ed8; }
+    .time-est-card.highlight strong{ color:#1d4ed8; }
 
-    .cost-summary-card small{
+    .time-est-card small{
       display:block;
       margin-top:6px;
       font-size:11px;
       color:#64748b;
     }
 
-    .cost-table-wrap{
+    .time-est-table-wrap{
       overflow-x:auto;
       margin-top:16px;
       border-radius:16px;
       border:1px solid #e2e8f0;
     }
 
-    .cost-table{
+    .time-est-table{
       width:100%;
       border-collapse:collapse;
       font-size:14px;
-      min-width:520px;
+      min-width:640px;
     }
 
-    .cost-table th,
-    .cost-table td{
+    .time-est-table th,
+    .time-est-table td{
       padding:12px 14px;
       text-align:left;
       border-bottom:1px solid #e2e8f0;
     }
 
-    .cost-table th{
+    .time-est-table th{
       background:#f1f5f9;
       font-size:12px;
       text-transform:uppercase;
@@ -934,28 +934,30 @@
       color:#475569;
     }
 
-    .cost-table tr:last-child td{ border-bottom:none; }
+    .time-est-table tr:last-child td{ border-bottom:none; }
 
-    .cost-table .subtotal td{
+    .time-est-table .subtotal td{
       background:#fefce8;
       font-weight:600;
       color:#92400e;
     }
 
-    .cost-table .grand td{
+    .time-est-table .grand td{
       background:linear-gradient(90deg,#eff6ff,#dbeafe);
       font-weight:700;
       color:#1e40af;
       font-size:15px;
     }
 
-    .cost-table td:last-child,
-    .cost-table th:last-child{
+    .time-est-table td:last-child,
+    .time-est-table th:last-child,
+    .time-est-table td:nth-child(3),
+    .time-est-table th:nth-child(3){
       text-align:right;
       white-space:nowrap;
     }
 
-    .cost-note{
+    .time-est-note{
       margin-top:14px;
       padding:14px 16px;
       background:#f0fdf4;
@@ -966,11 +968,14 @@
       line-height:1.55;
     }
 
-    .cost-note.warn{
+    .time-est-note.warn{
       background:#fffbeb;
       border-color:#fde68a;
       color:#92400e;
     }
+
+    .time-est-table .dham-row td{ background:#fff7ed; }
+    .time-est-table .trek-row td{ background:#faf5ff; }
 
     /* ── Table of contents ── */
     [id]{
@@ -1460,6 +1465,7 @@
       .showcase-grid{ grid-template-columns:repeat(6,1fr); }
       .showcase-card{ grid-column:span 3; min-height:240px; }
       .showcase-card.wide{ grid-column:span 6; min-height:280px; }
+      .toc-grid{ grid-template-columns:repeat(2,1fr); }
     }
 
     /* ── Mobile ── */
@@ -1776,7 +1782,7 @@
     <div class="toc-header">
       <span>Quick Navigation</span>
       <h2>📑 Table of Contents</h2>
-      <p>Jump to any section — itinerary, costs, daily plan & health guides</p>
+      <p>Jump to any section — itinerary, travel times, daily plan & health guides</p>
     </div>
     <div class="toc-grid">
       <div class="toc-group">
@@ -1790,7 +1796,7 @@
         <h3>🗂️ Trip Planning</h3>
         <ul class="toc-list">
           <li><a href="#agent-itinerary">Agent Itinerary & Package</a></li>
-          <li><a href="#cost-estimate">Private Car Cost Estimate</a></li>
+          <li><a href="#time-estimate">Private Car Time Estimate</a></li>
           <li><a href="#flight-ticket">Confirmed Flight (Day 1)</a></li>
           <li><a href="#time-plan">12-Day Overview Schedule</a></li>
         </ul>
@@ -1966,136 +1972,194 @@
 
   </div>
 
-  <div class="footer" id="cost-estimate">
+  <div class="footer" id="time-estimate">
 
-    <h2>💰 Estimated Cost — Private Car (4 Persons)</h2>
+    <h2>🚗 Time Estimation — Private Car (Innova)</h2>
     <p class="schedule-note" style="margin-bottom:18px;">
-      May–June 2026 peak season · Based on your <strong>12-day agent route</strong> (Delhi pickup → Chardham + Panch Prayag → Delhi return) ·
-      Family: <strong>4 travellers</strong> · Vehicle: <strong>Toyota Innova Crysta</strong> (recommended for hills + luggage + seniors)
+      May–June 2026 · <strong>12-day agent route</strong> · Private car (Innova Crysta) · Times include hill-road average speed, lunch/tea stops & senior health breaks (Mom, Dad, Hetal)
     </p>
 
-    <div class="cost-summary">
-      <div class="cost-summary-card highlight">
-        <span>Land Package Estimate</span>
-        <strong>~₹1.96 L</strong>
-        <small>Car + hotels + meals</small>
+    <div class="time-est-summary">
+      <div class="time-est-card highlight">
+        <span>Total Road Distance</span>
+        <strong>~1,450 km</strong>
+        <small>Full Chardham circuit</small>
       </div>
-      <div class="cost-summary-card">
-        <span>Per Person (Land)</span>
-        <strong>~₹49,000</strong>
-        <small>÷ 4 travellers</small>
+      <div class="time-est-card">
+        <span>Total Driving Hours</span>
+        <strong>~65–70 hrs</strong>
+        <small>Excludes treks</small>
       </div>
-      <div class="cost-summary-card">
-        <span>Private Car Only</span>
-        <strong>~₹92,000</strong>
-        <small>12 days · all-inclusive cab</small>
+      <div class="time-est-card">
+        <span>Longest Drive Day</span>
+        <strong>~10–11 hrs</strong>
+        <small>Day 11 · Pipalkoti → Haridwar</small>
       </div>
-      <div class="cost-summary-card">
-        <span>Hotels (11 Nights)</span>
-        <strong>~₹70,000</strong>
-        <small>2 rooms · mid-range</small>
+      <div class="time-est-card">
+        <span>Trek Days (No Car)</span>
+        <strong>2 days</strong>
+        <small>Day 3 Yamunotri · Day 7–8 Kedarnath</small>
       </div>
     </div>
 
     <div class="check-grid" style="margin-bottom:20px;">
 
-      <div class="check check-border-sky">
-        <h3>🚗 Private Car Breakdown</h3>
-        <div class="cost-table-wrap">
-          <table class="cost-table">
+      <div class="check check-border-sky" style="grid-column:1/-1;">
+        <h3>🕐 Day-wise Private Car Time Plan</h3>
+        <div class="time-est-table-wrap">
+          <table class="time-est-table">
             <thead>
-              <tr><th>Item</th><th>Details</th><th>Amount</th></tr>
+              <tr><th>Day</th><th>Route (Private Car)</th><th>Distance</th><th>Est. Drive Time</th><th>Reach By</th></tr>
             </thead>
             <tbody>
-              <tr><td>Innova Crysta hire</td><td>12 days × ₹6,500/day</td><td>₹78,000</td></tr>
-              <tr><td>Driver night halt</td><td>11 nights × ₹500</td><td>₹5,500</td></tr>
-              <tr><td>Toll · parking · permit</td><td>Chardham hill route</td><td>₹4,500</td></tr>
-              <tr><td>GST 5%</td><td>On vehicle charges</td><td>₹4,400</td></tr>
-              <tr class="subtotal"><td colspan="2">Subtotal — Private Car</td><td>~₹92,400</td></tr>
+              <tr>
+                <td><strong>D1 · 30 May</strong></td>
+                <td>Delhi Airport → Haridwar (NH-334)</td>
+                <td>~220 km</td>
+                <td>5–6 hrs</td>
+                <td>~04:30–05:30 PM</td>
+              </tr>
+              <tr>
+                <td><strong>D2 · 31 May</strong></td>
+                <td>Haridwar → Barkot (via Mussoorie)</td>
+                <td>~210 km</td>
+                <td>7–8 hrs</td>
+                <td>~03:00–04:00 PM</td>
+              </tr>
+              <tr class="trek-row">
+                <td><strong>D3 · 01 Jun</strong></td>
+                <td>Barkot → Janki Chatti (~1.5 hrs) · <em>Yamunotri trek on foot</em></td>
+                <td>~45 km + trek</td>
+                <td>Car 3 hrs · Trek 5–7 hrs</td>
+                <td>~07:00 PM Barkot</td>
+              </tr>
+              <tr>
+                <td><strong>D4 · 02 Jun</strong></td>
+                <td>Barkot → Uttarkashi</td>
+                <td>~105 km</td>
+                <td>5–6 hrs</td>
+                <td>~01:00–02:00 PM</td>
+              </tr>
+              <tr class="dham-row">
+                <td><strong>D5 · 03 Jun</strong></td>
+                <td>Uttarkashi → Gangotri → Uttarkashi (day trip)</td>
+                <td>~200 km round</td>
+                <td>6–7 hrs driving</td>
+                <td>~02:00 PM back</td>
+              </tr>
+              <tr>
+                <td><strong>D6 · 04 Jun</strong></td>
+                <td>Uttarkashi → Guptkashi · Rudraprayag · Karnaprayag</td>
+                <td>~220 km</td>
+                <td>8–9 hrs</td>
+                <td>~03:00–04:00 PM</td>
+              </tr>
+              <tr class="trek-row">
+                <td><strong>D7 · 05 Jun</strong></td>
+                <td>Guptkashi → Sonprayag/Gaurikund (~45 min) · <em>Kedarnath trek</em></td>
+                <td>~30 km + trek</td>
+                <td>Car 1 hr · Trek 6–8 hrs</td>
+                <td>~02:00 PM darshan</td>
+              </tr>
+              <tr class="trek-row">
+                <td><strong>D8 · 06 Jun</strong></td>
+                <td>Trek down Kedarnath → Gaurikund → Guptkashi</td>
+                <td>Trek + ~30 km</td>
+                <td>Trek 4–5 hrs · Car 1 hr</td>
+                <td>~04:00 PM Guptkashi</td>
+              </tr>
+              <tr>
+                <td><strong>D9 · 07 Jun</strong></td>
+                <td>Guptkashi → Pipalkoti (via Chopta) · Nandaprayag</td>
+                <td>~180 km</td>
+                <td>9–10 hrs</td>
+                <td>~05:00–06:00 PM</td>
+              </tr>
+              <tr class="dham-row">
+                <td><strong>D10 · 08 Jun</strong></td>
+                <td>Pipalkoti → Badrinath → Mana → Pipalkoti</td>
+                <td>~150 km round</td>
+                <td>5–6 hrs driving</td>
+                <td>~04:00 PM back</td>
+              </tr>
+              <tr>
+                <td><strong>D11 · 09 Jun</strong></td>
+                <td>Pipalkoti → Joshimath → Devprayag → Haridwar</td>
+                <td>~280 km</td>
+                <td>10–11 hrs</td>
+                <td>~06:00–07:00 PM</td>
+              </tr>
+              <tr>
+                <td><strong>D12 · 10 Jun</strong></td>
+                <td>Haridwar → Delhi Airport (return flight)</td>
+                <td>~220 km</td>
+                <td>5–6 hrs</td>
+                <td>Allow 3 hrs pre-flight</td>
+              </tr>
+              <tr class="grand">
+                <td colspan="2"><strong>Total (private car only)</strong></td>
+                <td>~1,450 km</td>
+                <td>~65–70 hrs</td>
+                <td>12 days</td>
+              </tr>
             </tbody>
           </table>
         </div>
-      </div>
-
-      <div class="check check-border-green">
-        <h3>🏨 Accommodation (Agent Night Stays)</h3>
-        <div class="cost-table-wrap">
-          <table class="cost-table">
-            <thead>
-              <tr><th>Location</th><th>Nights</th><th>Est. Total</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Haridwar (Day 1)</td><td>1 · 2 rooms</td><td>₹7,000</td></tr>
-              <tr><td>Barkot (Day 2–3)</td><td>2 · 2 rooms</td><td>₹12,000</td></tr>
-              <tr><td>Uttarkashi (Day 4–5)</td><td>2 · 2 rooms</td><td>₹12,000</td></tr>
-              <tr><td>Guptkashi (Day 6 & 8)</td><td>2 · 2 rooms</td><td>₹14,000</td></tr>
-              <tr><td>Near Kedarnath (Day 7)*</td><td>1 · 4 beds</td><td>₹6,000</td></tr>
-              <tr><td>Pipalkoti (Day 9–10)</td><td>2 · 2 rooms</td><td>₹12,000</td></tr>
-              <tr><td>Haridwar / Rishikesh (Day 11)</td><td>1 · 2 rooms</td><td>₹7,000</td></tr>
-              <tr class="subtotal"><td colspan="2">Subtotal — Hotels</td><td>~₹70,000</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="schedule-note" style="margin-top:10px;margin-bottom:0;">* Kedarnath dharamshala/tent — agent package excludes premium near-temple stay</p>
       </div>
 
     </div>
 
     <div class="check-grid">
 
-      <div class="check check-border-orange">
-        <h3>🍽️ Meals & Daily Expenses</h3>
+      <div class="check check-border-green">
+        <h3>⏱️ Daily Start & Reach Guide</h3>
         <ul>
-          <li>Breakfast + dinner (mostly at hotels): <strong>~₹700/person/day</strong></li>
-          <li>12 days × 4 persons ≈ <strong>₹33,600</strong></li>
-          <li>Lunch on road / tea breaks: add <strong>₹300–500/person/day</strong></li>
-          <li>Driver tip (end of trip): <strong>₹2,000–3,000</strong></li>
+          <li><strong>Best start on long days:</strong> 06:00–07:00 AM (D2, D6, D9, D11)</li>
+          <li><strong>Day trips (D5, D10):</strong> Leave by 05:30–06:00 AM</li>
+          <li><strong>Lunch stop:</strong> Add 45–60 min on drives over 5 hrs</li>
+          <li><strong>Health breaks:</strong> Stop every 90 min for Mom, Dad & Hetal (15 min)</li>
+          <li><strong>Mountain rule:</strong> Average 25–35 km/hr on hill roads</li>
         </ul>
       </div>
 
-      <div class="check check-border-amber">
-        <h3>⚠️ Extra (Not in Base Estimate)</h3>
+      <div class="check check-border-orange">
+        <h3>🚶 Trek Time (Car Stops Here)</h3>
         <ul>
-          <li>Yamunotri pony/palkhi (Mom & Dad): <strong>₹2,500–4,000</strong> each way/person</li>
-          <li>Kedarnath pony/palkhi: <strong>₹3,000–5,000</strong> each way/person</li>
-          <li>Kedarnath helicopter (optional): <strong>₹7,000–12,000</strong>/person</li>
-          <li>Chardham registration · puja · personal shopping</li>
-          <li>Return flight Delhi → Ahmedabad (Day 12): <strong>~₹6,000–10,000</strong>/person</li>
+          <li><strong>Yamunotri (D3):</strong> 6 km one way · 3–4 hrs up · 2–3 hrs down</li>
+          <li><strong>Kedarnath (D7):</strong> 16 km one way · 6–8 hrs up · 4–5 hrs down</li>
+          <li>Private car cannot go beyond Janki Chatti / Sonprayag</li>
+          <li>Pony/palkhi saves ~2–3 hrs each way for seniors</li>
         </ul>
       </div>
 
       <div class="check check-border-blue">
-        <h3>✈️ Flights (Separate)</h3>
+        <h3>✈️ Day 1 & Day 12 Flight Buffer</h3>
         <ul>
-          <li>Day 1 AMD → DEL — <strong>booked</strong> (IndiGo 6E-983 · PNR GCCVTA)</li>
-          <li>Agent quoted flight add-on: <strong>₹41,000/person</strong> — confirm if one-way or round trip</li>
-          <li>Self-book return (4 persons): est. <strong>₹24,000–40,000</strong> total</li>
+          <li><strong>D1:</strong> Land Delhi 09:15 AM → start road ~10:30 AM → Haridwar ~5 PM</li>
+          <li><strong>D12:</strong> Haridwar 06:00 AM → Delhi ~12:00 PM → airport by 01:00 PM</li>
+          <li>Book return flight <strong>after 04:00 PM</strong> for safe buffer</li>
+          <li>IndiGo D1 confirmed · PNR GCCVTA</li>
         </ul>
       </div>
 
-      <div class="check check-border-red">
-        <h3>📊 Grand Total Snapshot</h3>
-        <div class="cost-table-wrap">
-          <table class="cost-table">
-            <tbody>
-              <tr><td>Private car (all-inclusive)</td><td>~₹92,400</td></tr>
-              <tr><td>Hotels (11 nights, 2 rooms)</td><td>~₹70,000</td></tr>
-              <tr><td>Meals (12 days, 4 persons)</td><td>~₹34,000</td></tr>
-              <tr class="grand"><td>Estimated land cost (family of 4)</td><td>~₹1,96,400</td></tr>
-              <tr class="grand"><td>Per person (land only)</td><td>~₹49,100</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="check check-border-amber">
+        <h3>⚠️ May–June Delay Factors</h3>
+        <ul>
+          <li>Monsoon landslides on Rishikesh–Badrinath highway</li>
+          <li>Yatra traffic jams near temple towns (weekends worse)</li>
+          <li>Kedarnath / Yamunotri queue time not included</li>
+          <li>Road repair at Chopta, Joshimath belt — add 1–2 hrs buffer</li>
+        </ul>
       </div>
 
     </div>
 
-    <div class="cost-note">
-      <strong>✓ Best for your family:</strong> Innova Crysta gives comfortable legroom for Mom, Dad & Hetal (BP/sugar care), AC for heat, and enough boot space for medicines & warm layers. Sedan (Dzire) is cheaper (~₹42,000 car total) but tight for 4 adults + hills.
+    <div class="time-est-note">
+      <strong>✓ Private car advantage for your family:</strong> Leave when ready, stop for sugar/BP checks anytime, carry medicines & snacks in car, and avoid tempo-traveller fixed timings. Innova Crysta recommended for 4 adults + hills.
     </div>
 
-    <div class="cost-note warn" style="margin-top:12px;">
-      <strong>⚠️ Note:</strong> These are <strong>market estimates</strong> for May–June 2026 (peak yatra season). Your agent <strong>Travel Key Solution (+91 99134 65556)</strong> may offer a bundled rate — compare their package vs booking private car + hotels yourself. Always ask for a <strong>written all-inclusive quote</strong> (fuel, driver food, night halt, toll, GST) before paying advance.
+    <div class="time-est-note warn" style="margin-top:12px;">
+      <strong>⚠️ Note:</strong> All times are <strong>estimates</strong> for May–June 2026. Actual duration depends on weather, road blocks, and your family's pace. Confirm daily start times with your driver / agent <strong>Travel Key Solution (+91 99134 65556)</strong>.
     </div>
 
   </div>
@@ -3100,7 +3164,7 @@
 
   </div>
 
-  <div class="footer">
+  <div class="footer" id="bp-care">
 
     <h2>👩 Wife — BP Patient Special Care</h2>
 
@@ -3155,7 +3219,7 @@
 
   </div>
 
-  <div class="footer">
+  <div class="footer" id="kedarnath-trek">
 
     <h2>🏔️ Kedarnath Trek Survival Plan</h2>
 
@@ -3240,9 +3304,34 @@
     progress.style.width = pct + '%';
   });
 
-  document.querySelectorAll('.day-card, .footer, .journey-map, .photo-showcase').forEach(function(el){
+  document.querySelectorAll('.day-card, .footer, .journey-map, .photo-showcase, .toc').forEach(function(el){
     el.classList.add('reveal');
   });
+
+  const tocLinks = document.querySelectorAll('.toc a[href^="#"]');
+  const tocSections = [];
+
+  tocLinks.forEach(function(link){
+    const id = link.getAttribute('href').slice(1);
+    const section = document.getElementById(id);
+    if(section){ tocSections.push({ id: id, el: section, link: link }); }
+  });
+
+  function updateTocActive(){
+    const scrollPos = window.scrollY + 120;
+    let activeId = '';
+
+    tocSections.forEach(function(item){
+      if(item.el.offsetTop <= scrollPos){ activeId = item.id; }
+    });
+
+    tocLinks.forEach(function(link){
+      link.classList.toggle('active', activeId && link.getAttribute('href') === '#' + activeId);
+    });
+  }
+
+  window.addEventListener('scroll', updateTocActive, { passive: true });
+  updateTocActive();
 
   const observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
