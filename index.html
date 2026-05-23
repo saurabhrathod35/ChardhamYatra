@@ -4,9 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Chardham Yatra Planner</title>
+  <script>
+  (function(){
+    var root = document.documentElement;
+    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    function setMode(mode){
+      root.classList.remove('connection-slow','connection-fast','connection-checking');
+      root.classList.add(mode);
+      root.dataset.connection = mode.replace('connection-','');
+    }
+    window.__setConnectionMode = setMode;
+    if(conn){
+      if(conn.saveData){ setMode('connection-slow'); return; }
+      var et = conn.effectiveType || '';
+      if(et === 'slow-2g' || et === '2g' || et === '3g'){ setMode('connection-slow'); return; }
+      if(typeof conn.downlink === 'number' && conn.downlink > 0 && conn.downlink < 1.5){ setMode('connection-slow'); return; }
+      if(et === '4g' || (typeof conn.downlink === 'number' && conn.downlink >= 1.5)){ setMode('connection-fast'); return; }
+    }
+    setMode('connection-checking');
+  })();
+  </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="assets/images/himalaya.jpg"/>
+  <link id="googleFontsLink" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link id="heroImagePreload" rel="preload" as="image" href="assets/images/himalaya.jpg"/>
 
   <style>
     :root{
@@ -40,7 +60,7 @@
     }
 
     body{
-      font-family:'Poppins',sans-serif;
+      font-family:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
       background:#0b1220;
       color:#1e293b;
       padding:30px;
@@ -95,6 +115,158 @@
     .float-icon:nth-child(3){ top:55%; left:4%; animation-delay:3s; }
     .float-icon:nth-child(4){ bottom:15%; right:6%; animation-delay:2s; font-size:32px; }
     .float-icon:nth-child(5){ top:40%; right:15%; animation-delay:4s; }
+
+    /* ── Adaptive connection modes ── */
+    .connection-banner{
+      display:none;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:0 0 16px;
+      padding:12px 16px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#eff6ff,#f0fdf4);
+      border:1px solid #bfdbfe;
+      font-size:13px;
+      color:#1e3a8a;
+      line-height:1.5;
+    }
+
+    .connection-banner.visible{ display:flex; }
+
+    .connection-banner-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .connection-banner button{
+      border:none;
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:12px;
+      font-weight:700;
+      font-family:inherit;
+      cursor:pointer;
+    }
+
+    .connection-banner-upgrade{
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
+      color:#fff;
+    }
+
+    .connection-banner-dismiss{
+      background:#fff;
+      color:#475569;
+      border:1px solid #cbd5e1 !important;
+    }
+
+    .google-map-fallback{
+      display:none;
+      min-height:240px;
+      align-items:center;
+      justify-content:center;
+      padding:24px 20px;
+      background:linear-gradient(180deg,#eff6ff,#f8fafc);
+      text-align:center;
+    }
+
+    .google-map-fallback-icon{ font-size:36px; line-height:1; margin-bottom:8px; }
+
+    .google-map-fallback p{
+      margin:0 0 12px;
+      font-size:13px;
+      color:#475569;
+      line-height:1.55;
+    }
+
+    .google-map-fallback a{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:10px 16px;
+      border-radius:999px;
+      background:#0d9488;
+      color:#fff;
+      text-decoration:none;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .img-deferred{
+      background:linear-gradient(135deg,#e2e8f0,#f1f5f9);
+      min-height:80px;
+    }
+
+    html.connection-slow .connection-banner.visible,
+    html.connection-checking .connection-banner.visible{ display:flex; }
+
+    html.connection-slow .google-map-fallback,
+    html.connection-checking .google-map-fallback{ display:flex; }
+
+    html.connection-slow .google-map-frame-wrap iframe,
+    html.connection-checking .google-map-frame-wrap iframe,
+    html.connection-slow .google-map-sidebar,
+    html.connection-checking .google-map-sidebar{ display:none !important; }
+
+    html.connection-slow .google-map-loading,
+    html.connection-checking .google-map-loading{ display:none; }
+
+    html.connection-slow .bg-decor::before,
+    html.connection-checking .bg-decor::before,
+    html.connection-slow .float-icon,
+    html.connection-checking .float-icon,
+    html.connection-slow .journey-dot .icon,
+    html.connection-checking .journey-dot .icon,
+    html.connection-slow .traveler,
+    html.connection-checking .traveler{
+      animation:none !important;
+    }
+
+    html.connection-slow .hero-bg,
+    html.connection-checking .hero-bg{
+      background:
+        linear-gradient(135deg,rgba(15,23,42,0.92) 0%,rgba(30,64,175,0.85) 45%,rgba(124,45,18,0.72) 100%) !important;
+    }
+
+    html.connection-slow .journey-map,
+    html.connection-checking .journey-map{
+      background:linear-gradient(rgba(255,255,255,0.96),rgba(255,255,255,0.98)) !important;
+    }
+
+    html.connection-slow .day-card.temple-haridwar::after,
+    html.connection-slow .day-card.temple-yamunotri::after,
+    html.connection-slow .day-card.temple-gangotri::after,
+    html.connection-slow .day-card.temple-kedarnath::after,
+    html.connection-slow .day-card.temple-badrinath::after,
+    html.connection-checking .day-card.temple-haridwar::after,
+    html.connection-checking .day-card.temple-yamunotri::after,
+    html.connection-checking .day-card.temple-gangotri::after,
+    html.connection-checking .day-card.temple-kedarnath::after,
+    html.connection-checking .day-card.temple-badrinath::after{
+      background-image:none !important;
+    }
+
+    html.connection-slow .reveal,
+    html.connection-slow .journey-dot.reveal-step,
+    html.connection-checking .reveal,
+    html.connection-checking .journey-dot.reveal-step{
+      opacity:1 !important;
+      transform:none !important;
+    }
+
+    html.connection-slow .page-loader,
+    html.connection-checking .page-loader{
+      transition-duration:0.25s;
+    }
+
+    html.connection-slow .loader-mountain,
+    html.connection-checking .loader-mountain,
+    html.connection-slow .loader-bar span,
+    html.connection-checking .loader-bar span{
+      animation:none;
+    }
 
     /* ── Loader ── */
     .page-loader{
@@ -1812,6 +1984,301 @@
       font-size:22px;
     }
 
+    /* ── Google Maps route visualization ── */
+    .google-map-section{
+      margin-bottom:30px;
+      padding:28px 32px;
+      border-radius:var(--radius);
+      background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.95);
+    }
+
+    .google-map-head h3{
+      font-family:'Playfair Display',serif;
+      color:#1d4ed8;
+      font-size:22px;
+      margin:0 0 8px;
+    }
+
+    .google-map-head p{
+      margin:0 0 18px;
+      color:#64748b;
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    .google-map-tabs{
+      display:flex;
+      flex-wrap:nowrap;
+      gap:8px;
+      margin-bottom:16px;
+      overflow-x:auto;
+      padding:2px 2px 10px;
+      scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .google-map-tabs::-webkit-scrollbar{ display:none; }
+
+    .google-map-tab{
+      flex:0 0 auto;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid #e2e8f0;
+      background:#f8fafc;
+      font-size:12px;
+      font-weight:600;
+      color:#475569;
+      cursor:pointer;
+      font-family:inherit;
+      white-space:nowrap;
+      transition:background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .google-map-tab:hover{
+      border-color:#93c5fd;
+      color:#1d4ed8;
+    }
+
+    .google-map-tab.active{
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 6px 18px rgba(37,99,235,0.28);
+    }
+
+    .google-map-tab.dham{
+      border-color:#fed7aa;
+      background:#fff7ed;
+      color:#9a3412;
+    }
+
+    .google-map-tab.dham.active{
+      background:linear-gradient(135deg,var(--saffron),#ea580c);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 6px 18px rgba(249,115,22,0.28);
+    }
+
+    .google-map-frame-wrap{
+      position:relative;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid #e2e8f0;
+      background:#e2e8f0;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,0.5);
+    }
+
+    .google-map-frame-wrap iframe{
+      display:block;
+      width:100%;
+      height:min(42vh,340px);
+      min-height:240px;
+      border:0;
+    }
+
+    .google-map-loading{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,#eff6ff,#f8fafc);
+      color:#64748b;
+      font-size:14px;
+      font-weight:600;
+      z-index:1;
+      transition:opacity 0.35s ease, visibility 0.35s;
+    }
+
+    .google-map-frame-wrap.loaded .google-map-loading{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+
+    .google-map-meta{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .google-map-meta p{
+      margin:0;
+      flex:1;
+      min-width:200px;
+      font-size:13px;
+      color:#475569;
+      line-height:1.55;
+    }
+
+    .google-map-open{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:10px 16px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#0f766e,#0d9488);
+      color:#fff;
+      text-decoration:none;
+      font-size:13px;
+      font-weight:700;
+      box-shadow:0 8px 22px rgba(13,148,136,0.28);
+      border:1px solid rgba(255,255,255,0.2);
+    }
+
+    .google-map-open:hover{ color:#fff; transform:translateY(-1px); }
+
+    .google-map-legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px dashed #e2e8f0;
+    }
+
+    .google-map-legend span{
+      font-size:11px;
+      font-weight:600;
+      color:#64748b;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:999px;
+      padding:5px 10px;
+    }
+
+    .google-map-legend .dham{ border-color:#fed7aa; background:#fff7ed; color:#9a3412; }
+    .google-map-legend .trek{ border-color:#ddd6fe; background:#f5f3ff; color:#6d28d9; }
+    .google-map-legend .prayag{ border-color:#bfdbfe; background:#eff6ff; color:#1d4ed8; }
+
+    @media(max-width:768px){
+      .google-map-section{ padding:20px 16px; border-radius:18px; }
+      .google-map-head h3{ font-size:18px; }
+      .google-map-frame-wrap iframe{ min-height:220px; height:38vh; }
+      .google-map-meta{ flex-direction:column; align-items:stretch; }
+      .google-map-open{ justify-content:center; }
+    }
+
+    /* ── Google Map sidebar (desktop, sticky right) ── */
+    .google-map-sidebar{
+      display:none;
+    }
+
+    @media(min-width:1100px){
+      .google-map-sidebar{
+        display:block;
+        position:fixed;
+        right:max(14px, env(safe-area-inset-right));
+        top:50%;
+        transform:translateY(-50%) translateX(calc(100% + 24px));
+        z-index:840;
+        width:196px;
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+        transition:transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.35s ease, visibility 0.35s;
+      }
+
+      .google-map-sidebar.visible{
+        transform:translateY(-50%) translateX(0);
+        opacity:1;
+        visibility:visible;
+        pointer-events:auto;
+      }
+
+      .google-map-sidebar-panel{
+        background:rgba(255,255,255,0.97);
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+        border-radius:16px;
+        padding:12px 10px 10px;
+        box-shadow:0 16px 40px rgba(15,23,42,0.14);
+        border:1px solid rgba(226,232,240,0.95);
+      }
+
+      .google-map-sidebar-title{
+        display:block;
+        font-size:9px;
+        font-weight:700;
+        letter-spacing:1.1px;
+        text-transform:uppercase;
+        color:#64748b;
+        text-align:center;
+        margin-bottom:4px;
+      }
+
+      .google-map-sidebar-day{
+        margin:0 0 8px;
+        font-size:11px;
+        font-weight:700;
+        color:#1e3a8a;
+        text-align:center;
+        line-height:1.35;
+        min-height:30px;
+      }
+
+      .google-map-sidebar-frame{
+        border-radius:12px;
+        overflow:hidden;
+        border:1px solid #dbeafe;
+        background:#eff6ff;
+        margin-bottom:8px;
+      }
+
+      .google-map-sidebar-frame iframe{
+        display:block;
+        width:100%;
+        height:128px;
+        border:0;
+      }
+
+      .google-map-sidebar-actions{
+        display:flex;
+        flex-direction:column;
+        gap:6px;
+      }
+
+      .google-map-sidebar-link,
+      .google-map-sidebar-open{
+        display:block;
+        text-align:center;
+        padding:7px 8px;
+        border-radius:10px;
+        font-size:10px;
+        font-weight:700;
+        text-decoration:none;
+        line-height:1.3;
+      }
+
+      .google-map-sidebar-link{
+        color:#1d4ed8;
+        background:#eff6ff;
+        border:1px solid #bfdbfe;
+      }
+
+      .google-map-sidebar-link:hover{
+        background:#dbeafe;
+        color:#1e40af;
+      }
+
+      .google-map-sidebar-open{
+        color:#0f766e;
+        background:#f0fdfa;
+        border:1px solid #99f6e4;
+      }
+
+      .google-map-sidebar-open:hover{
+        background:#ccfbf1;
+        color:#115e59;
+      }
+    }
+
     .journey-track{
       display:flex;
       align-items:flex-start;
@@ -2019,11 +2486,18 @@
       backdrop-filter:blur(14px);
       -webkit-backdrop-filter:blur(14px);
       border-radius:18px;
-      padding:14px 12px 16px;
+      padding:14px 10px 12px;
       box-shadow:0 16px 45px rgba(15,23,42,0.16);
       border:1px solid rgba(226,232,240,0.95);
-      width:78px;
+      width:82px;
+      max-height:min(78vh,560px);
+      overflow-y:auto;
+      overflow-x:hidden;
+      scrollbar-width:thin;
     }
+
+    .journey-rail-panel::-webkit-scrollbar{ width:4px; }
+    .journey-rail-panel::-webkit-scrollbar-thumb{ background:#cbd5e1; border-radius:999px; }
 
     .journey-rail-title{
       display:block;
@@ -2041,16 +2515,16 @@
       position:relative;
       display:flex;
       flex-direction:column;
-      gap:20px;
-      padding:4px 0;
-      min-height:280px;
+      gap:10px;
+      padding:4px 0 6px;
+      min-height:0;
     }
 
     .journey-rail-line{
       position:absolute;
-      left:21px;
-      top:10px;
-      bottom:10px;
+      left:19px;
+      top:8px;
+      bottom:8px;
       width:3px;
       border-radius:999px;
       background:linear-gradient(180deg,#2563eb,#f97316,#22c55e,#7c3aed,#ea580c);
@@ -2059,8 +2533,8 @@
 
     .journey-rail-progress{
       position:absolute;
-      left:21px;
-      top:10px;
+      left:19px;
+      top:8px;
       width:3px;
       height:0;
       border-radius:999px;
@@ -2071,8 +2545,8 @@
 
     .journey-rail-traveler{
       position:absolute;
-      left:8px;
-      top:10px;
+      left:6px;
+      top:8px;
       font-size:16px;
       z-index:3;
       filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));
@@ -2089,8 +2563,8 @@
     }
 
     .journey-rail-dot .icon{
-      width:44px;
-      height:44px;
+      width:40px;
+      height:40px;
       margin:0 auto;
       border-radius:50%;
       overflow:hidden;
@@ -2100,6 +2574,29 @@
       transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
+    .journey-rail-dot .icon.rail-day-num{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      font-weight:800;
+      color:#475569;
+      background:linear-gradient(180deg,#fff,#f1f5f9);
+    }
+
+    .journey-rail-dot .rail-day-tag{
+      display:block;
+      margin-top:3px;
+      font-size:8px;
+      font-weight:700;
+      text-align:center;
+      letter-spacing:0.3px;
+      color:#94a3b8;
+      line-height:1;
+    }
+
+    .journey-rail-dot.active .rail-day-tag{ color:#ea580c; }
+
     .journey-rail-dot .icon img{
       width:100%;
       height:100%;
@@ -2108,10 +2605,15 @@
       filter:saturate(1.08);
     }
 
-    .journey-rail-dot span,
     .journey-rail-dot small{
       display:none;
     }
+
+    .journey-rail-dot.dham-haridwar .icon{ border-color:#2563eb; }
+    .journey-rail-dot.dham-yamunotri .icon{ border-color:#dc2626; }
+    .journey-rail-dot.dham-gangotri .icon{ border-color:#0891b2; }
+    .journey-rail-dot.dham-kedarnath .icon{ border-color:#7c3aed; }
+    .journey-rail-dot.dham-badrinath .icon{ border-color:#ea580c; }
 
     .journey-rail-dot:hover .icon,
     .journey-rail-dot:focus-visible .icon{
@@ -2128,12 +2630,6 @@
     .journey-rail-dot.passed .icon{
       border-color:#86efac;
     }
-
-    .journey-rail-dot:nth-child(1) .icon{ border-color:#2563eb; }
-    .journey-rail-dot:nth-child(2) .icon{ border-color:#dc2626; }
-    .journey-rail-dot:nth-child(3) .icon{ border-color:#0891b2; }
-    .journey-rail-dot:nth-child(4) .icon{ border-color:#7c3aed; }
-    .journey-rail-dot:nth-child(5) .icon{ border-color:#ea580c; }
 
     @media(max-width:768px){
       .journey-scroll-rail{
@@ -2156,18 +2652,20 @@
         margin-bottom:8px;
       }
 
-      .journey-rail-track{ gap:14px; }
+      .journey-rail-track{ gap:8px; }
 
       .journey-rail-dot .icon{
-        width:38px;
-        height:38px;
+        width:36px;
+        height:36px;
       }
 
+      .journey-rail-dot .icon.rail-day-num{ font-size:10px; }
+
       .journey-rail-line,
-      .journey-rail-progress{ left:18px; }
+      .journey-rail-progress{ left:17px; }
 
       .journey-rail-traveler{
-        left:5px;
+        left:4px;
         font-size:14px;
       }
     }
@@ -2671,6 +3169,7 @@
       .journey-scroll-rail{ transition:none; }
       .mobile-quick-sheet,
       .mobile-quick-backdrop{ transition:none; }
+      .google-map-sidebar{ transition:none; }
     }
 
   </style>
@@ -2695,6 +3194,14 @@
 </div>
 
 <div class="container">
+
+  <div class="connection-banner" id="connectionBanner" role="status" aria-live="polite">
+    <span id="connectionBannerText">📶 Lightweight mode — itinerary &amp; schedules load first. Maps and photos load when needed.</span>
+    <div class="connection-banner-actions">
+      <button type="button" class="connection-banner-upgrade" id="connectionUpgradeBtn">Load full experience</button>
+      <button type="button" class="connection-banner-dismiss" id="connectionBannerDismiss">Dismiss</button>
+    </div>
+  </div>
 
   <div class="hero">
     <div class="hero-bg"></div>
@@ -2764,6 +3271,7 @@
         <h3>📸 Overview</h3>
         <ul class="toc-list">
           <li><a href="#journey-route">Journey Route Map</a></li>
+          <li><a href="#google-route-map">Google Maps Route</a></li>
         </ul>
       </div>
       <div class="toc-group">
@@ -2834,6 +3342,36 @@
       </a>
     </div>
   </div>
+
+  <section class="google-map-section reveal" id="google-route-map" aria-label="Google Maps route visualization">
+    <div class="google-map-head">
+      <h3>🌍 Google Maps · Live Route View</h3>
+      <p>Interactive driving &amp; trek legs aligned with your agent itinerary — tap a day to preview the route on Google Maps.</p>
+    </div>
+    <div class="google-map-tabs" id="googleMapTabs" role="tablist" aria-label="Route segments"></div>
+    <div class="google-map-frame-wrap" id="googleMapFrameWrap">
+      <div class="google-map-loading" id="googleMapLoading" aria-hidden="true">Loading map…</div>
+      <div class="google-map-fallback" id="googleMapFallback">
+        <div>
+          <div class="google-map-fallback-icon" aria-hidden="true">🗺️</div>
+          <p id="googleMapFallbackText">Interactive map is paused on slow networks so your itinerary stays readable.</p>
+          <a id="googleMapFallbackLink" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">Open route in Google Maps ↗</a>
+        </div>
+      </div>
+      <iframe id="googleRouteFrame" title="Chardham Yatra route on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
+    <div class="google-map-meta">
+      <p id="googleRouteCaption">Full sacred circuit — Haridwar gateway through all four Dhams.</p>
+      <a class="google-map-open" id="googleRouteOpen" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
+    </div>
+    <div class="google-map-legend" aria-label="Route legend">
+      <span class="dham">🛕 Four Dhams</span>
+      <span>🏨 Night stays</span>
+      <span class="trek">🥾 Trek legs</span>
+      <span class="prayag">🙏 Panch Prayag</span>
+      <span>🚐 Ertiga drive</span>
+    </div>
+  </section>
 
   <div class="footer" id="agent-itinerary">
     <h2>📋 Travel Agent Itinerary — Travel Key Solution</h2>
@@ -4338,6 +4876,11 @@
       <strong>Route Map</strong>
       <span>Sacred journey overview</span>
     </a>
+    <a href="#google-route-map" class="mobile-quick-tile" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">🌍</span>
+      <strong>Google Maps</strong>
+      <span>Live route by day</span>
+    </a>
     <a href="#time-estimate" class="mobile-quick-tile" data-close-sheet>
       <span class="mobile-quick-tile-icon" aria-hidden="true">🕐</span>
       <strong>Ertiga Plan</strong>
@@ -4383,11 +4926,32 @@
         <span class="journey-rail-progress" id="journeyRailProgress"></span>
         <span class="journey-rail-traveler" id="journeyRailTraveler">🚐</span>
       </div>
-      <a class="journey-rail-dot" href="#day-1" title="Haridwar · Day 1"><span class="icon"><img src="assets/images/haridwar.jpg" alt="" loading="lazy"/></span></a>
-      <a class="journey-rail-dot" href="#day-3" title="Yamunotri · Day 3"><span class="icon"><img src="assets/images/yamunotri.jpg" alt="" loading="lazy"/></span></a>
-      <a class="journey-rail-dot" href="#day-5" title="Gangotri · Day 5"><span class="icon"><img src="assets/images/gangotri.jpg" alt="" loading="lazy"/></span></a>
-      <a class="journey-rail-dot" href="#day-7" title="Kedarnath · Day 7"><span class="icon"><img src="assets/images/kedarnath.jpg" alt="" loading="lazy"/></span></a>
-      <a class="journey-rail-dot" href="#day-10" title="Badrinath · Day 10"><span class="icon"><img src="assets/images/badrinath.jpg" alt="" loading="lazy"/></span></a>
+      <a class="journey-rail-dot dham-haridwar" href="#day-1" title="Day 1 · Haridwar"><span class="icon"><img src="assets/images/haridwar.jpg" alt="" loading="lazy"/></span><span class="rail-day-tag">D1</span></a>
+      <a class="journey-rail-dot" href="#day-2" title="Day 2 · Barkot"><span class="icon rail-day-num">2</span><span class="rail-day-tag">D2</span></a>
+      <a class="journey-rail-dot dham-yamunotri" href="#day-3" title="Day 3 · Yamunotri"><span class="icon"><img src="assets/images/yamunotri.jpg" alt="" loading="lazy"/></span><span class="rail-day-tag">D3</span></a>
+      <a class="journey-rail-dot" href="#day-4" title="Day 4 · Uttarkashi"><span class="icon rail-day-num">4</span><span class="rail-day-tag">D4</span></a>
+      <a class="journey-rail-dot dham-gangotri" href="#day-5" title="Day 5 · Gangotri"><span class="icon"><img src="assets/images/gangotri.jpg" alt="" loading="lazy"/></span><span class="rail-day-tag">D5</span></a>
+      <a class="journey-rail-dot" href="#day-6" title="Day 6 · Guptkashi"><span class="icon rail-day-num">6</span><span class="rail-day-tag">D6</span></a>
+      <a class="journey-rail-dot dham-kedarnath" href="#day-7" title="Day 7 · Kedarnath"><span class="icon"><img src="assets/images/kedarnath.jpg" alt="" loading="lazy"/></span><span class="rail-day-tag">D7</span></a>
+      <a class="journey-rail-dot" href="#day-8" title="Day 8 · Return trek"><span class="icon rail-day-num">8</span><span class="rail-day-tag">D8</span></a>
+      <a class="journey-rail-dot" href="#day-9" title="Day 9 · Pipalkoti"><span class="icon rail-day-num">9</span><span class="rail-day-tag">D9</span></a>
+      <a class="journey-rail-dot dham-badrinath" href="#day-10" title="Day 10 · Badrinath"><span class="icon"><img src="assets/images/badrinath.jpg" alt="" loading="lazy"/></span><span class="rail-day-tag">D10</span></a>
+      <a class="journey-rail-dot" href="#day-11" title="Day 11 · Haridwar return"><span class="icon rail-day-num">11</span><span class="rail-day-tag">D11</span></a>
+      <a class="journey-rail-dot" href="#day-12" title="Day 12 · Delhi flight"><span class="icon rail-day-num">12</span><span class="rail-day-tag">D12</span></a>
+    </div>
+  </div>
+</aside>
+
+<aside class="google-map-sidebar" id="googleMapSidebar" aria-label="Google Maps route sidebar">
+  <div class="google-map-sidebar-panel">
+    <span class="google-map-sidebar-title">🌍 Google Route</span>
+    <p class="google-map-sidebar-day" id="googleSidebarDay">Full circuit overview</p>
+    <div class="google-map-sidebar-frame">
+      <iframe id="googleMapSidebarFrame" title="Current day route on Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    <div class="google-map-sidebar-actions">
+      <a class="google-map-sidebar-link" href="#google-route-map">Expand full map</a>
+      <a class="google-map-sidebar-open" id="googleSidebarOpen" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
     </div>
   </div>
 </aside>
@@ -4396,8 +4960,164 @@
 (function(){
   const loader = document.getElementById('loader');
   const progress = document.getElementById('scrollProgress');
+  const root = document.documentElement;
+  const connectionBanner = document.getElementById('connectionBanner');
+  const connectionBannerText = document.getElementById('connectionBannerText');
+  const connectionUpgradeBtn = document.getElementById('connectionUpgradeBtn');
+  const connectionBannerDismiss = document.getElementById('connectionBannerDismiss');
+  const googleFontsLink = document.getElementById('googleFontsLink');
+  const heroImagePreload = document.getElementById('heroImagePreload');
 
   let pageReady = false;
+  let slowMode = root.classList.contains('connection-slow') || root.classList.contains('connection-checking');
+  let fullExperienceEnabled = root.classList.contains('connection-fast');
+  let deferredImageObserver = null;
+
+  function isSlowMode(){
+    return slowMode && !fullExperienceEnabled;
+  }
+
+  function isFastMode(){
+    return fullExperienceEnabled || root.classList.contains('connection-fast');
+  }
+
+  function showConnectionBanner(message){
+    if(!connectionBanner) return;
+    if(message && connectionBannerText){ connectionBannerText.textContent = message; }
+    connectionBanner.classList.add('visible');
+  }
+
+  function hideConnectionBanner(){
+    if(connectionBanner){ connectionBanner.classList.remove('visible'); }
+  }
+
+  function deferHeavyImages(){
+    document.querySelectorAll('.banner-photo, .showcase-card img').forEach(function(img){
+      var src = img.getAttribute('src');
+      if(!src || img.dataset.fullSrc) return;
+      img.dataset.fullSrc = src;
+      img.removeAttribute('src');
+      img.classList.add('img-deferred');
+    });
+  }
+
+  function restoreHeavyImages(){
+    document.querySelectorAll('img[data-full-src]').forEach(function(img){
+      if(img.dataset.fullSrc){
+        img.setAttribute('src', img.dataset.fullSrc);
+        img.classList.remove('img-deferred');
+      }
+    });
+  }
+
+  function observeDeferredImages(){
+    if(deferredImageObserver) return;
+    deferredImageObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting) return;
+        var img = entry.target;
+        if(img.dataset.fullSrc && !img.getAttribute('src')){
+          img.setAttribute('src', img.dataset.fullSrc);
+          img.classList.remove('img-deferred');
+        }
+        deferredImageObserver.unobserve(img);
+      });
+    }, { rootMargin: '160px 0px', threshold: 0.01 });
+    document.querySelectorAll('img[data-full-src]').forEach(function(img){
+      deferredImageObserver.observe(img);
+    });
+  }
+
+  function stripHeavyAssets(){
+    if(googleFontsLink && googleFontsLink.parentNode){ googleFontsLink.parentNode.removeChild(googleFontsLink); }
+    if(heroImagePreload && heroImagePreload.parentNode){ heroImagePreload.parentNode.removeChild(heroImagePreload); }
+  }
+
+  function ensureHeavyAssets(){
+    if(!document.getElementById('googleFontsLink')){
+      var link = document.createElement('link');
+      link.id = 'googleFontsLink';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap';
+      document.head.appendChild(link);
+    }
+    if(!document.getElementById('heroImagePreload')){
+      var preload = document.createElement('link');
+      preload.id = 'heroImagePreload';
+      preload.rel = 'preload';
+      preload.as = 'image';
+      preload.href = 'assets/images/himalaya.jpg';
+      document.head.appendChild(preload);
+    }
+  }
+
+  function updateMapFallback(route){
+    var fallbackText = document.getElementById('googleMapFallbackText');
+    var fallbackLink = document.getElementById('googleMapFallbackLink');
+    if(fallbackText && route){ fallbackText.textContent = route.caption; }
+    if(fallbackLink && route){ fallbackLink.href = route.open; }
+  }
+
+  function applySlowConnectionMode(message){
+    slowMode = true;
+    fullExperienceEnabled = false;
+    if(window.__setConnectionMode){ window.__setConnectionMode('connection-slow'); }
+    stripHeavyAssets();
+    deferHeavyImages();
+    observeDeferredImages();
+    showConnectionBanner(message || '📶 Lightweight mode — itinerary & schedules load first. Maps and photos load when needed.');
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('visible'); });
+  }
+
+  function enableFullExperience(){
+    slowMode = false;
+    fullExperienceEnabled = true;
+    if(window.__setConnectionMode){ window.__setConnectionMode('connection-fast'); }
+    ensureHeavyAssets();
+    restoreHeavyImages();
+    hideConnectionBanner();
+    if(typeof googleMapLoaded !== 'undefined'){ googleMapLoaded = false; }
+    if(typeof lastSidebarRouteId !== 'undefined'){ lastSidebarRouteId = ''; }
+    if(typeof setGoogleMapRoute === 'function'){
+      setGoogleMapRoute(typeof activeGoogleRouteId !== 'undefined' ? activeGoogleRouteId : 'full');
+    }
+    if(typeof updateGoogleMapSidebar === 'function'){ updateGoogleMapSidebar(); }
+  }
+
+  function runConnectionProbe(){
+    if(!root.classList.contains('connection-checking')) return;
+    var started = performance.now();
+    var probe = new Image();
+    probe.onload = probe.onerror = function(){
+      var elapsed = performance.now() - started;
+      if(elapsed < 1500 && probe.naturalWidth > 0){
+        enableFullExperience();
+      } else {
+        applySlowConnectionMode('📶 Slow network detected — showing text-first plan. Tap below to load maps & photos.');
+      }
+    };
+    probe.src = 'assets/images/himalaya.jpg?probe=' + Date.now();
+  }
+
+  if(root.classList.contains('connection-slow')){
+    applySlowConnectionMode('📶 Data saver / slow network — lightweight view enabled.');
+  } else if(root.classList.contains('connection-checking')){
+    stripHeavyAssets();
+    deferHeavyImages();
+    observeDeferredImages();
+    showConnectionBanner('📶 Checking connection… showing itinerary first.');
+    runConnectionProbe();
+  } else if(root.classList.contains('connection-fast')){
+    fullExperienceEnabled = true;
+    hideConnectionBanner();
+  }
+
+  if(connectionUpgradeBtn){
+    connectionUpgradeBtn.addEventListener('click', enableFullExperience);
+  }
+  if(connectionBannerDismiss){
+    connectionBannerDismiss.addEventListener('click', hideConnectionBanner);
+  }
 
   function initPage(){
     if(pageReady) return;
@@ -4411,12 +5131,14 @@
     });
   }
 
+  var loaderDelay = isSlowMode() ? 0 : (isFastMode() ? 900 : 250);
+
   window.addEventListener('load', function(){
-    setTimeout(initPage, 900);
+    setTimeout(initPage, loaderDelay);
   });
 
   if(document.readyState === 'complete'){
-    setTimeout(initPage, 100);
+    setTimeout(initPage, isSlowMode() ? 0 : 100);
   }
 
   window.addEventListener('scroll', function(){
@@ -4427,18 +5149,21 @@
     updateMobileNavActive();
   }, { passive: true });
 
-  const journeyDayIds = ['day-1','day-3','day-5','day-7','day-10'];
+  const journeyDayIds = ['day-1','day-2','day-3','day-4','day-5','day-6','day-7','day-8','day-9','day-10','day-11','day-12'];
 
   function getActiveJourneyIndex(){
+    const dailyPlan = document.getElementById('daily-plan');
+    if(!dailyPlan) return -1;
+
     const vh = window.innerHeight;
-    const probe = vh * 0.38;
+    const probe = vh * 0.32;
     let active = -1;
 
     journeyDayIds.forEach(function(id, i){
       const el = document.getElementById(id);
       if(!el) return;
       const rect = el.getBoundingClientRect();
-      if(rect.top <= probe && rect.bottom >= probe){ active = i; }
+      if(rect.top <= probe && rect.bottom > probe + 40){ active = i; }
     });
 
     if(active < 0){
@@ -4461,13 +5186,11 @@
   }
 
   function isDailySectionVisible(){
+    const dailyPlan = document.getElementById('daily-plan');
+    if(!dailyPlan) return false;
+    const rect = dailyPlan.getBoundingClientRect();
     const vh = window.innerHeight;
-    return journeyDayIds.some(function(id){
-      const el = document.getElementById(id);
-      if(!el) return false;
-      const rect = el.getBoundingClientRect();
-      return rect.bottom > 50 && rect.top < vh - 30;
-    });
+    return rect.bottom > 100 && rect.top < vh - 60;
   }
 
   function updateJourneyRail(){
@@ -4480,10 +5203,12 @@
     const routeRect = journeyRoute.getBoundingClientRect();
     const lastDay = document.getElementById('day-12');
     const lastDayRect = lastDay ? lastDay.getBoundingClientRect() : null;
+    const dailyRect = dailyPlan.getBoundingClientRect();
 
     const pastTrip = lastDayRect ? lastDayRect.bottom < 80 : false;
     const routeOverlapping = routeRect.bottom > 120 && routeRect.top < vh * 0.45;
-    const showRail = isDailySectionVisible() && !pastTrip && !routeOverlapping;
+    const inDailyPlan = dailyRect.bottom > 100 && dailyRect.top < vh - 60;
+    const showRail = inDailyPlan && !pastTrip && !routeOverlapping;
     rail.classList.toggle('visible', showRail);
     document.body.classList.toggle('journey-rail-visible', showRail && window.innerWidth <= 768);
 
@@ -4499,25 +5224,282 @@
     const traveler = document.getElementById('journeyRailTraveler');
     if(!progressBar || !dots.length || !showRail || active < 0){
       if(progressBar) progressBar.style.height = '0';
-      if(traveler) traveler.style.top = '10px';
+      if(traveler) traveler.style.top = '8px';
       return;
     }
 
     const dot = dots[active];
     const icon = dot.querySelector('.icon');
     if(!icon) return;
-    const y = dot.offsetTop + icon.offsetHeight / 2;
-    progressBar.style.height = Math.max(0, y - 6) + 'px';
-    if(traveler) traveler.style.top = (y - 8) + 'px';
+    const track = document.getElementById('journeyRailTrack');
+    const trackTop = track ? track.offsetTop : 0;
+    const y = dot.offsetTop - trackTop + icon.offsetHeight / 2;
+    progressBar.style.height = Math.max(0, y - 4) + 'px';
+    if(traveler) traveler.style.top = (y - 10) + 'px';
+
+    if(showRail && dots[active] && active !== updateJourneyRail.lastActive){
+      updateJourneyRail.lastActive = active;
+      dots[active].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    if(active < 0){ updateJourneyRail.lastActive = -1; }
   }
+  updateJourneyRail.lastActive = -1;
 
   window.addEventListener('resize', updateJourneyRail, { passive: true });
   window.addEventListener('load', function(){ setTimeout(updateJourneyRail, 950); });
   updateJourneyRail();
 
-  document.querySelectorAll('.day-card, .footer, .journey-map, .photo-showcase, .toc').forEach(function(el){
+  document.querySelectorAll('.day-card, .footer, .journey-map, .photo-showcase, .toc, .google-map-section').forEach(function(el){
     el.classList.add('reveal');
   });
+
+  function buildGoogleEmbedUrl(origin, destination, waypoints, mode){
+    var url = 'https://maps.google.com/maps?saddr=' + encodeURIComponent(origin);
+    url += '&daddr=' + encodeURIComponent(destination);
+    if(waypoints && waypoints.length){
+      url += '&waypoints=' + encodeURIComponent(waypoints.join('|'));
+    }
+    url += '&dirflg=' + (mode || 'd') + '&hl=en&output=embed';
+    return url;
+  }
+
+  function buildGoogleOpenUrl(origin, destination, waypoints, travelmode){
+    var url = 'https://www.google.com/maps/dir/?api=1&travelmode=' + (travelmode || 'driving');
+    url += '&origin=' + encodeURIComponent(origin);
+    url += '&destination=' + encodeURIComponent(destination);
+    if(waypoints && waypoints.length){
+      url += '&waypoints=' + encodeURIComponent(waypoints.join('|'));
+    }
+    return url;
+  }
+
+  function buildGooglePlaceEmbed(place, zoom){
+    return 'https://maps.google.com/maps?q=' + encodeURIComponent(place) + '&z=' + (zoom || 8) + '&hl=en&output=embed';
+  }
+
+  var googleMapRoutes = [
+    {
+      id: 'overview',
+      label: 'Overview',
+      dham: false,
+      caption: 'Garhwal Himalayas — overview of the Char Dham region in Uttarakhand.',
+      embed: buildGooglePlaceEmbed('Char Dham Yatra Uttarakhand India', 8),
+      open: 'https://www.google.com/maps/search/Char+Dham+Yatra+Uttarakhand'
+    },
+    {
+      id: 'full',
+      label: 'Full Circuit',
+      dham: false,
+      caption: 'Complete Ertiga drive route: Haridwar → Barkot → Uttarkashi → Gangotri → Guptkashi → Pipalkoti → Badrinath. Trek legs to Yamunotri (D3) & Kedarnath (D7) are separate tabs.',
+      origin: 'Haridwar, Uttarakhand, India',
+      destination: 'Badrinath, Uttarakhand, India',
+      waypoints: [
+        'Barkot, Uttarakhand',
+        'Uttarkashi, Uttarakhand',
+        'Gangotri, Uttarakhand',
+        'Guptkashi, Uttarakhand',
+        'Pipalkoti, Uttarakhand'
+      ],
+      open: 'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=' + encodeURIComponent('Haridwar, Uttarakhand, India') + '&destination=' + encodeURIComponent('Haridwar, Uttarakhand, India') + '&waypoints=' + encodeURIComponent('Barkot, Uttarakhand|Uttarkashi, Uttarakhand|Gangotri, Uttarakhand|Guptkashi, Uttarakhand|Pipalkoti, Uttarakhand|Badrinath, Uttarakhand|Joshimath, Uttarakhand|Devprayag, Uttarakhand')
+    },
+    {
+      id: 'd1',
+      label: 'D1 · Delhi→Haridwar',
+      dham: false,
+      caption: 'Day 1 — Land Delhi ~09:15 AM, Ertiga pickup, reach Haridwar ~05:00 PM for Ganga Aarti.',
+      origin: 'Indira Gandhi International Airport, Delhi',
+      destination: 'Har Ki Pauri, Haridwar, Uttarakhand'
+    },
+    {
+      id: 'd2',
+      label: 'D2 · Haridwar→Barkot',
+      dham: false,
+      caption: 'Day 2 — Drive via Mussoorie / Yamunotri highway to Barkot base.',
+      origin: 'Haridwar, Uttarakhand',
+      destination: 'Barkot, Uttarakhand'
+    },
+    {
+      id: 'd3',
+      label: 'D3 · Yamunotri',
+      dham: true,
+      caption: 'Day 3 — Barkot to Janki Chatti / Yamunotri trek & darshan, night back at Barkot.',
+      origin: 'Barkot, Uttarakhand',
+      destination: 'Yamunotri Temple, Uttarakhand'
+    },
+    {
+      id: 'd4',
+      label: 'D4 · Barkot→Uttarkashi',
+      dham: false,
+      caption: 'Day 4 — Continue toward Uttarkashi · Kashi Vishwanath & Ganga dip.',
+      origin: 'Barkot, Uttarakhand',
+      destination: 'Uttarkashi, Uttarakhand'
+    },
+    {
+      id: 'd5',
+      label: 'D5 · Gangotri',
+      dham: true,
+      caption: 'Day 5 — Day trip Uttarkashi → Gangotri darshan → return Uttarkashi.',
+      origin: 'Uttarkashi, Uttarakhand',
+      destination: 'Gangotri Temple, Uttarakhand'
+    },
+    {
+      id: 'd6',
+      label: 'D6 · Guptkashi',
+      dham: false,
+      caption: 'Day 6 — Uttarkashi → Guptkashi via Rudraprayag & Karnaprayag (Panch Prayag).',
+      origin: 'Uttarkashi, Uttarakhand',
+      destination: 'Guptkashi, Uttarakhand',
+      waypoints: ['Rudraprayag, Uttarakhand', 'Karnaprayag, Uttarakhand']
+    },
+    {
+      id: 'd7',
+      label: 'D7 · Kedarnath ↑',
+      dham: true,
+      caption: 'Day 7 — Gaurikund to Kedarnath trek (~16 km). Map shows walking route; Ertiga stops at Sonprayag/Gaurikund.',
+      origin: 'Gaurikund, Uttarakhand',
+      destination: 'Kedarnath Temple, Uttarakhand',
+      mode: 'w',
+      travelmode: 'walking'
+    },
+    {
+      id: 'd8',
+      label: 'D8 · Kedarnath ↓',
+      dham: false,
+      caption: 'Day 8 — Return trek Kedarnath → Gaurikund → Guptkashi by evening.',
+      origin: 'Kedarnath Temple, Uttarakhand',
+      destination: 'Guptkashi, Uttarakhand',
+      waypoints: ['Gaurikund, Uttarakhand'],
+      mode: 'w',
+      travelmode: 'walking'
+    },
+    {
+      id: 'd9',
+      label: 'D9 · Pipalkoti',
+      dham: false,
+      caption: 'Day 9 — Guptkashi toward Pipalkoti via Nandaprayag for Badrinath approach.',
+      origin: 'Guptkashi, Uttarakhand',
+      destination: 'Pipalkoti, Uttarakhand',
+      waypoints: ['Nandaprayag, Uttarakhand']
+    },
+    {
+      id: 'd10',
+      label: 'D10 · Badrinath',
+      dham: true,
+      caption: 'Day 10 — Pipalkoti → Badrinath darshan, Tapt Kund, Mana village · Vishnuprayag area.',
+      origin: 'Pipalkoti, Uttarakhand',
+      destination: 'Badrinath Temple, Uttarakhand',
+      waypoints: ['Vishnuprayag, Uttarakhand']
+    },
+    {
+      id: 'd11',
+      label: 'D11 · Return',
+      dham: false,
+      caption: 'Day 11 — Return via Joshimath & Devprayag (last Prayag) to Haridwar ~06:00 PM.',
+      origin: 'Badrinath, Uttarakhand',
+      destination: 'Haridwar, Uttarakhand',
+      waypoints: ['Joshimath, Uttarakhand', 'Devprayag, Uttarakhand']
+    },
+    {
+      id: 'd12',
+      label: 'D12 · Delhi ✈',
+      dham: false,
+      caption: 'Day 12 — Haridwar 06:00 AM → Delhi ~12:00 PM for Ahmedabad return flight after 04:00 PM.',
+      origin: 'Haridwar, Uttarakhand',
+      destination: 'Indira Gandhi International Airport, Delhi'
+    }
+  ];
+
+  googleMapRoutes.forEach(function(route){
+    if(!route.embed && route.origin && route.destination){
+      route.embed = buildGoogleEmbedUrl(route.origin, route.destination, route.waypoints, route.mode);
+    }
+    if(!route.open && route.origin && route.destination){
+      route.open = buildGoogleOpenUrl(route.origin, route.destination, route.waypoints, route.travelmode);
+    }
+  });
+
+  var googleMapTabs = document.getElementById('googleMapTabs');
+  var googleRouteFrame = document.getElementById('googleRouteFrame');
+  var googleRouteCaption = document.getElementById('googleRouteCaption');
+  var googleRouteOpen = document.getElementById('googleRouteOpen');
+  var googleMapFrameWrap = document.getElementById('googleMapFrameWrap');
+  var googleMapLoaded = false;
+  var activeGoogleRouteId = 'full';
+
+  function setGoogleMapRoute(routeId){
+    var route = null;
+    for(var i = 0; i < googleMapRoutes.length; i++){
+      if(googleMapRoutes[i].id === routeId){ route = googleMapRoutes[i]; break; }
+    }
+    if(!route || !googleRouteFrame) return;
+
+    activeGoogleRouteId = route.id;
+
+    if(googleMapTabs){
+      googleMapTabs.querySelectorAll('.google-map-tab').forEach(function(btn){
+        var isActive = btn.getAttribute('data-route') === route.id;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    }
+
+    if(googleRouteCaption){ googleRouteCaption.textContent = route.caption; }
+    if(googleRouteOpen){
+      googleRouteOpen.href = route.open;
+      googleRouteOpen.setAttribute('aria-label', 'Open ' + route.label + ' in Google Maps');
+    }
+
+    if(isSlowMode()){
+      updateMapFallback(route);
+      if(googleMapFrameWrap){ googleMapFrameWrap.classList.add('loaded'); }
+      if(routeId === 'full' || routeId === 'overview'){
+        if(typeof lastSidebarRouteId !== 'undefined'){ lastSidebarRouteId = ''; }
+      }
+      return;
+    }
+
+    if(googleMapFrameWrap){ googleMapFrameWrap.classList.remove('loaded'); }
+
+    googleRouteFrame.onload = function(){
+      if(googleMapFrameWrap){ googleMapFrameWrap.classList.add('loaded'); }
+    };
+    googleRouteFrame.src = route.embed + '&t=' + Date.now();
+
+    if(routeId === 'full' || routeId === 'overview'){
+      lastSidebarRouteId = '';
+    }
+  }
+
+  if(googleMapTabs){
+    googleMapRoutes.forEach(function(route){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'google-map-tab' + (route.dham ? ' dham' : '');
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('data-route', route.id);
+      btn.setAttribute('aria-selected', route.id === 'full' ? 'true' : 'false');
+      btn.textContent = route.label;
+      btn.addEventListener('click', function(){ setGoogleMapRoute(route.id); });
+      googleMapTabs.appendChild(btn);
+    });
+  }
+
+  var googleMapSection = document.getElementById('google-route-map');
+  if(googleMapSection && googleRouteFrame){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting && !googleMapLoaded){
+          googleMapLoaded = true;
+          setGoogleMapRoute(activeGoogleRouteId);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '80px 0px' }).observe(googleMapSection);
+  }
+
+  if(isSlowMode()){
+    setGoogleMapRoute('full');
+  }
 
   const tocLinks = document.querySelectorAll('.toc a[href^="#"]');
   const tocSections = [];
@@ -4728,6 +5710,87 @@
   }, { passive: true });
 
   updateMobileNavActive();
+
+  var googleMapSidebar = document.getElementById('googleMapSidebar');
+  var googleMapSidebarFrame = document.getElementById('googleMapSidebarFrame');
+  var googleSidebarDay = document.getElementById('googleSidebarDay');
+  var googleSidebarOpen = document.getElementById('googleSidebarOpen');
+  var googleSidebarLoaded = false;
+  var lastSidebarRouteId = '';
+
+  function getGoogleRouteById(routeId){
+    for(var ri = 0; ri < googleMapRoutes.length; ri++){
+      if(googleMapRoutes[ri].id === routeId){ return googleMapRoutes[ri]; }
+    }
+    return null;
+  }
+
+  function setGoogleMapSidebarRoute(routeId){
+    if(isSlowMode()) return;
+    if(!googleMapSidebarFrame) return;
+    if(routeId === lastSidebarRouteId && googleMapSidebarFrame.getAttribute('src')) return;
+    var route = getGoogleRouteById(routeId);
+    if(!route) return;
+    lastSidebarRouteId = routeId;
+    googleMapSidebarFrame.src = route.embed + '&t=' + Date.now();
+    if(googleSidebarOpen){
+      googleSidebarOpen.href = route.open;
+      googleSidebarOpen.setAttribute('aria-label', 'Open ' + route.label + ' in Google Maps');
+    }
+  }
+
+  function isMapSidebarContextVisible(){
+    if(isSlowMode()) return false;
+    if(window.innerWidth < 1100) return false;
+
+    var vh = window.innerHeight;
+    var journeyRoute = document.getElementById('journey-route');
+    var lastDay = document.getElementById('day-12');
+    var fullMap = document.getElementById('google-route-map');
+    if(!journeyRoute || !lastDay) return false;
+
+    var routeRect = journeyRoute.getBoundingClientRect();
+    var lastDayRect = lastDay.getBoundingClientRect();
+    var fullMapRect = fullMap ? fullMap.getBoundingClientRect() : null;
+
+    var pastRoute = routeRect.bottom < vh * 0.78;
+    var beforeEnd = lastDayRect.bottom > 60;
+    var fullMapOverlap = fullMapRect && fullMapRect.top < vh * 0.55 && fullMapRect.bottom > vh * 0.22;
+
+    return pastRoute && beforeEnd && !fullMapOverlap;
+  }
+
+  function updateGoogleMapSidebar(){
+    if(!googleMapSidebar) return;
+
+    var show = isMapSidebarContextVisible();
+    googleMapSidebar.classList.toggle('visible', show);
+    if(!show) return;
+
+    var routeId = 'full';
+    var active = getActiveDayIndex();
+
+    if(active >= 0){
+      routeId = 'd' + (active + 1);
+      if(googleSidebarDay){
+        googleSidebarDay.textContent = dayPlanMeta[active].label + ' · ' + dayPlanMeta[active].place;
+      }
+    } else if(googleSidebarDay){
+      googleSidebarDay.textContent = 'Full circuit overview';
+    }
+
+    if(!googleSidebarLoaded){
+      googleSidebarLoaded = true;
+      setGoogleMapSidebarRoute(routeId);
+      return;
+    }
+
+    setGoogleMapSidebarRoute(routeId);
+  }
+
+  window.addEventListener('scroll', updateGoogleMapSidebar, { passive: true });
+  window.addEventListener('resize', updateGoogleMapSidebar, { passive: true });
+  updateGoogleMapSidebar();
 
   function isTypingContext(e){
     const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
