@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Chardham Yatra Planner</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -39,8 +39,13 @@
       background:#0b1220;
       color:#1e293b;
       padding:30px;
+      padding-left:max(30px, env(safe-area-inset-left));
+      padding-right:max(30px, env(safe-area-inset-right));
+      padding-bottom:max(30px, env(safe-area-inset-bottom));
       overflow-x:hidden;
       position:relative;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
     }
 
     /* ── Animated background ── */
@@ -946,19 +951,292 @@
       100%{ left:8%; transform:scaleX(1); }
     }
 
+    /* ── Mobile quick nav ── */
+    .mobile-nav{
+      display:none;
+      position:sticky;
+      top:0;
+      z-index:900;
+      margin-bottom:16px;
+      padding:10px 0 6px;
+      background:linear-gradient(180deg,rgba(11,18,32,0.98) 70%,transparent);
+      backdrop-filter:blur(10px);
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .mobile-nav-inner{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding:4px 2px 8px;
+      scrollbar-width:none;
+    }
+
+    .mobile-nav-inner::-webkit-scrollbar{ display:none; }
+
+    .mobile-nav a{
+      flex:0 0 auto;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.15);
+      color:#e2e8f0;
+      font-size:12px;
+      font-weight:600;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    .mobile-nav a:active,
+    .mobile-nav a:focus{
+      background:rgba(249,115,22,0.35);
+      border-color:rgba(249,115,22,0.5);
+      color:#fff;
+    }
+
+    /* ── Tablet ── */
+    @media(max-width:1024px){
+      .hero{ padding:40px 28px; }
+      .grid{ grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+      .check-grid{ grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+      .flight-meta{ grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+      .temple-gallery{ grid-template-columns:repeat(2,1fr); }
+    }
+
+    /* ── Mobile ── */
     @media(max-width:768px){
-      body{ padding:15px; }
-      .timeline::before,
-      .day-card::before{ display:none; }
-      .day-card{ margin-left:0; }
-      .hero{ padding:32px 22px; }
-      .schedule-row{ grid-template-columns:1fr; gap:6px; }
+      body{
+        padding:12px;
+        padding-left:max(12px, env(safe-area-inset-left));
+        padding-right:max(12px, env(safe-area-inset-right));
+      }
+
+      .mobile-nav{ display:block; }
+
+      .hero{
+        padding:28px 18px;
+        border-radius:20px;
+        margin-bottom:20px;
+      }
+
+      .hero-badge{
+        font-size:11px;
+        padding:6px 12px;
+        line-height:1.4;
+      }
+
+      .hero p{ font-size:14px; line-height:1.7; }
+
+      .stats{
+        grid-template-columns:repeat(2,1fr);
+        gap:12px;
+        margin-top:22px;
+      }
+
+      .stat-card{ padding:16px; border-radius:16px; }
+      .stat-card h2{ font-size:28px; }
+      .stat-card p{ font-size:11px; }
+
+      .temple-gallery{
+        grid-template-columns:repeat(2,1fr);
+        gap:12px;
+        margin-bottom:20px;
+      }
+
+      .temple-photo{ height:150px; border-radius:16px; }
+      .temple-photo figcaption{ padding:12px; }
+      .temple-photo figcaption strong{ font-size:16px; }
+
+      .journey-map{ padding:20px 16px; border-radius:18px; }
+      .journey-map h3{ font-size:18px; margin-bottom:16px; }
+
+      .journey-track{
+        flex-direction:column;
+        align-items:stretch;
+        gap:10px;
+      }
+
       .journey-track::before{ display:none; }
       .traveler{ display:none; }
-      .journey-dot{ min-width:45%; }
-      .temple-gallery{ grid-template-columns:repeat(2,1fr); }
-      .temple-photo{ height:160px; }
-      .day-banner{ height:150px; margin:-28px -28px 20px; }
+
+      .journey-dot{
+        min-width:100%;
+        display:flex;
+        align-items:center;
+        gap:14px;
+        text-align:left;
+        background:#f8fafc;
+        padding:10px 12px;
+        border-radius:14px;
+        border:1px solid #e2e8f0;
+      }
+
+      .journey-dot .icon{
+        width:52px;
+        height:52px;
+        margin:0;
+        flex-shrink:0;
+      }
+
+      .footer{
+        padding:22px 18px;
+        border-radius:18px;
+        margin-top:24px;
+      }
+
+      .footer h2{ font-size:20px; }
+
+      .flight-meta{ grid-template-columns:1fr 1fr; gap:10px; }
+      .flight-meta-item{ padding:12px; }
+      .flight-meta-item strong{ font-size:13px; word-break:break-word; }
+
+      .check-grid{ grid-template-columns:1fr; gap:14px; }
+      .check{ padding:18px; }
+
+      .timeline{ gap:18px; }
+      .timeline::before,
+      .day-card::before{ display:none; }
+
+      .day-card{
+        margin-left:0;
+        padding:18px;
+        border-radius:18px;
+        border-left-width:5px;
+        scroll-margin-top:70px;
+      }
+
+      .day-card:hover{ transform:none; }
+
+      .day-banner{
+        height:140px;
+        margin:-18px -18px 16px;
+        padding:16px 18px;
+        border-radius:14px 14px 0 0;
+      }
+
+      .day-banner h4{ font-size:20px; }
+
+      .top{
+        flex-direction:column;
+        gap:10px;
+        margin-bottom:14px;
+      }
+
+      .date-box,
+      .weather{
+        width:100%;
+        padding:12px 16px;
+      }
+
+      .date-box h2{ font-size:20px; }
+      .weather{ font-size:14px; line-height:1.45; }
+
+      .route{
+        font-size:15px;
+        line-height:1.5;
+        padding:12px 14px;
+        margin-top:6px;
+      }
+
+      .schedule{
+        padding:16px;
+        margin-top:14px;
+        border-radius:14px;
+      }
+
+      .schedule h3{ font-size:17px; }
+      .schedule-note{ font-size:13px; margin-bottom:12px; }
+
+      .schedule-row{
+        grid-template-columns:1fr;
+        gap:6px;
+        padding:12px;
+        margin-bottom:8px;
+        border:1px solid #e2e8f0;
+        border-radius:12px;
+        background:white;
+      }
+
+      .schedule-row:last-child{ margin-bottom:0; }
+
+      .schedule-row:hover{
+        transform:none;
+        box-shadow:none;
+      }
+
+      .schedule-time{
+        font-size:14px;
+        padding-bottom:4px;
+        border-bottom:1px dashed #e2e8f0;
+        margin-bottom:4px;
+      }
+
+      .schedule-duration{
+        justify-self:start;
+        font-size:11px;
+      }
+
+      .grid{
+        grid-template-columns:1fr;
+        gap:12px;
+        margin-top:14px;
+      }
+
+      .box{ padding:16px; }
+      .box h3{ font-size:16px; margin-bottom:10px; }
+      li{ font-size:14px; margin-bottom:8px; }
+
+      .tag{
+        display:inline-block;
+        margin:4px 4px 0 0;
+      }
+
+      .float-icon{ opacity:0.08; font-size:22px; }
+    }
+
+    /* ── Small phones ── */
+    @media(max-width:480px){
+      body{ padding:8px; }
+
+      .hero{ padding:22px 14px; }
+      .stats{ grid-template-columns:1fr 1fr; gap:8px; }
+      .stat-card h2{ font-size:24px; }
+
+      .temple-gallery{ grid-template-columns:1fr; }
+      .temple-photo{ height:180px; }
+
+      .flight-meta{ grid-template-columns:1fr; }
+
+      .journey-dot .icon{ width:46px; height:46px; }
+
+      .day-banner{ height:120px; }
+      .day-banner h4{ font-size:18px; }
+      .day-banner p{ font-size:11px; }
+
+      .route{ font-size:14px; }
+
+      .loader-bar{ width:180px; }
+      .loader-mountain{ font-size:48px; }
+      .loader-text{ font-size:11px; letter-spacing:2px; }
+
+      .mobile-nav a{
+        padding:7px 12px;
+        font-size:11px;
+      }
+    }
+
+    /* ── Touch devices: reduce hover shift ── */
+    @media(hover:none){
+      .day-card:hover,
+      .box:hover,
+      .check:hover,
+      .stat-card:hover,
+      .flight-meta-item:hover,
+      .temple-photo:hover{
+        transform:none;
+      }
+
+      li:hover{ transform:none; color:inherit; }
     }
 
     @media(prefers-reduced-motion:reduce){
@@ -1307,10 +1585,27 @@
 
   </div>
 
+  <nav class="mobile-nav" aria-label="Jump to day">
+    <div class="mobile-nav-inner">
+      <a href="#day-1">D1</a>
+      <a href="#day-2">D2</a>
+      <a href="#day-3">D3</a>
+      <a href="#day-4">D4</a>
+      <a href="#day-5">D5</a>
+      <a href="#day-6">D6</a>
+      <a href="#day-7">D7</a>
+      <a href="#day-8">D8</a>
+      <a href="#day-9">D9</a>
+      <a href="#day-10">D10</a>
+      <a href="#day-11">D11</a>
+      <a href="#day-12">D12</a>
+    </div>
+  </nav>
+
   <div class="timeline">
 
     <!-- DAY 1 -->
-    <div class="day-card temple-day temple-haridwar">
+    <div class="day-card temple-day temple-haridwar" id="day-1">
       <div class="day-banner banner-haridwar">
         <div>
           <h4>🌊 Har Ki Pauri · Haridwar</h4>
@@ -1424,8 +1719,7 @@
       </div>
     </div>
 
-    <!-- DAY 2 -->
-    <div class="day-card">
+    <div class="day-card" id="day-2">
       <div class="top">
         <div class="date-box">
           <h2>31 May 2026</h2>
@@ -1492,7 +1786,7 @@
     </div>
 
     <!-- DAY 3 -->
-    <div class="day-card temple-day temple-yamunotri" style="border-left-color:#dc2626">
+    <div class="day-card temple-day temple-yamunotri" id="day-3" style="border-left-color:#dc2626">
 
       <div class="day-banner banner-yamunotri">
         <div>
@@ -1571,8 +1865,7 @@
       </div>
     </div>
 
-    <!-- DAY 4 -->
-    <div class="day-card">
+    <div class="day-card" id="day-4">
       <div class="top">
         <div class="date-box">
           <h2>02 June 2026</h2>
@@ -1599,7 +1892,7 @@
     </div>
 
     <!-- DAY 5 -->
-    <div class="day-card temple-day temple-gangotri" style="border-left-color:#0891b2">
+    <div class="day-card temple-day temple-gangotri" id="day-5" style="border-left-color:#0891b2">
       <div class="day-banner banner-gangotri">
         <div>
           <h4>🧊 Gangotri Temple</h4>
@@ -1632,8 +1925,7 @@
       </div>
     </div>
 
-    <!-- DAY 6 -->
-    <div class="day-card">
+    <div class="day-card" id="day-6">
       <div class="top">
         <div class="date-box">
           <h2>04 June 2026</h2>
@@ -1662,7 +1954,7 @@
     </div>
 
     <!-- DAY 7 KEDARNATH -->
-    <div class="day-card temple-day temple-kedarnath" style="border-left-color:#7c3aed">
+    <div class="day-card temple-day temple-kedarnath" id="day-7" style="border-left-color:#7c3aed">
 
       <div class="day-banner banner-kedarnath">
         <div>
@@ -1746,8 +2038,7 @@
       </div>
     </div>
 
-    <!-- DAY 8 -->
-    <div class="day-card">
+    <div class="day-card" id="day-8">
       <div class="top">
         <div class="date-box"><h2>06 June 2026</h2><p>Saturday · Day 8</p></div>
         <div class="weather">❄️ Cold | 2°C - 10°C</div>
@@ -1770,8 +2061,7 @@
       </div>
     </div>
 
-    <!-- DAY 9 -->
-    <div class="day-card">
+    <div class="day-card" id="day-9">
       <div class="top">
         <div class="date-box"><h2>07 June 2026</h2><p>Sunday · Day 9</p></div>
         <div class="weather">🌤️ Cool | 8°C - 18°C</div>
@@ -1795,7 +2085,7 @@
     </div>
 
     <!-- DAY 10 -->
-    <div class="day-card temple-day temple-badrinath" style="border-left-color:#ea580c">
+    <div class="day-card temple-day temple-badrinath" id="day-10" style="border-left-color:#ea580c">
       <div class="day-banner banner-badrinath">
         <div>
           <h4>🙏 Badrinath Temple</h4>
@@ -1826,8 +2116,7 @@
       </div>
     </div>
 
-    <!-- DAY 11 -->
-    <div class="day-card">
+    <div class="day-card" id="day-11">
       <div class="top">
         <div class="date-box"><h2>09 June 2026</h2><p>Tuesday · Day 11</p></div>
         <div class="weather">☀️ Mild | 12°C - 24°C</div>
@@ -1853,7 +2142,7 @@
     </div>
 
     <!-- DAY 12 -->
-    <div class="day-card" style="border-left-color:#15803d">
+    <div class="day-card" id="day-12" style="border-left-color:#15803d">
       <div class="top">
         <div class="date-box"><h2>10 June 2026</h2><p>Wednesday · Day 12</p></div>
         <div class="weather">☀️ Hot | 28°C - 40°C</div>
