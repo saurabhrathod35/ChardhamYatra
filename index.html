@@ -737,7 +737,6 @@
       border:1px solid rgba(226,232,240,0.8);
       min-width:0;
       max-width:100%;
-      overflow:hidden;
     }
 
     .footer h2{
@@ -935,6 +934,15 @@
       margin-top:16px;
       border-radius:16px;
       border:1px solid #e2e8f0;
+      background:#fff;
+    }
+
+    .time-est-scroll-hint{
+      display:none;
+      margin-top:10px;
+      font-size:12px;
+      color:#64748b;
+      text-align:center;
     }
 
     .time-est-table{
@@ -1792,6 +1800,102 @@
       .time-est-card{ padding:14px 12px; }
       .time-est-card strong{ font-size:22px; }
 
+      .time-est-table-wrap{
+        overflow:visible;
+        border:none;
+        background:transparent;
+        margin-top:12px;
+      }
+
+      .time-est-table{
+        min-width:0;
+        font-size:13px;
+      }
+
+      .time-est-table thead{ display:none; }
+
+      .time-est-table tbody tr{
+        display:block;
+        margin-bottom:12px;
+        padding:14px;
+        background:#fff;
+        border:1px solid #e2e8f0;
+        border-radius:14px;
+        box-shadow:0 4px 14px rgba(15,23,42,0.04);
+      }
+
+      .time-est-table tbody tr:last-child{ margin-bottom:0; }
+
+      .time-est-table .dham-row{
+        background:#fff7ed;
+        border-color:#fed7aa;
+      }
+
+      .time-est-table .trek-row{
+        background:#faf5ff;
+        border-color:#e9d5ff;
+      }
+
+      .time-est-table .grand{
+        background:linear-gradient(145deg,#eff6ff,#dbeafe);
+        border-color:#93c5fd;
+      }
+
+      .time-est-table .subtotal{
+        background:#fefce8;
+        border-color:#fde68a;
+      }
+
+      .time-est-table td{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:14px;
+        padding:8px 0;
+        border-bottom:1px dashed #e2e8f0;
+        text-align:right !important;
+        white-space:normal !important;
+        word-break:break-word;
+      }
+
+      .time-est-table td:last-child{ border-bottom:none; }
+
+      .time-est-table td::before{
+        content:attr(data-label);
+        font-weight:600;
+        font-size:10px;
+        text-transform:uppercase;
+        letter-spacing:0.6px;
+        color:#64748b;
+        text-align:left;
+        flex:0 0 38%;
+        max-width:38%;
+        line-height:1.4;
+      }
+
+      .time-est-table td:first-child{
+        display:block;
+        padding:0 0 10px;
+        margin-bottom:6px;
+        border-bottom:1px solid #e2e8f0;
+        text-align:left !important;
+        font-size:15px;
+      }
+
+      .time-est-table td:first-child::before{ display:none; }
+
+      .time-est-table tr.grand td:first-child{
+        text-align:center !important;
+        font-size:16px;
+        padding-bottom:12px;
+      }
+
+      .time-est-table .subtotal td,
+      .time-est-table .grand td{
+        background:transparent;
+        font-size:inherit;
+      }
+
       .doc-grid{ grid-template-columns:1fr; }
 
       .check-grid{ grid-template-columns:1fr; gap:14px; }
@@ -2291,93 +2395,93 @@
             <tbody>
               <tr>
                 <td><strong>D1 · 30 May</strong></td>
-                <td>Delhi Airport → Haridwar (NH-334)</td>
-                <td>~220 km</td>
-                <td>5–6 hrs</td>
-                <td>~04:30–05:30 PM</td>
+                <td data-label="Route">Delhi Airport → Haridwar (NH-334)</td>
+                <td data-label="Distance">~220 km</td>
+                <td data-label="Drive Time">5–6 hrs</td>
+                <td data-label="Reach By">~04:30–05:30 PM</td>
               </tr>
               <tr>
                 <td><strong>D2 · 31 May</strong></td>
-                <td>Haridwar → Barkot (via Mussoorie)</td>
-                <td>~210 km</td>
-                <td>7–8 hrs</td>
-                <td>~03:00–04:00 PM</td>
+                <td data-label="Route">Haridwar → Barkot (via Mussoorie)</td>
+                <td data-label="Distance">~210 km</td>
+                <td data-label="Drive Time">7–8 hrs</td>
+                <td data-label="Reach By">~03:00–04:00 PM</td>
               </tr>
               <tr class="trek-row">
                 <td><strong>D3 · 01 Jun</strong></td>
-                <td>Barkot → Janki Chatti (~1.5 hrs) · <em>Yamunotri trek on foot</em></td>
-                <td>~45 km + trek</td>
-                <td>Car 3 hrs · Trek 5–7 hrs</td>
-                <td>~07:00 PM Barkot</td>
+                <td data-label="Route">Barkot → Janki Chatti (~1.5 hrs) · <em>Yamunotri trek on foot</em></td>
+                <td data-label="Distance">~45 km + trek</td>
+                <td data-label="Drive Time">Car 3 hrs · Trek 5–7 hrs</td>
+                <td data-label="Reach By">~07:00 PM Barkot</td>
               </tr>
               <tr>
                 <td><strong>D4 · 02 Jun</strong></td>
-                <td>Barkot → Uttarkashi</td>
-                <td>~105 km</td>
-                <td>5–6 hrs</td>
-                <td>~01:00–02:00 PM</td>
+                <td data-label="Route">Barkot → Uttarkashi</td>
+                <td data-label="Distance">~105 km</td>
+                <td data-label="Drive Time">5–6 hrs</td>
+                <td data-label="Reach By">~01:00–02:00 PM</td>
               </tr>
               <tr class="dham-row">
                 <td><strong>D5 · 03 Jun</strong></td>
-                <td>Uttarkashi → Gangotri → Uttarkashi (day trip)</td>
-                <td>~200 km round</td>
-                <td>6–7 hrs driving</td>
-                <td>~02:00 PM back</td>
+                <td data-label="Route">Uttarkashi → Gangotri → Uttarkashi (day trip)</td>
+                <td data-label="Distance">~200 km round</td>
+                <td data-label="Drive Time">6–7 hrs driving</td>
+                <td data-label="Reach By">~02:00 PM back</td>
               </tr>
               <tr>
                 <td><strong>D6 · 04 Jun</strong></td>
-                <td>Uttarkashi → Guptkashi · Rudraprayag · Karnaprayag</td>
-                <td>~220 km</td>
-                <td>8–9 hrs</td>
-                <td>~03:00–04:00 PM</td>
+                <td data-label="Route">Uttarkashi → Guptkashi · Rudraprayag · Karnaprayag</td>
+                <td data-label="Distance">~220 km</td>
+                <td data-label="Drive Time">8–9 hrs</td>
+                <td data-label="Reach By">~03:00–04:00 PM</td>
               </tr>
               <tr class="trek-row">
                 <td><strong>D7 · 05 Jun</strong></td>
-                <td>Guptkashi → Sonprayag/Gaurikund (~45 min) · <em>Kedarnath trek</em></td>
-                <td>~30 km + trek</td>
-                <td>Car 1 hr · Trek 6–8 hrs</td>
-                <td>~02:00 PM darshan</td>
+                <td data-label="Route">Guptkashi → Sonprayag/Gaurikund (~45 min) · <em>Kedarnath trek</em></td>
+                <td data-label="Distance">~30 km + trek</td>
+                <td data-label="Drive Time">Car 1 hr · Trek 6–8 hrs</td>
+                <td data-label="Reach By">~02:00 PM darshan</td>
               </tr>
               <tr class="trek-row">
                 <td><strong>D8 · 06 Jun</strong></td>
-                <td>Trek down Kedarnath → Gaurikund → Guptkashi</td>
-                <td>Trek + ~30 km</td>
-                <td>Trek 4–5 hrs · Car 1 hr</td>
-                <td>~04:00 PM Guptkashi</td>
+                <td data-label="Route">Trek down Kedarnath → Gaurikund → Guptkashi</td>
+                <td data-label="Distance">Trek + ~30 km</td>
+                <td data-label="Drive Time">Trek 4–5 hrs · Car 1 hr</td>
+                <td data-label="Reach By">~04:00 PM Guptkashi</td>
               </tr>
               <tr>
                 <td><strong>D9 · 07 Jun</strong></td>
-                <td>Guptkashi → Pipalkoti (via Chopta) · Nandaprayag</td>
-                <td>~180 km</td>
-                <td>9–10 hrs</td>
-                <td>~05:00–06:00 PM</td>
+                <td data-label="Route">Guptkashi → Pipalkoti (via Chopta) · Nandaprayag</td>
+                <td data-label="Distance">~180 km</td>
+                <td data-label="Drive Time">9–10 hrs</td>
+                <td data-label="Reach By">~05:00–06:00 PM</td>
               </tr>
               <tr class="dham-row">
                 <td><strong>D10 · 08 Jun</strong></td>
-                <td>Pipalkoti → Badrinath → Mana → Pipalkoti</td>
-                <td>~150 km round</td>
-                <td>5–6 hrs driving</td>
-                <td>~04:00 PM back</td>
+                <td data-label="Route">Pipalkoti → Badrinath → Mana → Pipalkoti</td>
+                <td data-label="Distance">~150 km round</td>
+                <td data-label="Drive Time">5–6 hrs driving</td>
+                <td data-label="Reach By">~04:00 PM back</td>
               </tr>
               <tr>
                 <td><strong>D11 · 09 Jun</strong></td>
-                <td>Pipalkoti → Joshimath → Devprayag → Haridwar</td>
-                <td>~280 km</td>
-                <td>10–11 hrs</td>
-                <td>~06:00–07:00 PM</td>
+                <td data-label="Route">Pipalkoti → Joshimath → Devprayag → Haridwar</td>
+                <td data-label="Distance">~280 km</td>
+                <td data-label="Drive Time">10–11 hrs</td>
+                <td data-label="Reach By">~06:00–07:00 PM</td>
               </tr>
               <tr>
                 <td><strong>D12 · 10 Jun</strong></td>
-                <td>Haridwar → Delhi Airport (return flight)</td>
-                <td>~220 km</td>
-                <td>5–6 hrs</td>
-                <td>Allow 3 hrs pre-flight</td>
+                <td data-label="Route">Haridwar → Delhi Airport (return flight)</td>
+                <td data-label="Distance">~220 km</td>
+                <td data-label="Drive Time">5–6 hrs</td>
+                <td data-label="Reach By">Allow 3 hrs pre-flight</td>
               </tr>
               <tr class="grand">
                 <td colspan="2"><strong>Total (Ertiga · private car)</strong></td>
-                <td>~1,450 km</td>
-                <td>~65–70 hrs</td>
-                <td>12 days</td>
+                <td data-label="Distance">~1,450 km</td>
+                <td data-label="Drive Time">~65–70 hrs</td>
+                <td data-label="Duration">12 days</td>
               </tr>
             </tbody>
           </table>
