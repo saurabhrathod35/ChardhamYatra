@@ -858,7 +858,7 @@
       color:#0f172a;
     }
 
-    /* ── Time estimate (private car) ── */
+    /* ── Time estimate (Ertiga private car) ── */
     .time-est-summary{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
@@ -1134,6 +1134,30 @@
       line-height:1.2;
     }
 
+    .toc-day-link .toc-day-num{
+      font-size:13px;
+      font-weight:700;
+      color:#0f172a;
+      line-height:1.1;
+    }
+
+    .toc-day-link .toc-day-date{
+      font-size:10px;
+      font-weight:700;
+      color:var(--saffron);
+      letter-spacing:0.2px;
+    }
+
+    .toc-day-link .toc-day-place{
+      font-size:10px;
+      font-weight:500;
+      color:#64748b;
+    }
+
+    .toc-day-link:hover .toc-day-date,
+    .toc-day-link:hover .toc-day-place,
+    .toc-day-link:hover .toc-day-num{ color:#1d4ed8; }
+
     .toc-day-link:hover span{ color:#1d4ed8; }
 
     .toc-day-link::before{ display:none; }
@@ -1142,6 +1166,173 @@
       border-color:#fed7aa;
       background:linear-gradient(180deg,#fff7ed,#fff);
     }
+
+    /* ── Floating TOC shortcut ── */
+    .toc-shortcut{
+      position:fixed;
+      right:max(16px, env(safe-area-inset-right));
+      bottom:max(20px, env(safe-area-inset-bottom));
+      z-index:950;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:12px 16px 12px 14px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--saffron),#ea580c);
+      color:white;
+      text-decoration:none;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:0.3px;
+      box-shadow:0 10px 32px rgba(249,115,22,0.45);
+      border:1px solid rgba(255,255,255,0.25);
+      transition:transform 0.3s ease, opacity 0.35s ease, box-shadow 0.3s ease, visibility 0.35s;
+    }
+
+    .toc-shortcut:hover{
+      transform:translateY(-3px) scale(1.04);
+      box-shadow:0 14px 40px rgba(249,115,22,0.55);
+      color:white;
+    }
+
+    .toc-shortcut:focus-visible{
+      outline:3px solid #fde68a;
+      outline-offset:3px;
+    }
+
+    .toc-shortcut.hidden{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transform:translateY(16px) scale(0.95);
+    }
+
+    .toc-shortcut-icon{ font-size:18px; line-height:1; }
+
+    .toc-shortcut kbd{
+      font-size:10px;
+      padding:3px 7px;
+      border-radius:6px;
+      background:rgba(15,23,42,0.22);
+      border:1px solid rgba(255,255,255,0.15);
+      font-family:inherit;
+      font-weight:600;
+    }
+
+    .toc-header .toc-kbd-hint{
+      display:inline-block;
+      margin-top:10px;
+      font-size:12px;
+      color:#64748b;
+      background:#f1f5f9;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid #e2e8f0;
+    }
+
+    .toc-header .toc-kbd-hint kbd{
+      display:inline-block;
+      padding:2px 6px;
+      margin:0 2px;
+      border-radius:4px;
+      background:white;
+      border:1px solid #cbd5e1;
+      font-size:11px;
+      font-family:inherit;
+    }
+
+    .doc-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:14px;
+      margin-top:8px;
+    }
+
+    .doc-card{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      padding:16px 18px;
+      background:linear-gradient(145deg,#f8fafc,#f1f5f9);
+      border:1px solid #e2e8f0;
+      border-radius:16px;
+      text-decoration:none;
+      color:inherit;
+      transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .doc-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 14px 35px rgba(37,99,235,0.12);
+      border-color:#93c5fd;
+    }
+
+    .doc-card:focus-visible{
+      outline:3px solid #93c5fd;
+      outline-offset:2px;
+    }
+
+    .doc-icon{
+      flex-shrink:0;
+      width:44px;
+      height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      font-size:22px;
+      background:linear-gradient(145deg,#eff6ff,#dbeafe);
+      border:1px solid #bfdbfe;
+    }
+
+    .doc-card.flight .doc-icon{
+      background:linear-gradient(145deg,#ecfdf5,#d1fae5);
+      border-color:#a7f3d0;
+    }
+
+    .doc-card.yatra .doc-icon{
+      background:linear-gradient(145deg,#fff7ed,#ffedd5);
+      border-color:#fed7aa;
+    }
+
+    .doc-body strong{
+      display:block;
+      font-size:15px;
+      color:#0f172a;
+      margin-bottom:4px;
+      line-height:1.3;
+    }
+
+    .doc-body span{
+      display:block;
+      font-size:12px;
+      color:#64748b;
+      line-height:1.45;
+    }
+
+    .doc-body em{
+      display:inline-block;
+      margin-top:8px;
+      font-size:11px;
+      font-style:normal;
+      font-weight:600;
+      color:#1d4ed8;
+    }
+
+    .doc-open-note{
+      margin-top:14px;
+      font-size:13px;
+      color:#64748b;
+    }
+
+    .doc-open-note a{
+      color:#1d4ed8;
+      font-weight:600;
+      text-decoration:none;
+      border-bottom:1px dashed #93c5fd;
+    }
+
+    .doc-open-note a:hover{ color:#1e40af; }
 
     /* ── Keyframes ── */
     @keyframes bgShift{
@@ -1692,6 +1883,14 @@
         padding:7px 12px;
         font-size:11px;
       }
+
+      .toc-shortcut{
+        padding:10px 14px 10px 12px;
+        font-size:12px;
+        bottom:max(14px, env(safe-area-inset-bottom));
+      }
+
+      .toc-shortcut kbd{ display:none; }
     }
 
     /* ── Touch devices: reduce hover shift ── */
@@ -1783,6 +1982,7 @@
       <span>Quick Navigation</span>
       <h2>📑 Table of Contents</h2>
       <p>Jump to any section — itinerary, travel times, daily plan & health guides</p>
+      <span class="toc-kbd-hint">Shortcut: press <kbd>Alt</kbd> + <kbd>T</kbd> anytime</span>
     </div>
     <div class="toc-grid">
       <div class="toc-group">
@@ -1796,26 +1996,27 @@
         <h3>🗂️ Trip Planning</h3>
         <ul class="toc-list">
           <li><a href="#agent-itinerary">Agent Itinerary & Package</a></li>
-          <li><a href="#time-estimate">Private Car Time Estimate</a></li>
+          <li><a href="#time-estimate">Ertiga · Time Estimate</a></li>
           <li><a href="#flight-ticket">Confirmed Flight (Day 1)</a></li>
+          <li><a href="#travel-documents">Travel Documents (PDFs)</a></li>
           <li><a href="#time-plan">12-Day Overview Schedule</a></li>
         </ul>
       </div>
       <div class="toc-group">
         <h3>📅 Day-by-Day Plan</h3>
         <div class="toc-day-grid">
-          <a class="toc-day-link dham" href="#day-1">D1<span>Haridwar</span></a>
-          <a class="toc-day-link" href="#day-2">D2<span>Barkot</span></a>
-          <a class="toc-day-link dham" href="#day-3">D3<span>Yamunotri</span></a>
-          <a class="toc-day-link" href="#day-4">D4<span>Uttarkashi</span></a>
-          <a class="toc-day-link dham" href="#day-5">D5<span>Gangotri</span></a>
-          <a class="toc-day-link" href="#day-6">D6<span>Guptkashi</span></a>
-          <a class="toc-day-link dham" href="#day-7">D7<span>Kedarnath</span></a>
-          <a class="toc-day-link" href="#day-8">D8<span>Return ↓</span></a>
-          <a class="toc-day-link" href="#day-9">D9<span>Pipalkoti</span></a>
-          <a class="toc-day-link dham" href="#day-10">D10<span>Badrinath</span></a>
-          <a class="toc-day-link" href="#day-11">D11<span>Haridwar</span></a>
-          <a class="toc-day-link" href="#day-12">D12<span>Delhi ✈</span></a>
+          <a class="toc-day-link dham" href="#day-1"><strong class="toc-day-num">D1</strong><span class="toc-day-date">30 May</span><span class="toc-day-place">Haridwar</span></a>
+          <a class="toc-day-link" href="#day-2"><strong class="toc-day-num">D2</strong><span class="toc-day-date">31 May</span><span class="toc-day-place">Barkot</span></a>
+          <a class="toc-day-link dham" href="#day-3"><strong class="toc-day-num">D3</strong><span class="toc-day-date">01 Jun</span><span class="toc-day-place">Yamunotri</span></a>
+          <a class="toc-day-link" href="#day-4"><strong class="toc-day-num">D4</strong><span class="toc-day-date">02 Jun</span><span class="toc-day-place">Uttarkashi</span></a>
+          <a class="toc-day-link dham" href="#day-5"><strong class="toc-day-num">D5</strong><span class="toc-day-date">03 Jun</span><span class="toc-day-place">Gangotri</span></a>
+          <a class="toc-day-link" href="#day-6"><strong class="toc-day-num">D6</strong><span class="toc-day-date">04 Jun</span><span class="toc-day-place">Guptkashi</span></a>
+          <a class="toc-day-link dham" href="#day-7"><strong class="toc-day-num">D7</strong><span class="toc-day-date">05 Jun</span><span class="toc-day-place">Kedarnath</span></a>
+          <a class="toc-day-link" href="#day-8"><strong class="toc-day-num">D8</strong><span class="toc-day-date">06 Jun</span><span class="toc-day-place">Return ↓</span></a>
+          <a class="toc-day-link" href="#day-9"><strong class="toc-day-num">D9</strong><span class="toc-day-date">07 Jun</span><span class="toc-day-place">Pipalkoti</span></a>
+          <a class="toc-day-link dham" href="#day-10"><strong class="toc-day-num">D10</strong><span class="toc-day-date">08 Jun</span><span class="toc-day-place">Badrinath</span></a>
+          <a class="toc-day-link" href="#day-11"><strong class="toc-day-num">D11</strong><span class="toc-day-date">09 Jun</span><span class="toc-day-place">Haridwar</span></a>
+          <a class="toc-day-link" href="#day-12"><strong class="toc-day-num">D12</strong><span class="toc-day-date">10 Jun</span><span class="toc-day-place">Delhi ✈</span></a>
         </div>
       </div>
       <div class="toc-group">
@@ -1974,9 +2175,9 @@
 
   <div class="footer" id="time-estimate">
 
-    <h2>🚗 Time Estimation — Private Car (Innova)</h2>
+    <h2>🚗 Time Estimation — Private Car (Ertiga)</h2>
     <p class="schedule-note" style="margin-bottom:18px;">
-      May–June 2026 · <strong>12-day agent route</strong> · Private car (Innova Crysta) · Times include hill-road average speed, lunch/tea stops & senior health breaks (Mom, Dad, Hetal)
+      May–June 2026 · <strong>12-day agent route</strong> · Private car — <strong>Toyota Ertiga (6+1)</strong> · Times include hill-road average speed, lunch/tea stops & senior health breaks (Mom, Dad, Hetal)
     </p>
 
     <div class="time-est-summary">
@@ -2005,11 +2206,11 @@
     <div class="check-grid" style="margin-bottom:20px;">
 
       <div class="check check-border-sky" style="grid-column:1/-1;">
-        <h3>🕐 Day-wise Private Car Time Plan</h3>
+        <h3>🕐 Day-wise Ertiga Time Plan</h3>
         <div class="time-est-table-wrap">
           <table class="time-est-table">
             <thead>
-              <tr><th>Day</th><th>Route (Private Car)</th><th>Distance</th><th>Est. Drive Time</th><th>Reach By</th></tr>
+              <tr><th>Day</th><th>Route (Ertiga)</th><th>Distance</th><th>Est. Drive Time</th><th>Reach By</th></tr>
             </thead>
             <tbody>
               <tr>
@@ -2097,7 +2298,7 @@
                 <td>Allow 3 hrs pre-flight</td>
               </tr>
               <tr class="grand">
-                <td colspan="2"><strong>Total (private car only)</strong></td>
+                <td colspan="2"><strong>Total (Ertiga · private car)</strong></td>
                 <td>~1,450 km</td>
                 <td>~65–70 hrs</td>
                 <td>12 days</td>
@@ -2127,7 +2328,7 @@
         <ul>
           <li><strong>Yamunotri (D3):</strong> 6 km one way · 3–4 hrs up · 2–3 hrs down</li>
           <li><strong>Kedarnath (D7):</strong> 16 km one way · 6–8 hrs up · 4–5 hrs down</li>
-          <li>Private car cannot go beyond Janki Chatti / Sonprayag</li>
+          <li>Car stops at Janki Chatti (Yamunotri) / Sonprayag (Kedarnath) — Ertiga cannot go further</li>
           <li>Pony/palkhi saves ~2–3 hrs each way for seniors</li>
         </ul>
       </div>
@@ -2155,7 +2356,7 @@
     </div>
 
     <div class="time-est-note">
-      <strong>✓ Private car advantage for your family:</strong> Leave when ready, stop for sugar/BP checks anytime, carry medicines & snacks in car, and avoid tempo-traveller fixed timings. Innova Crysta recommended for 4 adults + hills.
+      <strong>✓ Ertiga for your family (4 + driver):</strong> Enough space for Mom, Dad, Hetal & luggage · AC for heat · stop anytime for sugar/BP checks · flexible timings vs tempo traveller. On steep days (D9, D11) allow an extra <strong>15–30 min</strong> vs larger SUVs.
     </div>
 
     <div class="time-est-note warn" style="margin-top:12px;">
@@ -2203,6 +2404,10 @@
       </div>
     </div>
 
+    <p class="doc-open-note">
+      📎 <a href="assets/documents/flight-ticket-indigo-6E983.pdf" target="_blank" rel="noopener">Open original flight ticket PDF</a>
+    </p>
+
     <div class="schedule" style="margin-top:0;">
 
       <h3>🕐 Full Day 1 Hour-by-Hour Plan</h3>
@@ -2240,7 +2445,7 @@
 
       <div class="schedule-row estimated">
         <div class="schedule-time">10:30 AM</div>
-        <div><strong>🚗 START</strong> Delhi → Haridwar by cab / tempo traveller (NH-334) <span class="tag tag-amber">ESTIMATED</span></div>
+        <div><strong>🚗 START</strong> Delhi → Haridwar by private Ertiga (NH-334) <span class="tag tag-amber">ESTIMATED</span></div>
         <div class="schedule-duration">~5–6 hrs</div>
       </div>
 
@@ -2256,6 +2461,70 @@
         <div class="schedule-duration">Night</div>
       </div>
 
+    </div>
+
+  </div>
+
+  <div class="footer" id="travel-documents">
+
+    <h2>📄 Travel Documents — Reference PDFs</h2>
+    <p class="schedule-note" style="margin-bottom:16px;">
+      Official documents saved in project assets · UTDB <strong>Group ID 6050698802</strong> · Tour 30 May – 13 Jun 2026 ·
+      Click to open / download · Carry UTDB letters on trek days
+    </p>
+
+    <div class="doc-grid">
+
+      <a class="doc-card flight" href="assets/documents/flight-ticket-indigo-6E983.pdf" target="_blank" rel="noopener">
+        <div class="doc-icon" aria-hidden="true">✈️</div>
+        <div class="doc-body">
+          <strong>IndiGo Flight Ticket · 6E-983</strong>
+          <span>30 May 2026 · AMD T1 → DEL T1 · PNR GCCVTA · Booking TJ1003173504367</span>
+          <em>Open PDF →</em>
+        </div>
+      </a>
+
+      <a class="doc-card yatra" href="assets/documents/yatra-registration-57.pdf" target="_blank" rel="noopener">
+        <div class="doc-icon" aria-hidden="true">🙏</div>
+        <div class="doc-body">
+          <strong>UTDB · Rathod Saurabh Karansinh</strong>
+          <span>Reg. 613190252436 · Male · 30 yrs · All 4 Dhams</span>
+          <em>Open PDF →</em>
+        </div>
+      </a>
+
+      <a class="doc-card yatra" href="assets/documents/yatra-registration-54.pdf" target="_blank" rel="noopener">
+        <div class="doc-icon" aria-hidden="true">🙏</div>
+        <div class="doc-body">
+          <strong>UTDB · Hetal Saurabh Rathod</strong>
+          <span>Reg. 613190941552 · Female · 31 yrs · BP care</span>
+          <em>Open PDF →</em>
+        </div>
+      </a>
+
+      <a class="doc-card yatra" href="assets/documents/yatra-registration-56.pdf" target="_blank" rel="noopener">
+        <div class="doc-icon" aria-hidden="true">🙏</div>
+        <div class="doc-body">
+          <strong>UTDB · Rathod Karansinh (Dad)</strong>
+          <span>Reg. 613192106136 · Male · 58 yrs · Sugar care</span>
+          <em>Open PDF →</em>
+        </div>
+      </a>
+
+      <a class="doc-card yatra" href="assets/documents/yatra-registration-55.pdf" target="_blank" rel="noopener">
+        <div class="doc-icon" aria-hidden="true">🙏</div>
+        <div class="doc-body">
+          <strong>UTDB · Jamnaben Rathod (Mom)</strong>
+          <span>Reg. 613191491707 · Female · 51 yrs · Sugar care</span>
+          <em>Open PDF →</em>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="time-est-note" style="margin-top:16px;">
+      <strong>UTDB dham dates on letters:</strong> Yamunotri 31 May · Gangotri 02 Jun · Kedarnath 04 Jun · Badrinath 08 Jun
+      (slightly different from agent day plan — follow agent schedule; show registration if asked)
     </div>
 
   </div>
@@ -2337,18 +2606,18 @@
   <nav class="mobile-nav" aria-label="Jump to day">
     <div class="mobile-nav-inner">
       <a href="#table-of-contents">📑 TOC</a>
-      <a href="#day-1">D1</a>
-      <a href="#day-2">D2</a>
-      <a href="#day-3">D3</a>
-      <a href="#day-4">D4</a>
-      <a href="#day-5">D5</a>
-      <a href="#day-6">D6</a>
-      <a href="#day-7">D7</a>
-      <a href="#day-8">D8</a>
-      <a href="#day-9">D9</a>
-      <a href="#day-10">D10</a>
-      <a href="#day-11">D11</a>
-      <a href="#day-12">D12</a>
+      <a href="#day-1">D1 · 30 May</a>
+      <a href="#day-2">D2 · 31 May</a>
+      <a href="#day-3">D3 · 01 Jun</a>
+      <a href="#day-4">D4 · 02 Jun</a>
+      <a href="#day-5">D5 · 03 Jun</a>
+      <a href="#day-6">D6 · 04 Jun</a>
+      <a href="#day-7">D7 · 05 Jun</a>
+      <a href="#day-8">D8 · 06 Jun</a>
+      <a href="#day-9">D9 · 07 Jun</a>
+      <a href="#day-10">D10 · 08 Jun</a>
+      <a href="#day-11">D11 · 09 Jun</a>
+      <a href="#day-12">D12 · 10 Jun</a>
     </div>
   </nav>
 
@@ -2409,7 +2678,7 @@
 
         <div class="schedule-row estimated">
           <div class="schedule-time">10:30 AM</div>
-          <div>Leave Delhi for Haridwar by road</div>
+          <div>Leave Delhi for Haridwar by private Ertiga</div>
           <div class="schedule-duration">~5–6 hrs</div>
         </div>
 
@@ -3271,6 +3540,12 @@
 
 </div>
 
+<a href="#table-of-contents" class="toc-shortcut" id="tocShortcut" aria-label="Jump to table of contents" title="Table of Contents (Alt+T)">
+  <span class="toc-shortcut-icon" aria-hidden="true">📑</span>
+  <span>TOC</span>
+  <kbd>Alt+T</kbd>
+</a>
+
 <script>
 (function(){
   const loader = document.getElementById('loader');
@@ -3332,6 +3607,26 @@
 
   window.addEventListener('scroll', updateTocActive, { passive: true });
   updateTocActive();
+
+  const tocBlock = document.getElementById('table-of-contents');
+  const tocShortcut = document.getElementById('tocShortcut');
+
+  if(tocBlock && tocShortcut){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        tocShortcut.classList.toggle('hidden', entry.isIntersecting);
+      });
+    }, { threshold: 0.25, rootMargin: '-20px 0px 0px 0px' }).observe(tocBlock);
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(e.altKey && !e.ctrlKey && !e.metaKey && (e.key === 't' || e.key === 'T')){
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if(tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable)) return;
+      e.preventDefault();
+      if(tocBlock){ tocBlock.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    }
+  });
 
   const observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
