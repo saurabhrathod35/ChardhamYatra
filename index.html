@@ -2634,39 +2634,66 @@
     @media(max-width:768px){
       .journey-scroll-rail{
         top:auto;
-        bottom:max(76px, calc(env(safe-area-inset-bottom) + 68px));
-        transform:translateX(calc(-100% - 20px));
+        left:50%;
+        right:auto;
+        bottom:max(68px, calc(env(safe-area-inset-bottom) + 62px));
+        transform:translateX(-50%) translateY(calc(100% + 24px));
+        width:calc(100vw - 88px);
+        max-width:420px;
       }
 
       .journey-scroll-rail.visible{
-        transform:translateX(0);
+        transform:translateX(-50%) translateY(0);
       }
 
       .journey-rail-panel{
-        width:62px;
-        padding:10px 8px 12px;
+        width:100%;
+        max-height:none;
+        padding:8px 10px;
+        border-radius:999px;
+        box-shadow:0 10px 30px rgba(15,23,42,0.18);
       }
 
       .journey-rail-title{
-        font-size:8px;
-        margin-bottom:8px;
+        display:none;
       }
 
-      .journey-rail-track{ gap:8px; }
+      .journey-rail-decor{
+        display:none;
+      }
+
+      .journey-rail-track{
+        flex-direction:row;
+        flex-wrap:nowrap;
+        gap:6px;
+        padding:0;
+        overflow-x:auto;
+        scrollbar-width:none;
+        -webkit-overflow-scrolling:touch;
+      }
+
+      .journey-rail-track::-webkit-scrollbar{ display:none; }
+
+      .journey-rail-dot{
+        flex:0 0 auto;
+      }
 
       .journey-rail-dot .icon{
-        width:36px;
-        height:36px;
+        width:30px;
+        height:30px;
+        border-width:2px;
       }
 
-      .journey-rail-dot .icon.rail-day-num{ font-size:10px; }
+      .journey-rail-dot .icon.rail-day-num{
+        font-size:9px;
+      }
 
-      .journey-rail-line,
-      .journey-rail-progress{ left:17px; }
+      .journey-rail-dot .rail-day-tag{
+        display:none;
+      }
 
-      .journey-rail-traveler{
-        left:4px;
-        font-size:14px;
+      body.journey-rail-visible .timeline{
+        padding-bottom:58px;
       }
     }
 
@@ -2768,7 +2795,7 @@
       .toc-shortcut{ display:none; }
 
       body.journey-rail-visible .mobile-quick-fab{
-        bottom:max(88px, calc(env(safe-area-inset-bottom) + 80px));
+        bottom:max(118px, calc(env(safe-area-inset-bottom) + 110px));
       }
 
       .hero{
@@ -5222,10 +5249,19 @@
 
     const progressBar = document.getElementById('journeyRailProgress');
     const traveler = document.getElementById('journeyRailTraveler');
-    if(!progressBar || !dots.length || !showRail || active < 0){
+    const isMobileRail = window.innerWidth <= 768;
+
+    if(!progressBar || !dots.length || !showRail || active < 0 || isMobileRail){
       if(progressBar) progressBar.style.height = '0';
       if(traveler) traveler.style.top = '8px';
-      return;
+      if(isMobileRail && showRail && active >= 0 && dots[active]){
+        if(active !== updateJourneyRail.lastActive){
+          updateJourneyRail.lastActive = active;
+          dots[active].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }
+      if(isMobileRail && active < 0){ updateJourneyRail.lastActive = -1; }
+      if(isMobileRail) return;
     }
 
     const dot = dots[active];
