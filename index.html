@@ -1,0 +1,2286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chardham Yatra Planner</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --saffron:#f97316;
+      --gold:#fbbf24;
+      --deep-blue:#0f172a;
+      --royal:#1e40af;
+      --sky:#38bdf8;
+      --mint:#34d399;
+      --glass:rgba(255,255,255,0.08);
+      --shadow:0 20px 50px rgba(15,23,42,0.12);
+      --radius:22px;
+      --img-haridwar:url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Har-ki-Pauri.jpg/1280px-Har-ki-Pauri.jpg');
+      --img-yamunotri:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Yamunotri_Temple.jpg/1280px-Yamunotri_Temple.jpg');
+      --img-gangotri:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Gangotri_temple.jpg/1280px-Gangotri_temple.jpg');
+      --img-kedarnath:url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Kedarnath_Temple.jpg/1280px-Kedarnath_Temple.jpg');
+      --img-badrinath:url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Badrinath_Temple_%28September_2021%29.jpg/1280px-Badrinath_Temple_%28September_2021%29.jpg');
+      --img-himalaya:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Kedarnath_Temple_%26_Mandakini_River.jpg/1280px-Kedarnath_Temple_%26_Mandakini_River.jpg');
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{ scroll-behavior:smooth; }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#0b1220;
+      color:#1e293b;
+      padding:30px;
+      overflow-x:hidden;
+      position:relative;
+    }
+
+    /* ── Animated background ── */
+    .bg-decor{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    .bg-decor::before{
+      content:'';
+      position:absolute;
+      inset:-50%;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(249,115,22,0.18) 0%, transparent 45%),
+        radial-gradient(circle at 80% 10%, rgba(56,189,248,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 60% 80%, rgba(30,64,175,0.2) 0%, transparent 50%),
+        radial-gradient(circle at 10% 90%, rgba(251,191,36,0.12) 0%, transparent 40%);
+      animation:bgShift 18s ease-in-out infinite alternate;
+    }
+
+    .float-icon{
+      position:absolute;
+      font-size:28px;
+      opacity:0.15;
+      animation:floatY 8s ease-in-out infinite;
+    }
+
+    .float-icon:nth-child(1){ top:8%; left:6%; animation-delay:0s; }
+    .float-icon:nth-child(2){ top:18%; right:8%; animation-delay:1.5s; font-size:36px; }
+    .float-icon:nth-child(3){ top:55%; left:4%; animation-delay:3s; }
+    .float-icon:nth-child(4){ bottom:15%; right:6%; animation-delay:2s; font-size:32px; }
+    .float-icon:nth-child(5){ top:40%; right:15%; animation-delay:4s; }
+
+    /* ── Loader ── */
+    .page-loader{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      background:linear-gradient(135deg,#0f172a,#1e3a8a);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:20px;
+      transition:opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .page-loader.hide{
+      opacity:0;
+      visibility:hidden;
+    }
+
+    .loader-mountain{
+      font-size:64px;
+      animation:mountainPulse 1.2s ease-in-out infinite;
+    }
+
+    .loader-bar{
+      width:220px;
+      height:4px;
+      background:rgba(255,255,255,0.15);
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .loader-bar span{
+      display:block;
+      height:100%;
+      width:40%;
+      background:linear-gradient(90deg,var(--saffron),var(--gold));
+      border-radius:999px;
+      animation:loaderSlide 1s ease-in-out infinite;
+    }
+
+    .loader-text{
+      color:white;
+      font-size:14px;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      opacity:0.8;
+    }
+
+    /* ── Scroll progress ── */
+    .scroll-progress{
+      position:fixed;
+      top:0;
+      left:0;
+      height:4px;
+      width:0%;
+      z-index:9998;
+      background:linear-gradient(90deg,var(--saffron),var(--gold),var(--sky));
+      box-shadow:0 0 12px rgba(249,115,22,0.6);
+      transition:width 0.1s linear;
+    }
+
+    .container{
+      max-width:1600px;
+      margin:auto;
+      position:relative;
+      z-index:1;
+    }
+
+    /* ── Hero ── */
+    .hero{
+      position:relative;
+      color:white;
+      padding:50px 40px;
+      border-radius:28px;
+      margin-bottom:30px;
+      overflow:hidden;
+      box-shadow:0 25px 60px rgba(0,0,0,0.35);
+      border:1px solid rgba(255,255,255,0.1);
+    }
+
+    .hero-bg{
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(135deg,rgba(15,23,42,0.82) 0%,rgba(30,64,175,0.75) 45%,rgba(124,45,18,0.65) 100%),
+        var(--img-himalaya);
+      background-size:110%;
+      background-position:center 30%;
+      animation:heroKenBurns 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroKenBurns{
+      0%{ background-size:105%; background-position:center 25%; }
+      100%{ background-size:115%; background-position:center 55%; }
+    }
+
+    .hero-orbs span{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(40px);
+      animation:orbFloat 10s ease-in-out infinite;
+    }
+
+    .hero-orbs span:nth-child(1){
+      width:200px; height:200px;
+      background:rgba(249,115,22,0.35);
+      top:-40px; right:-20px;
+    }
+
+    .hero-orbs span:nth-child(2){
+      width:160px; height:160px;
+      background:rgba(56,189,248,0.25);
+      bottom:-30px; left:10%;
+      animation-delay:3s;
+    }
+
+    .hero-orbs span:nth-child(3){
+      width:120px; height:120px;
+      background:rgba(251,191,36,0.2);
+      top:40%; left:55%;
+      animation-delay:1.5s;
+    }
+
+    .hero-content{ position:relative; z-index:2; }
+
+    .hero-badge{
+      display:inline-block;
+      padding:8px 18px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.2);
+      font-size:13px;
+      font-weight:600;
+      letter-spacing:0.5px;
+      margin-bottom:18px;
+      animation:fadeDown 0.8s ease both;
+    }
+
+    .hero h1{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(32px,5vw,52px);
+      margin-bottom:16px;
+      line-height:1.15;
+      background:linear-gradient(135deg,#fff 0%,#fde68a 50%,#fff 100%);
+      background-size:200% auto;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation:fadeDown 0.8s ease 0.1s both, shimmer 4s linear infinite;
+    }
+
+    .hero p{
+      opacity:0.92;
+      line-height:1.85;
+      max-width:900px;
+      animation:fadeDown 0.8s ease 0.2s both;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:18px;
+      margin-top:32px;
+    }
+
+    .stat-card{
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.18);
+      padding:22px;
+      border-radius:20px;
+      backdrop-filter:blur(12px);
+      transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;
+      animation:fadeUp 0.7s ease both;
+    }
+
+    .stat-card:nth-child(1){ animation-delay:0.3s; }
+    .stat-card:nth-child(2){ animation-delay:0.4s; }
+    .stat-card:nth-child(3){ animation-delay:0.5s; }
+    .stat-card:nth-child(4){ animation-delay:0.6s; }
+
+    .stat-card:hover{
+      transform:translateY(-8px) scale(1.02);
+      box-shadow:0 20px 40px rgba(0,0,0,0.25);
+      border-color:rgba(251,191,36,0.4);
+    }
+
+    .stat-card h2{
+      font-family:'Playfair Display',serif;
+      font-size:36px;
+      margin-bottom:4px;
+      color:var(--gold);
+    }
+
+    .stat-card p{
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      opacity:0.85;
+    }
+
+    /* ── Section headers ── */
+    .footer h2,
+    .schedule h3{
+      font-family:'Playfair Display',serif;
+    }
+
+    .footer h2{
+      position:relative;
+      display:inline-block;
+      padding-bottom:10px;
+    }
+
+    .footer h2::after{
+      content:'';
+      position:absolute;
+      left:0;
+      bottom:0;
+      width:60px;
+      height:4px;
+      background:linear-gradient(90deg,var(--royal),var(--saffron));
+      border-radius:999px;
+      animation:lineGrow 1s ease 0.5s both;
+    }
+
+    /* ── Cards reveal ── */
+    .reveal{
+      opacity:0;
+      transform:translateY(40px);
+      transition:opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .reveal.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .timeline{
+      display:flex;
+      flex-direction:column;
+      gap:28px;
+      position:relative;
+    }
+
+    .timeline::before{
+      content:'';
+      position:absolute;
+      left:24px;
+      top:0;
+      bottom:0;
+      width:3px;
+      background:linear-gradient(180deg,var(--royal),var(--saffron),var(--mint));
+      border-radius:999px;
+      opacity:0.3;
+    }
+
+    .day-card{
+      background:rgba(255,255,255,0.97);
+      border-radius:var(--radius);
+      padding:28px;
+      margin-left:20px;
+      box-shadow:var(--shadow);
+      border-left:6px solid var(--royal);
+      transition:transform 0.4s ease, box-shadow 0.4s ease, border-color 0.3s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* Temple photo backgrounds on Dham days */
+    .day-card.temple-day > *{ position:relative; z-index:2; }
+
+    .day-card.temple-day::before{
+      z-index:1;
+      top:36px;
+    }
+
+    .day-card.temple-day::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      background-size:cover;
+      background-position:center;
+      opacity:0.13;
+      z-index:0;
+      pointer-events:none;
+      transition:opacity 0.5s ease, transform 8s ease;
+    }
+
+    .day-card.temple-day:hover::after{
+      opacity:0.2;
+      transform:scale(1.06);
+    }
+
+    .day-card.temple-haridwar::after{ background-image:var(--img-haridwar); }
+    .day-card.temple-yamunotri::after{ background-image:var(--img-yamunotri); }
+    .day-card.temple-gangotri::after{ background-image:var(--img-gangotri); }
+    .day-card.temple-kedarnath::after{ background-image:var(--img-kedarnath); }
+    .day-card.temple-badrinath::after{ background-image:var(--img-badrinath); }
+
+    .day-banner{
+      height:200px;
+      margin:-28px -28px 24px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+      z-index:3;
+      display:flex;
+      align-items:flex-end;
+      padding:22px 26px;
+      border-radius:16px 16px 0 0;
+    }
+
+    .day-banner::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(to top,rgba(15,23,42,0.92) 0%,rgba(15,23,42,0.35) 55%,rgba(15,23,42,0.1) 100%);
+    }
+
+    .day-banner h4{
+      position:relative;
+      z-index:1;
+      color:white;
+      font-family:'Playfair Display',serif;
+      font-size:clamp(22px,3vw,30px);
+      font-weight:700;
+      text-shadow:0 2px 16px rgba(0,0,0,0.6);
+    }
+
+    .day-banner p{
+      position:relative;
+      z-index:1;
+      color:rgba(255,255,255,0.85);
+      font-size:13px;
+      margin-top:4px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+
+    .banner-haridwar{ background-image:var(--img-haridwar); background-position:center 40%; }
+    .banner-yamunotri{ background-image:var(--img-yamunotri); }
+    .banner-gangotri{ background-image:var(--img-gangotri); }
+    .banner-kedarnath{ background-image:var(--img-kedarnath); }
+    .banner-badrinath{ background-image:var(--img-badrinath); }
+
+    .day-card::before{
+      content:'';
+      position:absolute;
+      left:-32px;
+      top:36px;
+      width:16px;
+      height:16px;
+      background:white;
+      border:4px solid var(--royal);
+      border-radius:50%;
+      box-shadow:0 0 0 4px rgba(37,99,235,0.2);
+      animation:dotPulse 2s ease-in-out infinite;
+    }
+
+    .day-card:hover{
+      transform:translateY(-6px) translateX(4px);
+      box-shadow:0 30px 60px rgba(15,23,42,0.15);
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:15px;
+      margin-bottom:20px;
+    }
+
+    .date-box{
+      background:linear-gradient(135deg,#eff6ff,#dbeafe);
+      padding:14px 22px;
+      border-radius:16px;
+      transition:transform 0.3s ease;
+    }
+
+    .day-card:hover .date-box{ transform:scale(1.03); }
+
+    .date-box h2{
+      font-family:'Playfair Display',serif;
+      color:#1d4ed8;
+      font-size:24px;
+    }
+
+    .weather{
+      background:linear-gradient(135deg,#fef3c7,#fde68a);
+      color:#92400e;
+      padding:14px 20px;
+      border-radius:16px;
+      font-weight:600;
+      animation:weatherPulse 3s ease-in-out infinite;
+    }
+
+    .route{
+      margin-top:10px;
+      font-size:18px;
+      font-weight:600;
+      color:#0f172a;
+      padding:14px 18px;
+      background:linear-gradient(90deg,#f8fafc,transparent);
+      border-radius:12px;
+      border-left:4px solid var(--saffron);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .route::after{
+      content:'';
+      position:absolute;
+      top:0; left:-100%;
+      width:60%;
+      height:100%;
+      background:linear-gradient(90deg,transparent,rgba(249,115,22,0.08),transparent);
+      animation:routeShine 4s ease-in-out infinite;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:18px;
+      margin-top:20px;
+    }
+
+    .box{
+      border-radius:18px;
+      padding:20px;
+      transition:transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .box:hover{
+      transform:translateY(-4px);
+      box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    }
+
+    .men{ background:linear-gradient(145deg,#eff6ff,#dbeafe); border:1px solid #bfdbfe; }
+    .women{ background:linear-gradient(145deg,#fdf2f8,#fce7f3); border:1px solid #fbcfe8; }
+    .night{ background:linear-gradient(145deg,#ecfeff,#cffafe); border:1px solid #a5f3fc; }
+    .essentials{ background:linear-gradient(145deg,#f0fdf4,#dcfce7); border:1px solid #bbf7d0; }
+
+    .box h3{ margin-bottom:14px; font-size:18px; }
+
+    ul{ padding-left:20px; }
+    li{
+      margin-bottom:10px;
+      line-height:1.5;
+      transition:transform 0.2s ease, color 0.2s ease;
+    }
+
+    li:hover{ transform:translateX(4px); color:#1d4ed8; }
+
+    .footer{
+      margin-top:40px;
+      background:rgba(255,255,255,0.98);
+      padding:32px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.8);
+    }
+
+    .footer h2{
+      margin-bottom:20px;
+      color:#1d4ed8;
+    }
+
+    .check-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:20px;
+    }
+
+    .check{
+      background:#f8fafc;
+      padding:22px;
+      border-radius:18px;
+      transition:transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .check:hover{
+      transform:translateY(-5px);
+      box-shadow:0 15px 35px rgba(0,0,0,0.08);
+    }
+
+    .check h3{ margin-bottom:12px; }
+
+    .check-border-red{ border-left:6px solid #ef4444; }
+    .check-border-blue{ border-left:6px solid #3b82f6; }
+    .check-border-green{ border-left:6px solid #22c55e; }
+    .check-border-amber{ border-left:6px solid #f59e0b; }
+    .check-border-orange{ border-left:6px solid #f97316; }
+    .check-border-sky{ border-left:6px solid #0ea5e9; }
+
+    .schedule{
+      margin-top:20px;
+      background:linear-gradient(180deg,#f8fafc,#f1f5f9);
+      border-radius:18px;
+      padding:24px;
+      border:1px solid #e2e8f0;
+    }
+
+    .schedule h3{ margin-bottom:6px; font-size:20px; }
+
+    .schedule-note{
+      color:#64748b;
+      font-size:14px;
+      margin-bottom:18px;
+    }
+
+    .schedule-row{
+      display:grid;
+      grid-template-columns:110px 1fr auto;
+      gap:16px;
+      padding:14px 12px;
+      border-bottom:1px solid #e2e8f0;
+      align-items:start;
+      border-radius:10px;
+      transition:background 0.3s ease, transform 0.3s ease;
+    }
+
+    .schedule-row:hover{
+      background:white;
+      transform:translateX(6px);
+      box-shadow:0 4px 15px rgba(0,0,0,0.04);
+    }
+
+    .schedule-row:last-child{ border-bottom:none; }
+
+    .schedule-time{
+      font-weight:700;
+      font-size:15px;
+    }
+
+    .schedule-row.confirmed .schedule-time{ color:#15803d; }
+    .schedule-row.estimated .schedule-time{ color:#b45309; }
+    .schedule-row.highlight .schedule-time{ color:#1d4ed8; }
+
+    .schedule-duration{
+      background:#eff6ff;
+      color:#1d4ed8;
+      padding:4px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:600;
+      white-space:nowrap;
+      animation:badgePop 0.5s ease both;
+    }
+
+    .schedule-row.confirmed .schedule-duration{ background:#dcfce7; color:#166534; }
+    .schedule-row.estimated .schedule-duration{ background:#fef3c7; color:#92400e; }
+
+    .tag{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:6px;
+      font-size:11px;
+      font-weight:600;
+      margin-left:8px;
+      vertical-align:middle;
+    }
+
+    .tag-green{ background:#dcfce7; color:#166534; }
+    .tag-amber{ background:#fef3c7; color:#92400e; }
+
+    .flight-meta{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:14px;
+      margin-bottom:20px;
+    }
+
+    .flight-meta-item{
+      background:linear-gradient(145deg,#eff6ff,#dbeafe);
+      border:1px solid #bfdbfe;
+      border-radius:14px;
+      padding:14px 16px;
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .flight-meta-item:hover{
+      transform:scale(1.03);
+      box-shadow:0 8px 25px rgba(37,99,235,0.15);
+    }
+
+    .flight-meta-item span{
+      display:block;
+      font-size:12px;
+      color:#64748b;
+      margin-bottom:4px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+
+    .flight-meta-item strong{
+      font-size:15px;
+      color:#0f172a;
+    }
+
+    /* ── Keyframes ── */
+    @keyframes bgShift{
+      0%{ transform:translate(0,0) rotate(0deg); }
+      100%{ transform:translate(-3%,2%) rotate(2deg); }
+    }
+
+    @keyframes floatY{
+      0%,100%{ transform:translateY(0) rotate(0deg); }
+      50%{ transform:translateY(-20px) rotate(5deg); }
+    }
+
+    @keyframes mountainPulse{
+      0%,100%{ transform:scale(1); }
+      50%{ transform:scale(1.1); }
+    }
+
+    @keyframes loaderSlide{
+      0%{ transform:translateX(-100%); }
+      100%{ transform:translateX(350%); }
+    }
+
+    @keyframes heroGlow{
+      0%{ filter:brightness(1); }
+      100%{ filter:brightness(1.08); }
+    }
+
+    @keyframes orbFloat{
+      0%,100%{ transform:translate(0,0); }
+      50%{ transform:translate(15px,-20px); }
+    }
+
+    @keyframes fadeDown{
+      from{ opacity:0; transform:translateY(-20px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    @keyframes fadeUp{
+      from{ opacity:0; transform:translateY(30px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    @keyframes shimmer{
+      0%{ background-position:0% center; }
+      100%{ background-position:200% center; }
+    }
+
+    @keyframes lineGrow{
+      from{ width:0; opacity:0; }
+      to{ width:60px; opacity:1; }
+    }
+
+    @keyframes dotPulse{
+      0%,100%{ box-shadow:0 0 0 4px rgba(37,99,235,0.2); }
+      50%{ box-shadow:0 0 0 8px rgba(37,99,235,0.35); }
+    }
+
+    @keyframes weatherPulse{
+      0%,100%{ transform:scale(1); }
+      50%{ transform:scale(1.02); }
+    }
+
+    @keyframes routeShine{
+      0%{ left:-100%; }
+      50%,100%{ left:150%; }
+    }
+
+    @keyframes badgePop{
+      from{ transform:scale(0.8); opacity:0; }
+      to{ transform:scale(1); opacity:1; }
+    }
+
+    /* ── Journey map visual ── */
+    .journey-map{
+      margin-bottom:30px;
+      padding:28px 32px;
+      border-radius:var(--radius);
+      background:
+        linear-gradient(rgba(255,255,255,0.94),rgba(255,255,255,0.97)),
+        var(--img-himalaya);
+      background-size:cover;
+      background-position:center;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.9);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .journey-map::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:rgba(255,255,255,0.88);
+      pointer-events:none;
+    }
+
+    .journey-map h3,
+    .journey-track{
+      position:relative;
+      z-index:1;
+    }
+
+    .journey-map h3{
+      font-family:'Playfair Display',serif;
+      color:#1d4ed8;
+      margin-bottom:24px;
+      font-size:22px;
+    }
+
+    .journey-track{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      position:relative;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .journey-track::before{
+      content:'';
+      position:absolute;
+      top:28px;
+      left:8%;
+      right:8%;
+      height:4px;
+      background:linear-gradient(90deg,#2563eb,#f97316,#22c55e,#7c3aed,#ea580c);
+      border-radius:999px;
+      z-index:0;
+    }
+
+    .journey-dot{
+      flex:1;
+      min-width:100px;
+      text-align:center;
+      position:relative;
+      z-index:1;
+    }
+
+    .journey-dot .icon{
+      width:64px;
+      height:64px;
+      margin:0 auto 10px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px;
+      background:white;
+      background-size:cover;
+      background-position:center;
+      box-shadow:0 8px 25px rgba(0,0,0,0.15);
+      border:3px solid #e2e8f0;
+      animation:dotBounce 2s ease-in-out infinite;
+      overflow:hidden;
+    }
+
+    .journey-dot:nth-child(2) .icon{ background-image:var(--img-haridwar); border-color:#2563eb; animation-delay:0s; }
+    .journey-dot:nth-child(3) .icon{ background-image:var(--img-yamunotri); border-color:#dc2626; animation-delay:0.35s; }
+    .journey-dot:nth-child(4) .icon{ background-image:var(--img-gangotri); border-color:#0891b2; animation-delay:0.7s; }
+    .journey-dot:nth-child(5) .icon{ background-image:var(--img-kedarnath); border-color:#7c3aed; animation-delay:1.05s; }
+    .journey-dot:nth-child(6) .icon{ background-image:var(--img-badrinath); border-color:#ea580c; animation-delay:1.4s; }
+
+    .journey-dot:nth-child(2) .icon,
+    .journey-dot:nth-child(3) .icon,
+    .journey-dot:nth-child(4) .icon,
+    .journey-dot:nth-child(5) .icon,
+    .journey-dot:nth-child(6) .icon{
+      font-size:0;
+    }
+
+    .journey-dot span{
+    .temple-gallery{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+      margin-bottom:30px;
+    }
+
+    .temple-photo{
+      position:relative;
+      height:220px;
+      border-radius:20px;
+      overflow:hidden;
+      background-size:cover;
+      background-position:center;
+      box-shadow:0 15px 40px rgba(0,0,0,0.2);
+      transition:transform 0.45s ease, box-shadow 0.45s ease;
+      cursor:default;
+    }
+
+    .temple-photo:hover{
+      transform:translateY(-10px) scale(1.02);
+      box-shadow:0 25px 50px rgba(0,0,0,0.3);
+    }
+
+    .temple-photo::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(to top,rgba(15,23,42,0.9) 0%,transparent 55%);
+      transition:opacity 0.4s;
+    }
+
+    .temple-photo:hover::after{
+      background:linear-gradient(to top,rgba(15,23,42,0.95) 0%,rgba(15,23,42,0.2) 100%);
+    }
+
+    .temple-photo figcaption{
+      position:absolute;
+      bottom:0;
+      left:0;
+      right:0;
+      padding:18px;
+      z-index:1;
+      color:white;
+    }
+
+    .temple-photo figcaption strong{
+      display:block;
+      font-family:'Playfair Display',serif;
+      font-size:20px;
+      margin-bottom:2px;
+    }
+
+    .temple-photo figcaption span{
+      font-size:12px;
+      opacity:0.85;
+      letter-spacing:0.5px;
+    }
+
+    .photo-yamunotri{ background-image:var(--img-yamunotri); }
+    .photo-gangotri{ background-image:var(--img-gangotri); }
+    .photo-kedarnath{ background-image:var(--img-kedarnath); }
+    .photo-badrinath{ background-image:var(--img-badrinath); }
+
+    .journey-dot span{
+      display:block;
+      font-size:12px;
+      font-weight:600;
+      color:#475569;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+
+    .journey-dot small{
+      font-size:11px;
+      color:#94a3b8;
+    }
+
+    .traveler{
+      position:absolute;
+      top:18px;
+      left:8%;
+      font-size:22px;
+      z-index:2;
+      animation:travelPath 8s ease-in-out infinite;
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    @keyframes dotBounce{
+      0%,100%{ transform:translateY(0); }
+      50%{ transform:translateY(-8px); }
+    }
+
+    @keyframes travelPath{
+      0%{ left:8%; transform:scaleX(1); }
+      45%{ left:78%; transform:scaleX(1); }
+      50%{ left:78%; transform:scaleX(-1); }
+      95%{ left:8%; transform:scaleX(-1); }
+      100%{ left:8%; transform:scaleX(1); }
+    }
+
+    @media(max-width:768px){
+      body{ padding:15px; }
+      .timeline::before,
+      .day-card::before{ display:none; }
+      .day-card{ margin-left:0; }
+      .hero{ padding:32px 22px; }
+      .schedule-row{ grid-template-columns:1fr; gap:6px; }
+      .journey-track::before{ display:none; }
+      .traveler{ display:none; }
+      .journey-dot{ min-width:45%; }
+      .temple-gallery{ grid-template-columns:repeat(2,1fr); }
+      .temple-photo{ height:160px; }
+      .day-banner{ height:150px; margin:-28px -28px 20px; }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{
+        animation-duration:0.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:0.01ms !important;
+      }
+      .reveal{ opacity:1; transform:none; }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="page-loader" id="loader">
+  <div class="loader-mountain">🏔️</div>
+  <div class="loader-bar"><span></span></div>
+  <div class="loader-text">Loading Yatra Plan</div>
+</div>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="bg-decor">
+  <span class="float-icon">🛕</span>
+  <span class="float-icon">🏔️</span>
+  <span class="float-icon">🙏</span>
+  <span class="float-icon">🕉️</span>
+  <span class="float-icon">✨</span>
+</div>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-orbs">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="hero-content">
+    <span class="hero-badge">🙏 Chardham + Panch Prayag · May–June 2026</span>
+    <h1>Chardham Yatra Planner</h1>
+    <p>
+      Complete visual travel planner for Yamunotri, Gangotri, Kedarnath & Badrinath — aligned with your
+      <strong>Travel Key Solution</strong> agent itinerary (Chardham + Panch Prayag Yatra).
+      Mom & Dad are sugar patients and Wife is a BP patient — medicine, food and trek plans are adjusted for all three.
+    </p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h2 data-count="12">0</h2>
+        <p>Travel Days</p>
+      </div>
+
+      <div class="stat-card">
+        <h2 data-count="4">0</h2>
+        <p>Dhams</p>
+      </div>
+
+      <div class="stat-card">
+        <h2 data-count="5">0</h2>
+        <p>Prayag Visits</p>
+      </div>
+
+      <div class="stat-card">
+        <h2>0°C</h2>
+        <p>Lowest Temperature</p>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="temple-gallery reveal">
+    <figure class="temple-photo photo-yamunotri">
+      <figcaption><strong>Yamunotri</strong><span>1st Dham · Day 3</span></figcaption>
+    </figure>
+    <figure class="temple-photo photo-gangotri">
+      <figcaption><strong>Gangotri</strong><span>2nd Dham · Day 5</span></figcaption>
+    </figure>
+    <figure class="temple-photo photo-kedarnath">
+      <figcaption><strong>Kedarnath</strong><span>3rd Dham · Day 7</span></figcaption>
+    </figure>
+    <figure class="temple-photo photo-badrinath">
+      <figcaption><strong>Badrinath</strong><span>4th Dham · Day 10</span></figcaption>
+    </figure>
+  </div>
+
+  <div class="journey-map reveal">
+    <h3>🗺️ Your Sacred Journey Route</h3>
+    <div class="journey-track">
+      <span class="traveler">🚐</span>
+      <div class="journey-dot">
+        <div class="icon"></div>
+        <span>Haridwar</span>
+        <small>Day 1</small>
+      </div>
+      <div class="journey-dot">
+        <div class="icon"></div>
+        <span>Yamunotri</span>
+        <small>Day 3</small>
+      </div>
+      <div class="journey-dot">
+        <div class="icon"></div>
+        <span>Gangotri</span>
+        <small>Day 5</small>
+      </div>
+      <div class="journey-dot">
+        <div class="icon"></div>
+        <span>Kedarnath</span>
+        <small>Day 7</small>
+      </div>
+      <div class="journey-dot">
+        <div class="icon"></div>
+        <span>Badrinath</span>
+        <small>Day 10</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <h2>📋 Travel Agent Itinerary — Travel Key Solution</h2>
+    <p class="schedule-note" style="margin-bottom:16px;">
+      Source: CHARDHAM + PANCH PRAYAG YATRA PDF · Contact: <strong>+91 99134 65556</strong> ·
+      611 Aarohi Verve, Ambli, Ahmedabad
+    </p>
+
+    <div class="check-grid">
+
+      <div class="check check-border-blue">
+        <h3>📦 Package Includes</h3>
+        <ul>
+          <li>Delhi Airport → Haridwar pickup</li>
+          <li>All 4 Dham darshan routes</li>
+          <li>Panch Prayag visits en route</li>
+          <li>Night stays: Haridwar, Barkot ×2, Uttarkashi ×2, Guptkashi, Pipalkoti ×2, Haridwar/Rishikesh</li>
+          <li>Ahmedabad → Delhi flight option ₹41,000/person</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-amber">
+        <h3>⚠️ Not Included (Agent Notes)</h3>
+        <ul>
+          <li>Palkhi / Pithhu / Horse ride at Yamunotri</li>
+          <li>Near-temple stay cost at Kedarnath</li>
+          <li>Helicopter to Kedarnath (if chosen)</li>
+          <li>Personal expenses & tips</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-green">
+        <h3>🙏 Panch Prayag — Which Day</h3>
+        <ul>
+          <li><strong>Day 6:</strong> Rudraprayag + Karnaprayag</li>
+          <li><strong>Day 9:</strong> Nandaprayag</li>
+          <li><strong>Day 10:</strong> Vishnuprayag (Badrinath area)</li>
+          <li><strong>Day 11:</strong> Devprayag (last Prayag)</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-red">
+        <h3>🏨 Night Stay Plan (Agent)</h3>
+        <ul>
+          <li>Day 1 — Haridwar</li>
+          <li>Day 2 & 3 — Barkot</li>
+          <li>Day 4 & 5 — Uttarkashi</li>
+          <li>Day 6 — Guptkashi</li>
+          <li>Day 7 — Near Kedarnath temple*</li>
+          <li>Day 8 — Guptkashi (return)</li>
+          <li>Day 9 & 10 — Pipalkoti</li>
+          <li>Day 11 — Haridwar / Rishikesh</li>
+          <li>Day 12 — Return Delhi / Haridwar</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <h2>✈️ Confirmed Flight Ticket — Day 1</h2>
+
+    <div class="flight-meta">
+      <div class="flight-meta-item">
+        <span>Airline / Flight</span>
+        <strong>IndiGo 6E-983</strong>
+      </div>
+      <div class="flight-meta-item">
+        <span>Date</span>
+        <strong>Saturday, 30 May 2026</strong>
+      </div>
+      <div class="flight-meta-item">
+        <span>PNR</span>
+        <strong>GCCVTA</strong>
+      </div>
+      <div class="flight-meta-item">
+        <span>Booking ID</span>
+        <strong>TJ1003173504367</strong>
+      </div>
+      <div class="flight-meta-item">
+        <span>Route</span>
+        <strong>Ahmedabad T1 → Delhi T1</strong>
+      </div>
+      <div class="flight-meta-item">
+        <span>Flight Duration</span>
+        <strong>1 hour 45 minutes</strong>
+      </div>
+      <div class="flight-meta-item">
+        <span>Passengers (4)</span>
+        <strong>Karansinh, Saurabh, Hetal, Jamnaben Rathod</strong>
+      </div>
+      <div class="flight-meta-item">
+        <span>Baggage</span>
+        <strong>15 Kg check-in + 7 Kg cabin each</strong>
+      </div>
+    </div>
+
+    <div class="schedule" style="margin-top:0;">
+
+      <h3>🕐 Full Day 1 Hour-by-Hour Plan</h3>
+      <p class="schedule-note">Flight times confirmed · Agent picks up from Delhi Airport → Haridwar (~5–6 hrs road)</p>
+
+      <div class="schedule-row estimated">
+        <div class="schedule-time">05:00 AM</div>
+        <div>Leave home in Ahmedabad → Sardar Vallabh Bhai Patel Intl Airport</div>
+        <div class="schedule-duration">~30 min</div>
+      </div>
+
+      <div class="schedule-row confirmed">
+        <div class="schedule-time">05:30 AM</div>
+        <div>Reach Airport Terminal 1 · Web check-in done · Security & boarding gate <span class="tag tag-green">2 hrs before flight</span></div>
+        <div class="schedule-duration">On time</div>
+      </div>
+
+      <div class="schedule-row confirmed highlight">
+        <div class="schedule-time">07:30 AM</div>
+        <div><strong>✈️ DEPART</strong> Ahmedabad (AMD) Terminal 1 — IndiGo 6E-983 <span class="tag tag-green">CONFIRMED</span></div>
+        <div class="schedule-duration">Take-off</div>
+      </div>
+
+      <div class="schedule-row confirmed highlight">
+        <div class="schedule-time">09:15 AM</div>
+        <div><strong>✈️ ARRIVE</strong> Delhi Indira Gandhi Intl (DEL) Terminal 1 <span class="tag tag-green">CONFIRMED</span></div>
+        <div class="schedule-duration">1h 45m</div>
+      </div>
+
+      <div class="schedule-row estimated">
+        <div class="schedule-time">09:15 AM<br>– 10:30 AM</div>
+        <div>Collect baggage · Exit terminal · Short refresh / lunch near airport</div>
+        <div class="schedule-duration">~1h 15m</div>
+      </div>
+
+      <div class="schedule-row estimated">
+        <div class="schedule-time">10:30 AM</div>
+        <div><strong>🚗 START</strong> Delhi → Haridwar by cab / tempo traveller (NH-334) <span class="tag tag-amber">ESTIMATED</span></div>
+        <div class="schedule-duration">~5–6 hrs</div>
+      </div>
+
+      <div class="schedule-row estimated">
+        <div class="schedule-time">~04:30 PM<br>– 05:30 PM</div>
+        <div><strong>🏨 REACH Haridwar</strong> · Hotel check-in · Ganga aarti at Har Ki Pauri (~06:00 PM) <span class="tag tag-amber">ESTIMATED</span></div>
+        <div class="schedule-duration">Evening</div>
+      </div>
+
+      <div class="schedule-row estimated">
+        <div class="schedule-time">08:00 PM</div>
+        <div>Dinner · Rest early — Day 2 drive to Barkot starts next morning</div>
+        <div class="schedule-duration">Night</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <h2>📅 12-Day Time Plan — Agent Itinerary</h2>
+    <p class="schedule-note" style="margin-bottom:20px;">Matched to Travel Key Solution PDF · Day 1 flight confirmed · Road times estimated</p>
+
+    <div class="schedule" style="margin-top:0;padding:0;border:none;background:transparent;">
+
+      <div class="schedule-row confirmed highlight">
+        <div class="schedule-time">Day 1 · 30 May</div>
+        <div>Delhi Airport → Haridwar · 🙏 Ganga Aarti · <em>Night: Haridwar</em></div>
+        <div class="schedule-duration">Flight ✓</div>
+      </div>
+      <div class="schedule-row estimated">
+        <div class="schedule-time">Day 2 · 31 May</div>
+        <div>Haridwar → Barkot · <em>Night: Barkot</em></div>
+        <div class="schedule-duration">~8 hrs</div>
+      </div>
+      <div class="schedule-row estimated highlight">
+        <div class="schedule-time">Day 3 · 01 Jun</div>
+        <div>Barkot → Yamunotri → Barkot · Trek/pony darshan · <em>Night: Barkot</em></div>
+        <div class="schedule-duration">Trek</div>
+      </div>
+      <div class="schedule-row estimated">
+        <div class="schedule-time">Day 4 · 02 Jun</div>
+        <div>Barkot → Uttarkashi · Kashi Vishwanath · Ganga dip · <em>Night: Uttarkashi</em></div>
+        <div class="schedule-duration">~5 hrs</div>
+      </div>
+      <div class="schedule-row estimated highlight">
+        <div class="schedule-time">Day 5 · 03 Jun</div>
+        <div>Gangotri temple darshan · <em>Night: Uttarkashi</em></div>
+        <div class="schedule-duration">Day trip</div>
+      </div>
+      <div class="schedule-row estimated">
+        <div class="schedule-time">Day 6 · 04 Jun</div>
+        <div>Uttarkashi → Guptkashi · Rudraprayag · Karnaprayag · <em>Night: Guptkashi</em></div>
+        <div class="schedule-duration">~8 hrs</div>
+      </div>
+      <div class="schedule-row estimated highlight">
+        <div class="schedule-time">Day 7 · 05 Jun</div>
+        <div>Kedarnath trek/helicopter · Darshan · <em>Night: near temple*</em></div>
+        <div class="schedule-duration">Trek</div>
+      </div>
+      <div class="schedule-row estimated">
+        <div class="schedule-time">Day 8 · 06 Jun</div>
+        <div>Kedarnath → Guptkashi return trek · <em>Night: Guptkashi</em></div>
+        <div class="schedule-duration">~8 hrs</div>
+      </div>
+      <div class="schedule-row estimated">
+        <div class="schedule-time">Day 9 · 07 Jun</div>
+        <div>Guptkashi → Badrinath route · Nandaprayag · <em>Night: Pipalkoti</em></div>
+        <div class="schedule-duration">~9 hrs</div>
+      </div>
+      <div class="schedule-row estimated highlight">
+        <div class="schedule-time">Day 10 · 08 Jun</div>
+        <div>Badrinath darshan · Tapt Kund · Mana · Vishnuprayag · <em>Night: Pipalkoti</em></div>
+        <div class="schedule-duration">Darshan</div>
+      </div>
+      <div class="schedule-row estimated">
+        <div class="schedule-time">Day 11 · 09 Jun</div>
+        <div>Return via Joshimath · Devprayag · Rishikesh/Haridwar · <em>Night: Haridwar</em></div>
+        <div class="schedule-duration">~10 hrs</div>
+      </div>
+      <div class="schedule-row estimated highlight">
+        <div class="schedule-time">Day 12 · 10 Jun</div>
+        <div>Return Delhi / Haridwar → ✈️ Ahmedabad (book return flight)</div>
+        <div class="schedule-duration">Return</div>
+      </div>
+
+    </div>
+
+    <p class="schedule-note" style="margin-top:14px;">* Kedarnath near-temple stay extra cost — not in package per agent</p>
+
+  </div>
+
+  <div class="timeline">
+
+    <!-- DAY 1 -->
+    <div class="day-card temple-day temple-haridwar">
+      <div class="day-banner banner-haridwar">
+        <div>
+          <h4>🌊 Har Ki Pauri · Haridwar</h4>
+          <p>Day 1 · Ganga Aarti</p>
+        </div>
+      </div>
+      <div class="top">
+        <div class="date-box">
+          <h2>30 May 2026</h2>
+          <p>Saturday · Day 1</p>
+        </div>
+
+        <div class="weather">
+          ☀️ Hot Weather | 32°C - 40°C
+        </div>
+      </div>
+
+      <div class="route">
+        ✈️ Ahmedabad 07:30 → Delhi 09:15 → 🚗 Haridwar ~04:30–05:30 PM
+      </div>
+
+      <div class="schedule">
+
+        <h3>🕐 Day 1 Timeline</h3>
+        <p class="schedule-note">Agent: Delhi Airport → Haridwar · Night stay Haridwar · 🙏 Ganga Aarti</p>
+
+        <div class="schedule-row estimated">
+          <div class="schedule-time">05:00 AM</div>
+          <div>Leave home → Ahmedabad Airport</div>
+          <div class="schedule-duration">~30 min</div>
+        </div>
+
+        <div class="schedule-row confirmed">
+          <div class="schedule-time">05:30 AM</div>
+          <div>Reach Terminal 1 · Check-in & security</div>
+          <div class="schedule-duration">On time</div>
+        </div>
+
+        <div class="schedule-row confirmed highlight">
+          <div class="schedule-time">07:30 AM</div>
+          <div>Depart Ahmedabad T1</div>
+          <div class="schedule-duration">6E-983</div>
+        </div>
+
+        <div class="schedule-row confirmed highlight">
+          <div class="schedule-time">09:15 AM</div>
+          <div>Land Delhi T1 (1h 45m flight)</div>
+          <div class="schedule-duration">Arrived</div>
+        </div>
+
+        <div class="schedule-row estimated">
+          <div class="schedule-time">10:30 AM</div>
+          <div>Leave Delhi for Haridwar by road</div>
+          <div class="schedule-duration">~5–6 hrs</div>
+        </div>
+
+        <div class="schedule-row estimated highlight">
+          <div class="schedule-time">~05:00 PM</div>
+          <div>Reach Haridwar · Hotel check-in · Ganga aarti ~06:00 PM</div>
+          <div class="schedule-duration">Est.</div>
+        </div>
+
+        <div class="schedule-row estimated">
+          <div class="schedule-time">08:00 PM</div>
+          <div>Dinner · Rest early</div>
+          <div class="schedule-duration">Night</div>
+        </div>
+
+      </div>
+
+      <div class="grid">
+
+        <div class="box men">
+          <h3>👨 Men Clothes</h3>
+          <ul>
+            <li>Cotton T-shirt</li>
+            <li>Track pant</li>
+            <li>Sports shoes</li>
+            <li>Light jacket</li>
+          </ul>
+        </div>
+
+        <div class="box women">
+          <h3>👩 Women Clothes</h3>
+          <ul>
+            <li>Comfortable cotton suit</li>
+            <li>Light stole/shawl</li>
+            <li>Comfortable footwear</li>
+          </ul>
+        </div>
+
+        <div class="box night">
+          <h3>🌙 Night Dress</h3>
+          <ul>
+            <li>Cotton nightwear</li>
+            <li>Light blanket</li>
+          </ul>
+        </div>
+
+        <div class="box essentials">
+          <h3>🎒 Essentials</h3>
+          <ul>
+            <li>Boarding pass (web check-in)</li>
+            <li>PNR GCCVTA / ID Proof</li>
+            <li>Power bank</li>
+            <li>Water bottle & snacks</li>
+            <li>Haridwar hotel booking print</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-card">
+      <div class="top">
+        <div class="date-box">
+          <h2>31 May 2026</h2>
+          <p>Sunday · Day 2</p>
+        </div>
+
+        <div class="weather">
+          🌤️ Pleasant & Cool | 12°C - 24°C
+        </div>
+      </div>
+
+      <div class="route">
+        🚌 Haridwar 07:00 AM → Barkot ~03:00 PM (~210 km · 8 hrs)
+      </div>
+
+      <div class="schedule">
+        <h3>🕐 Day 2 Timeline</h3>
+        <p class="schedule-note">Agent Day 2 — Night stay Barkot · En route to Yamunotri base</p>
+        <div class="schedule-row estimated"><div class="schedule-time">06:00 AM</div><div>Wake up · Breakfast · Hotel checkout Haridwar</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">07:00 AM</div><div>Depart Haridwar → Barkot</div><div class="schedule-duration">Start</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">12:30 PM</div><div>Lunch break en route (Kempty / Nainbagh area)</div><div class="schedule-duration">45 min</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~03:00 PM</div><div>Reach Barkot · Hotel check-in · Rest</div><div class="schedule-duration">Arrived</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Dinner · Early sleep (Yamunotri trek tomorrow)</div><div class="schedule-duration">Night</div></div>
+      </div>
+
+      <div class="grid">
+
+        <div class="box men">
+          <h3>👨 Men Clothes</h3>
+          <ul>
+            <li>Full sleeve T-shirt</li>
+            <li>Hoodie</li>
+            <li>Track pants</li>
+          </ul>
+        </div>
+
+        <div class="box women">
+          <h3>👩 Women Clothes</h3>
+          <ul>
+            <li>Warm top</li>
+            <li>Comfortable leggings</li>
+            <li>Light sweater</li>
+          </ul>
+        </div>
+
+        <div class="box night">
+          <h3>🌙 Night Dress</h3>
+          <ul>
+            <li>Full sleeve night suit</li>
+            <li>Light thermal</li>
+          </ul>
+        </div>
+
+        <div class="box essentials">
+          <h3>🎒 Essentials</h3>
+          <ul>
+            <li>Raincoat</li>
+            <li>Dry fruits</li>
+            <li>Motion sickness medicine</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-card temple-day temple-yamunotri" style="border-left-color:#dc2626">
+
+      <div class="day-banner banner-yamunotri">
+        <div>
+          <h4>🙏 Yamunotri Temple</h4>
+          <p>Day 3 · 1st Dham Darshan</p>
+        </div>
+      </div>
+
+      <div class="top">
+        <div class="date-box">
+          <h2>01 June 2026</h2>
+          <p>Monday · Day 3</p>
+        </div>
+
+        <div class="weather">
+          🌧️ Cold + Rain Chances | 8°C - 18°C
+        </div>
+      </div>
+
+      <div class="route">
+        🥾 Barkot → Yamunotri Darshan → Barkot · Reach hotel ~07:00 PM
+      </div>
+
+      <div class="schedule">
+        <h3>🕐 Day 3 Timeline</h3>
+        <p class="schedule-note">Agent Day 3 — Barkot → Yamunotri → Barkot · Pony/palkhi cost NOT in package</p>
+        <div class="schedule-row estimated"><div class="schedule-time">05:00 AM</div><div>Wake · Light sugar-free breakfast · Medicines</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">06:00 AM</div><div>Drive Barkot → Janki Chatti</div><div class="schedule-duration">~1.5 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">07:30 AM</div><div>Start Yamunotri trek (uphill)</div><div class="schedule-duration">~3–4 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~11:30 AM</div><div>Yamunotri temple darshan · Hot spring dip</div><div class="schedule-duration">Darshan</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">12:30 PM</div><div>Lunch · Start trek down</div><div class="schedule-duration">~2–3 hrs</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">04:30 PM</div><div>Reach Janki Chatti · Drive back to Barkot</div><div class="schedule-duration">~1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~07:00 PM</div><div>Reach Barkot hotel · Dinner · Rest</div><div class="schedule-duration">Arrived</div></div>
+      </div>
+
+      <div class="grid">
+
+        <div class="box men">
+          <h3>👨 Men Clothes</h3>
+          <ul>
+            <li>Trek pants</li>
+            <li>Dry-fit T-shirt</li>
+            <li>Poncho</li>
+            <li>Trekking shoes</li>
+          </ul>
+        </div>
+
+        <div class="box women">
+          <h3>👩 Women Clothes</h3>
+          <ul>
+            <li>Trek suit</li>
+            <li>Sports shoes</li>
+            <li>Raincoat</li>
+            <li>Warm layer</li>
+          </ul>
+        </div>
+
+        <div class="box night">
+          <h3>🌙 Night Dress</h3>
+          <ul>
+            <li>Thermal lower</li>
+            <li>Warm T-shirt</li>
+          </ul>
+        </div>
+
+        <div class="box essentials">
+          <h3>🎒 Trek Essentials</h3>
+          <ul>
+            <li>Walking stick</li>
+            <li>Glucose</li>
+            <li>ORS</li>
+            <li>Extra socks</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day-card">
+      <div class="top">
+        <div class="date-box">
+          <h2>02 June 2026</h2>
+          <p>Tuesday · Day 4</p>
+        </div>
+        <div class="weather">🌤️ Cool Hills | 10°C - 22°C</div>
+      </div>
+      <div class="route">🚌 Barkot 08:00 AM → Uttarkashi ~01:00 PM · 🙏 Kashi Vishwanath · Ganga dip</div>
+      <div class="schedule">
+        <h3>🕐 Day 4 Timeline</h3>
+        <p class="schedule-note">Agent Day 4 — Night stay Uttarkashi · Visit Kashi Vishwanath + holy dip in Ganga</p>
+        <div class="schedule-row estimated"><div class="schedule-time">07:00 AM</div><div>Breakfast · Checkout Barkot</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">08:00 AM</div><div>Depart Barkot → Uttarkashi</div><div class="schedule-duration">~5 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~01:00 PM</div><div>Reach Uttarkashi · Lunch · Hotel check-in</div><div class="schedule-duration">Arrived</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">04:00 PM</div><div>🙏 Kashi Vishwanath Temple darshan · Holy dip in Ganga</div><div class="schedule-duration">Darshan</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Dinner · Rest (Gangotri tomorrow)</div><div class="schedule-duration">Night</div></div>
+      </div>
+      <div class="grid">
+        <div class="box men"><h3>👨 Men Clothes</h3><ul><li>Full sleeve shirt</li><li>Light sweater</li><li>Comfortable pants</li></ul></div>
+        <div class="box women"><h3>👩 Women Clothes</h3><ul><li>Warm kurti</li><li>Leggings</li><li>Shawl</li></ul></div>
+        <div class="box night"><h3>🌙 Night Dress</h3><ul><li>Thermal top</li><li>Warm lower</li></ul></div>
+        <div class="box essentials"><h3>🎒 Essentials</h3><ul><li>Motion sickness tabs</li><li>Water bottle</li><li>Snacks</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-card temple-day temple-gangotri" style="border-left-color:#0891b2">
+      <div class="day-banner banner-gangotri">
+        <div>
+          <h4>🧊 Gangotri Temple</h4>
+          <p>Day 5 · 2nd Dham Darshan</p>
+        </div>
+      </div>
+      <div class="top">
+        <div class="date-box">
+          <h2>03 June 2026</h2>
+          <p>Wednesday · Day 5</p>
+        </div>
+        <div class="weather">❄️ Cold | 5°C - 15°C</div>
+      </div>
+      <div class="route">🛕 Uttarkashi → Gangotri Darshan → Uttarkashi · Back ~02:00 PM</div>
+      <div class="schedule">
+        <h3>🕐 Day 5 Timeline</h3>
+        <p class="schedule-note">Agent Day 5 — Gangotri darshan · Night stay Uttarkashi</p>
+        <div class="schedule-row estimated"><div class="schedule-time">05:00 AM</div><div>Wake · Breakfast · Medicines</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">06:00 AM</div><div>Depart Uttarkashi → Gangotri</div><div class="schedule-duration">~3 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~09:00 AM</div><div>Gangotri temple darshan · Ganga snan</div><div class="schedule-duration">Darshan</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">11:00 AM</div><div>Start return to Uttarkashi</div><div class="schedule-duration">~3 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~02:00 PM</div><div>Reach Uttarkashi · Lunch · Rest</div><div class="schedule-duration">Arrived</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Dinner · Pack for long drive tomorrow</div><div class="schedule-duration">Night</div></div>
+      </div>
+      <div class="grid">
+        <div class="box men"><h3>👨 Men Clothes</h3><ul><li>Thermal + jacket</li><li>Wool cap</li><li>Gloves</li></ul></div>
+        <div class="box women"><h3>👩 Women Clothes</h3><ul><li>Heavy shawl</li><li>Thermal wear</li><li>Warm socks</li></ul></div>
+        <div class="box night"><h3>🌙 Night Dress</h3><ul><li>Full thermal set</li><li>Wool socks</li></ul></div>
+        <div class="box essentials"><h3>🎒 Essentials</h3><ul><li>Hot water flask</li><li>ORS sugar-free</li><li>Camera</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DAY 6 -->
+    <div class="day-card">
+      <div class="top">
+        <div class="date-box">
+          <h2>04 June 2026</h2>
+          <p>Thursday · Day 6</p>
+        </div>
+        <div class="weather">🌤️ Pleasant | 8°C - 20°C</div>
+      </div>
+      <div class="route">🚌 Uttarkashi → Guptkashi · 🙏 Rudraprayag · Karnaprayag · Reach ~03:00 PM</div>
+      <div class="schedule">
+        <h3>🕐 Day 6 Timeline</h3>
+        <p class="schedule-note">Agent Day 6 — Scenic drive along rivers · Night stay Guptkashi</p>
+        <div class="schedule-row estimated"><div class="schedule-time">06:00 AM</div><div>Breakfast · Checkout Uttarkashi</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">07:00 AM</div><div>Depart Uttarkashi → Guptkashi</div><div class="schedule-duration">Start</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~11:00 AM</div><div>🙏 Rudraprayag Sangam darshan</div><div class="schedule-duration">Prayag 1</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">12:30 PM</div><div>Lunch en route · 🙏 Karnaprayag Sangam</div><div class="schedule-duration">Prayag 2</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~03:00 PM</div><div>Reach Guptkashi · Hotel check-in · Rest</div><div class="schedule-duration">Arrived</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">06:00 PM</div><div>Confirm Kedarnath trek / helicopter plan for tomorrow</div><div class="schedule-duration">Prep</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Light dinner · Sleep early</div><div class="schedule-duration">Night</div></div>
+      </div>
+      <div class="grid">
+        <div class="box men"><h3>👨 Men Clothes</h3><ul><li>Hoodie + jacket</li><li>Track pants</li><li>Comfort shoes</li></ul></div>
+        <div class="box women"><h3>👩 Women Clothes</h3><ul><li>Warm layers</li><li>Comfortable suit</li><li>Sneakers</li></ul></div>
+        <div class="box night"><h3>🌙 Night Dress</h3><ul><li>Thermal set</li><li>Light blanket</li></ul></div>
+        <div class="box essentials"><h3>🎒 Essentials</h3><ul><li>Kedarnath registration</li><li>Raincoat</li><li>Power bank</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DAY 7 KEDARNATH -->
+    <div class="day-card temple-day temple-kedarnath" style="border-left-color:#7c3aed">
+
+      <div class="day-banner banner-kedarnath">
+        <div>
+          <h4>🛕 Kedarnath Temple</h4>
+          <p>Day 7 · 3rd Dham Darshan</p>
+        </div>
+      </div>
+
+      <div class="top">
+        <div class="date-box">
+          <h2>05 June 2026</h2>
+          <p>Friday · Day 7</p>
+        </div>
+
+        <div class="weather">
+          ❄️ Freezing Cold | 0°C - 8°C
+        </div>
+      </div>
+
+      <div class="route">
+        🛕 Gaurikund 05:00 → Kedarnath Darshan ~02:00 PM · Night stay Kedarnath
+      </div>
+
+      <div class="schedule">
+        <h3>🕐 Day 7 Timeline</h3>
+        <p class="schedule-note">Agent Day 7 — Trek or helicopter · Near-temple stay cost NOT in package</p>
+        <div class="schedule-row estimated"><div class="schedule-time">04:00 AM</div><div>Wake · Sugar/BP check · Light breakfast</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">05:00 AM</div><div>Drive Guptkashi → Gaurikund / Sonprayag</div><div class="schedule-duration">~45 min</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">06:00 AM</div><div>Start Kedarnath trek (or pony / palanquin)</div><div class="schedule-duration">~6–8 hrs</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">12:00 PM</div><div>Trek break · Sugar-free ORS · Rest every 30 min</div><div class="schedule-duration">Break</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~02:00 PM</div><div>Kedarnath temple darshan</div><div class="schedule-duration">Darshan</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">05:00 PM</div><div>Check-in dharamshala / tent · Hot tea</div><div class="schedule-duration">Stay</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Early dinner · Sleep (cold night at 3,583 m)</div><div class="schedule-duration">Night</div></div>
+      </div>
+
+      <div class="grid">
+
+        <div class="box men">
+          <h3>👨 Men Clothes</h3>
+          <ul>
+            <li>Heavy winter jacket</li>
+            <li>Thermal set</li>
+            <li>Gloves</li>
+            <li>Wool socks</li>
+            <li>Monkey cap</li>
+          </ul>
+        </div>
+
+        <div class="box women">
+          <h3>👩 Women Clothes</h3>
+          <ul>
+            <li>Heavy woolens</li>
+            <li>Thermal wear</li>
+            <li>Gloves</li>
+            <li>Wool shawl</li>
+            <li>Warm leggings</li>
+          </ul>
+        </div>
+
+        <div class="box night">
+          <h3>🌙 Night Dress</h3>
+          <ul>
+            <li>Heavy thermal set</li>
+            <li>Wool socks mandatory</li>
+            <li>Layered sleepwear</li>
+          </ul>
+        </div>
+
+        <div class="box essentials">
+          <h3>🎒 Survival Essentials</h3>
+          <ul>
+            <li>Power bank</li>
+            <li>Torch</li>
+            <li>Diabetes kit (Mom & Dad)</li>
+            <li>BP monitor & medicines (Wife)</li>
+            <li>Hot water flask</li>
+            <li>Rain protection</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DAY 8 -->
+    <div class="day-card">
+      <div class="top">
+        <div class="date-box"><h2>06 June 2026</h2><p>Saturday · Day 8</p></div>
+        <div class="weather">❄️ Cold | 2°C - 10°C</div>
+      </div>
+      <div class="route">🥾 Kedarnath 08:00 AM ↓ → Guptkashi ~04:00 PM</div>
+      <div class="schedule">
+        <h3>🕐 Day 8 Timeline</h3>
+        <p class="schedule-note">Agent Day 8 — Return trek Kedarnath → Guptkashi</p>
+        <div class="schedule-row estimated"><div class="schedule-time">06:00 AM</div><div>Wake · Breakfast · Checkout dharamshala</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">08:00 AM</div><div>Start trek down Kedarnath → Gaurikund</div><div class="schedule-duration">~4–5 hrs</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">01:00 PM</div><div>Reach Gaurikund · Lunch</div><div class="schedule-duration">Break</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~04:00 PM</div><div>Reach Guptkashi · Hotel · Full rest</div><div class="schedule-duration">Arrived</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Dinner · Recover (long drive tomorrow)</div><div class="schedule-duration">Night</div></div>
+      </div>
+      <div class="grid">
+        <div class="box men"><h3>👨 Men Clothes</h3><ul><li>Same trek wear</li><li>Extra socks</li><li>Knee cap if needed</li></ul></div>
+        <div class="box women"><h3>👩 Women Clothes</h3><ul><li>Trek layers</li><li>Gloves</li><li>Rain protection</li></ul></div>
+        <div class="box night"><h3>🌙 Night Dress</h3><ul><li>Thermals</li><li>Warm sleepwear</li></ul></div>
+        <div class="box essentials"><h3>🎒 Essentials</h3><ul><li>Pain spray</li><li>ORS</li><li>Glucose tabs (emergency)</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DAY 9 -->
+    <div class="day-card">
+      <div class="top">
+        <div class="date-box"><h2>07 June 2026</h2><p>Sunday · Day 9</p></div>
+        <div class="weather">🌤️ Cool | 8°C - 18°C</div>
+      </div>
+      <div class="route">🚌 Guptkashi → Badrinath route · 🙏 Nandaprayag · Night Pipalkoti ~05:00 PM</div>
+      <div class="schedule">
+        <h3>🕐 Day 9 Timeline</h3>
+        <p class="schedule-note">Agent Day 9 — Guptkashi → Badrinath route · Night stay Pipalkoti</p>
+        <div class="schedule-row estimated"><div class="schedule-time">06:00 AM</div><div>Breakfast · Checkout Guptkashi</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">07:00 AM</div><div>Depart → Badrinath direction via Chopta</div><div class="schedule-duration">Start</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~12:00 PM</div><div>🙏 Nandaprayag Sangam darshan · Lunch</div><div class="schedule-duration">Prayag 3</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~05:00 PM</div><div>Reach Pipalkoti · Hotel check-in · Rest</div><div class="schedule-duration">Arrived</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Dinner · Early sleep (Badrinath darshan tomorrow)</div><div class="schedule-duration">Night</div></div>
+      </div>
+      <div class="grid">
+        <div class="box men"><h3>👨 Men Clothes</h3><ul><li>Jacket</li><li>Full pants</li><li>Sunglasses</li></ul></div>
+        <div class="box women"><h3>👩 Women Clothes</h3><ul><li>Warm top</li><li>Shawl</li><li>Comfort shoes</li></ul></div>
+        <div class="box night"><h3>🌙 Night Dress</h3><ul><li>Thermal set</li></ul></div>
+        <div class="box essentials"><h3>🎒 Essentials</h3><ul><li>Motion sickness tabs</li><li>Snacks</li><li>Camera</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DAY 10 -->
+    <div class="day-card temple-day temple-badrinath" style="border-left-color:#ea580c">
+      <div class="day-banner banner-badrinath">
+        <div>
+          <h4>🙏 Badrinath Temple</h4>
+          <p>Day 10 · 4th Dham Darshan</p>
+        </div>
+      </div>
+      <div class="top">
+        <div class="date-box"><h2>08 June 2026</h2><p>Monday · Day 10</p></div>
+        <div class="weather">🌤️ Cold | 5°C - 16°C</div>
+      </div>
+      <div class="route">🛕 Badrinath darshan · Tapt Kund · Mana · 🙏 Vishnuprayag · Night Pipalkoti</div>
+      <div class="schedule">
+        <h3>🕐 Day 10 Timeline</h3>
+        <p class="schedule-note">Agent Day 10 — Full Badrinath local + Vishnuprayag · Night stay Pipalkoti</p>
+        <div class="schedule-row estimated"><div class="schedule-time">05:00 AM</div><div>Wake · Breakfast · Medicines</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">06:00 AM</div><div>Pipalkoti → Badrinath (~75 km)</div><div class="schedule-duration">~2.5 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~09:00 AM</div><div>🙏 Badrinath temple darshan · Tapt Kund snan</div><div class="schedule-duration">Darshan</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">11:30 AM</div><div>Mana Village visit (last Indian village)</div><div class="schedule-duration">1.5 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">01:30 PM</div><div>🙏 Vishnuprayag Sangam · Lunch</div><div class="schedule-duration">Prayag 4</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">04:00 PM</div><div>Return to Pipalkoti · Rest</div><div class="schedule-duration">~2 hrs</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Dinner · Pack for return journey</div><div class="schedule-duration">Night</div></div>
+      </div>
+      <div class="grid">
+        <div class="box men"><h3>👨 Men Clothes</h3><ul><li>Warm jacket</li><li>Thermal</li><li>Cap + gloves</li></ul></div>
+        <div class="box women"><h3>👩 Women Clothes</h3><ul><li>Heavy woolens</li><li>Warm leggings</li><li>Wool shawl</li></ul></div>
+        <div class="box night"><h3>🌙 Night Dress</h3><ul><li>Full thermal set</li><li>Wool socks</li></ul></div>
+        <div class="box essentials"><h3>🎒 Essentials</h3><ul><li>Hot water flask</li><li>Prasad bag</li><li>Health kits</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DAY 11 -->
+    <div class="day-card">
+      <div class="top">
+        <div class="date-box"><h2>09 June 2026</h2><p>Tuesday · Day 11</p></div>
+        <div class="weather">☀️ Mild | 12°C - 24°C</div>
+      </div>
+      <div class="route">🚌 Return Badrinath · Joshimath · 🙏 Devprayag · Haridwar ~06:00 PM</div>
+      <div class="schedule">
+        <h3>🕐 Day 11 Timeline</h3>
+        <p class="schedule-note">Agent Day 11 — Cover Joshimath · Last Prayag Devprayag · Night Haridwar/Rishikesh</p>
+        <div class="schedule-row estimated"><div class="schedule-time">06:00 AM</div><div>Breakfast · Checkout Pipalkoti</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">07:00 AM</div><div>Depart return route · Joshimath stop</div><div class="schedule-duration">~3 hrs</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">11:00 AM</div><div>Joshimath · Narsingh temple (quick visit)</div><div class="schedule-duration">45 min</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~02:00 PM</div><div>🙏 Devprayag Sangam — last Panch Prayag · Lunch</div><div class="schedule-duration">Prayag 5</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">04:00 PM</div><div>Continue → Rishikesh / Haridwar</div><div class="schedule-duration">~2 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~06:00 PM</div><div>Reach Haridwar · Hotel check-in · Ganga aarti</div><div class="schedule-duration">Arrived</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">08:00 PM</div><div>Dinner · All 4 Dhams + 5 Prayags complete 🙏</div><div class="schedule-duration">Night</div></div>
+      </div>
+      <div class="grid">
+        <div class="box men"><h3>👨 Men Clothes</h3><ul><li>Cotton + light layer</li><li>Track pants</li></ul></div>
+        <div class="box women"><h3>👩 Women Clothes</h3><ul><li>Light suit</li><li>Stole</li></ul></div>
+        <div class="box night"><h3>🌙 Night Dress</h3><ul><li>Cotton nightwear</li></ul></div>
+        <div class="box essentials"><h3>🎒 Essentials</h3><ul><li>Water bottle</li><li>Prasad bags</li><li>Camera</li></ul></div>
+      </div>
+    </div>
+
+    <!-- DAY 12 -->
+    <div class="day-card" style="border-left-color:#15803d">
+      <div class="top">
+        <div class="date-box"><h2>10 June 2026</h2><p>Wednesday · Day 12</p></div>
+        <div class="weather">☀️ Hot | 28°C - 40°C</div>
+      </div>
+      <div class="route">🚗 Agent: Return Delhi/Haridwar → ✈️ Ahmedabad home (book return flight)</div>
+      <div class="schedule">
+        <h3>🕐 Day 12 Timeline</h3>
+        <p class="schedule-note">Agent Day 12 — Return to Delhi · Connect flight to Ahmedabad</p>
+        <div class="schedule-row estimated"><div class="schedule-time">05:00 AM</div><div>Wake · Quick breakfast · Hotel checkout Haridwar</div><div class="schedule-duration">1 hr</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">06:00 AM</div><div>Depart Haridwar → Delhi (agent drop)</div><div class="schedule-duration">~6 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~12:00 PM</div><div>Reach Delhi · Lunch near airport</div><div class="schedule-duration">Arrived</div></div>
+        <div class="schedule-row estimated"><div class="schedule-time">02:00 PM</div><div>Airport check-in · Book DEL → AMD return flight</div><div class="schedule-duration">2 hrs</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~04:00 PM</div><div>✈️ Estimated Delhi → Ahmedabad flight</div><div class="schedule-duration">~1h 45m</div></div>
+        <div class="schedule-row estimated highlight"><div class="schedule-time">~06:00 PM</div><div>Land Ahmedabad · Reach home 🏠</div><div class="schedule-duration">Home</div></div>
+      </div>
+      <div class="grid">
+        <div class="box men"><h3>👨 Men Clothes</h3><ul><li>Travel comfortable wear</li><li>Light jacket for flight</li></ul></div>
+        <div class="box women"><h3>👩 Women Clothes</h3><ul><li>Comfortable travel suit</li><li>Light shawl</li></ul></div>
+        <div class="box night"><h3>🌙 Night Dress</h3><ul><li>Reach home tonight</li></ul></div>
+        <div class="box essentials"><h3>🎒 Essentials</h3><ul><li>Return ticket & ID</li><li>All medicines</li><li>Prasad bags (hand luggage)</li></ul></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <h2>🧳 Master Packing Checklist</h2>
+
+    <div class="check-grid">
+
+      <div class="check">
+        <h3>👕 Clothes</h3>
+        <ul>
+          <li>Thermals ×2</li>
+          <li>Jacket ×1</li>
+          <li>T-shirts ×6</li>
+          <li>Track pants ×4</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>💊 Medicines</h3>
+        <ul>
+          <li>Crocin</li>
+          <li>Digene</li>
+          <li>ORS (sugar-free for Mom & Dad)</li>
+          <li>Pain relief spray</li>
+          <li>Diabetes medicines ×2 sets (Mom & Dad)</li>
+          <li>Glucometer + strips + lancets</li>
+          <li>BP medicines (Wife — daily dose)</li>
+          <li>Digital BP monitor + batteries</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>📄 Documents</h3>
+        <ul>
+          <li>Aadhaar card</li>
+          <li>Yatra registration</li>
+          <li>Travel Key Solution booking</li>
+          <li>Agent contact: 9913465556</li>
+          <li>Hotel details</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>🎒 Accessories</h3>
+        <ul>
+          <li>Power bank</li>
+          <li>Raincoat</li>
+          <li>Torch</li>
+          <li>Waterproof cover</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <h2>💊 Medicine, Health & Trek Energy Kit</h2>
+
+    <div class="check-grid">
+
+      <div class="check check-border-red">
+        <h3>🤒 Fever / Body Pain</h3>
+        <ul>
+          <li>Paracetamol / Crocin</li>
+          <li>Combiflam</li>
+          <li>Volini Spray</li>
+          <li>Muscle pain relief gel</li>
+          <li>Pain relief patches</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-blue">
+        <h3>🤢 Motion Sickness</h3>
+        <ul>
+          <li>Avomine</li>
+          <li>Ondem</li>
+          <li>Electral ORS (sugar-free for Mom & Dad)</li>
+          <li>Mint / Hajmola</li>
+          <li>Sugar-free candy (instead of jeera candy)</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-green">
+        <h3>🤧 Cold & Cough</h3>
+        <ul>
+          <li>Cetirizine</li>
+          <li>Vicks</li>
+          <li>Strepsils</li>
+          <li>Cough syrup</li>
+          <li>Steam capsules</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-amber">
+        <h3>🩹 First Aid</h3>
+        <ul>
+          <li>Band-aid</li>
+          <li>Dettol</li>
+          <li>Cotton</li>
+          <li>Crepe bandage</li>
+          <li>Medical tape</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-red">
+        <h3>🩺 Diabetes — Mom & Dad</h3>
+        <ul>
+          <li>Daily sugar medicines (both)</li>
+          <li>Insulin if doctor prescribed</li>
+          <li>Glucometer + test strips</li>
+          <li>Glucose tablets (low sugar emergency only)</li>
+          <li>Doctor prescription copy</li>
+          <li>Extra 7-day medicine stock</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-blue">
+        <h3>❤️ BP — Wife</h3>
+        <ul>
+          <li>Daily BP medicines on fixed time</li>
+          <li>Digital BP monitor (home use)</li>
+          <li>Extra 7-day BP medicine stock</li>
+          <li>Doctor prescription copy</li>
+          <li>Avoid Combiflam / strong painkillers unless doctor okays</li>
+          <li>Emergency contact of cardiologist / physician</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <h2>⚡ Trek Energy Drinks & Hydration</h2>
+
+    <div class="check-grid">
+
+      <div class="check check-border-orange">
+        <h3>🥤 Energy Drinks</h3>
+        <ul>
+          <li>Electral ORS Sachets (sugar-free for Mom & Dad)</li>
+          <li>Glucon-D (others only — not for Mom & Dad)</li>
+          <li>Enerzal / sugar-free electrolyte</li>
+          <li>Protein drink sachets (unsweetened)</li>
+          <li>Electrolyte tablets (sugar-free)</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-sky">
+        <h3>💧 Hydration Tips</h3>
+        <ul>
+          <li>Drink water every 20–30 mins</li>
+          <li>Carry insulated water bottle</li>
+          <li>Take small sips during trek</li>
+          <li>Avoid dehydration</li>
+          <li>Wife: low-salt food & drinks only</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-green">
+        <h3>🍫 Instant Energy Foods</h3>
+        <ul>
+          <li>Dark chocolate (others only)</li>
+          <li>Sugar-free protein bars (Mom & Dad)</li>
+          <li>Roasted chana / makhana (Mom & Dad)</li>
+          <li>Dates & chikki (others only)</li>
+          <li>Limited unsalted nuts (Mom & Dad)</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-red">
+        <h3>⚠️ Avoid During Trek</h3>
+        <ul>
+          <li>Cold drinks & sweet juices</li>
+          <li>Heavy oily & salty food (Wife — BP)</li>
+          <li>Pickles, papad, namkeen & extra salt (Wife)</li>
+          <li>Too much tea/coffee (Wife — limit strictly)</li>
+          <li>Alcohol & smoking</li>
+          <li>Sweets & sugary snacks (Mom & Dad)</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <h2>👴👵 Mom & Dad — Senior Citizen & Sugar Patient Care</h2>
+
+    <div class="check-grid">
+
+      <div class="check check-border-red">
+        <h3>🩺 Sugar / Diabetes Care</h3>
+        <ul>
+          <li>Both Mom & Dad are sugar patients</li>
+          <li>Take medicines on time every day</li>
+          <li>Check sugar before trek & after meals</li>
+          <li>Carry double stock of all sugar tablets</li>
+          <li>Glucometer + strips mandatory</li>
+          <li>Keep doctor prescription & emergency contact</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>🫁 Breathing Support</h3>
+        <ul>
+          <li>Portable oxygen can</li>
+          <li>Camphor</li>
+          <li>Warm water flask</li>
+          <li>Steam capsules</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>🦵 Trek Support</h3>
+        <ul>
+          <li>Knee support</li>
+          <li>Walking stick</li>
+          <li>Pain spray</li>
+          <li>Comfortable trekking shoes</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>🥾 Trek Advice</h3>
+        <ul>
+          <li>Walk slowly — no rushing</li>
+          <li>Take breaks every 30 mins</li>
+          <li>Sugar-free ORS & plain water only</li>
+          <li>Eat small meals — avoid fasting</li>
+          <li>Stop trek if sugar is too high or low</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <h2>👩 Wife — BP Patient Special Care</h2>
+
+    <div class="check-grid">
+
+      <div class="check check-border-blue">
+        <h3>❤️ BP Medicine & Monitoring</h3>
+        <ul>
+          <li>Wife is a BP patient — never skip daily dose</li>
+          <li>Check BP every morning & evening</li>
+          <li>Carry BP monitor in hand luggage</li>
+          <li>Extra full trip stock of BP tablets</li>
+          <li>Note down readings in phone / diary</li>
+          <li>Consult doctor before high-altitude trek</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-green">
+        <h3>🥗 Low-Salt Diet</h3>
+        <ul>
+          <li>No extra salt in food</li>
+          <li>Avoid hotel pickles & papad</li>
+          <li>Skip namkeen, chips & packaged snacks</li>
+          <li>Prefer fresh fruits & plain roti-sabzi</li>
+          <li>Light dinner — not too late at night</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>🧘 Stress & Rest</h3>
+        <ul>
+          <li>Avoid rushing & long arguments</li>
+          <li>Sleep 7–8 hours every night</li>
+          <li>Rest if headache or dizziness</li>
+          <li>Deep breathing during steep climbs</li>
+          <li>Skip trek if BP reading is very high</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>🥾 Trek Advice for Wife</h3>
+        <ul>
+          <li>Walk at easy pace — no sprinting</li>
+          <li>Break every 20–30 mins</li>
+          <li>Stay warm — cold can affect BP</li>
+          <li>Plain water over tea/coffee on trek</li>
+          <li>Tell group immediately if unwell</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+
+    <h2>🏔️ Kedarnath Trek Survival Plan</h2>
+
+    <div class="check-grid">
+
+      <div class="check">
+        <h3>🌅 Before Trek</h3>
+        <ul>
+          <li>Light sugar-free breakfast (Mom & Dad)</li>
+          <li>Low-salt breakfast (Wife — no pickles)</li>
+          <li>Check sugar (Mom & Dad) & BP (Wife)</li>
+          <li>Take all morning medicines on time</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>⛰️ During Trek</h3>
+        <ul>
+          <li>Roasted chana / makhana (Mom & Dad)</li>
+          <li>Plain water & sugar-free ORS only</li>
+          <li>Wife: no salty snacks — carry fruits</li>
+          <li>Stop if dizzy, chest pain or BP feels high</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>🌙 After Trek</h3>
+        <ul>
+          <li>Hot soup — no extra salt (Wife)</li>
+          <li>Warm water</li>
+          <li>Light dinner — low carb & low salt</li>
+          <li>Recheck sugar (Mom & Dad) & BP (Wife)</li>
+        </ul>
+      </div>
+
+      <div class="check">
+        <h3>🎒 Must Carry</h3>
+        <ul>
+          <li>Glucometer + strips (Mom & Dad)</li>
+          <li>BP monitor + medicines (Wife)</li>
+          <li>Power bank</li>
+          <li>Torch, raincoat & extra wool socks</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const loader = document.getElementById('loader');
+  const progress = document.getElementById('scrollProgress');
+
+  window.addEventListener('load', function(){
+    setTimeout(function(){
+      loader.classList.add('hide');
+      animateCounters();
+    }, 900);
+  });
+
+  window.addEventListener('scroll', function(){
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    progress.style.width = pct + '%';
+  });
+
+  document.querySelectorAll('.day-card, .footer, .journey-map, .temple-gallery').forEach(function(el){
+    el.classList.add('reveal');
+  });
+
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('.schedule-row').forEach(function(row, i){
+          row.style.animationDelay = (i * 0.06) + 's';
+          row.style.animation = 'fadeUp 0.5s ease both';
+        });
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
+
+  function animateCounters(){
+    document.querySelectorAll('[data-count]').forEach(function(el){
+      const target = parseInt(el.getAttribute('data-count'), 10);
+      let current = 0;
+      const step = Math.max(1, Math.floor(target / 20));
+      const timer = setInterval(function(){
+        current += step;
+        if(current >= target){
+          current = target;
+          clearInterval(timer);
+        }
+        el.textContent = current;
+      }, 40);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
