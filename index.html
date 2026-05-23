@@ -1262,6 +1262,235 @@
       font-weight:600;
     }
 
+    /* ── Mobile quick jump (FAB + bottom sheet) ── */
+    .mobile-quick-fab,
+    .mobile-quick-backdrop,
+    .mobile-quick-sheet{
+      display:none;
+    }
+
+    .mobile-quick-fab{
+      position:fixed;
+      right:max(16px, env(safe-area-inset-right));
+      bottom:max(20px, env(safe-area-inset-bottom));
+      z-index:960;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      min-height:48px;
+      padding:0 18px;
+      border:none;
+      border-radius:999px;
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
+      color:#fff;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:0.3px;
+      box-shadow:0 10px 32px rgba(37,99,235,0.45);
+      border:1px solid rgba(255,255,255,0.2);
+      cursor:pointer;
+      transition:transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .mobile-quick-fab:active{
+      transform:scale(0.96);
+    }
+
+    .mobile-quick-fab.open{
+      background:linear-gradient(135deg,#475569,#334155);
+      box-shadow:0 8px 24px rgba(15,23,42,0.35);
+    }
+
+    .mobile-quick-fab-icon{
+      font-size:18px;
+      line-height:1;
+      transition:transform 0.25s ease;
+    }
+
+    .mobile-quick-fab.open .mobile-quick-fab-icon{
+      transform:rotate(45deg);
+    }
+
+    .mobile-quick-backdrop{
+      position:fixed;
+      inset:0;
+      z-index:970;
+      background:rgba(15,23,42,0.45);
+      backdrop-filter:blur(4px);
+      -webkit-backdrop-filter:blur(4px);
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 0.3s ease, visibility 0.3s;
+    }
+
+    .mobile-quick-backdrop.open{
+      opacity:1;
+      visibility:visible;
+    }
+
+    .mobile-quick-sheet{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:980;
+      max-height:min(78vh, 620px);
+      padding:10px 16px max(20px, env(safe-area-inset-bottom));
+      padding-left:max(16px, env(safe-area-inset-left));
+      padding-right:max(16px, env(safe-area-inset-right));
+      border-radius:24px 24px 0 0;
+      background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
+      box-shadow:0 -20px 50px rgba(15,23,42,0.18);
+      transform:translateY(105%);
+      transition:transform 0.38s cubic-bezier(0.22,1,0.36,1);
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .mobile-quick-sheet.open{
+      transform:translateY(0);
+    }
+
+    .mobile-quick-handle{
+      width:42px;
+      height:4px;
+      margin:0 auto 14px;
+      border-radius:999px;
+      background:#cbd5e1;
+    }
+
+    .mobile-quick-head h2{
+      font-family:'Playfair Display',serif;
+      font-size:20px;
+      color:#0f172a;
+      margin:0 0 4px;
+    }
+
+    .mobile-quick-head p{
+      margin:0 0 16px;
+      font-size:13px;
+      color:#64748b;
+    }
+
+    .mobile-day-jump{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:16px;
+      padding:12px;
+      border-radius:16px;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+    }
+
+    .mobile-day-btn{
+      flex:0 0 auto;
+      width:44px;
+      height:44px;
+      border:none;
+      border-radius:12px;
+      background:#fff;
+      color:#1d4ed8;
+      font-size:20px;
+      font-weight:700;
+      box-shadow:0 4px 12px rgba(37,99,235,0.12);
+      cursor:pointer;
+    }
+
+    .mobile-day-btn:disabled{
+      opacity:0.35;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    .mobile-day-current{
+      flex:1;
+      min-width:0;
+      text-align:center;
+    }
+
+    .mobile-day-current strong{
+      display:block;
+      font-size:15px;
+      color:#1e3a8a;
+    }
+
+    .mobile-day-current span{
+      display:block;
+      font-size:12px;
+      color:#64748b;
+      margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .mobile-quick-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+
+    .mobile-quick-tile{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:4px;
+      min-height:72px;
+      padding:14px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid #e2e8f0;
+      text-decoration:none;
+      color:#0f172a;
+      box-shadow:0 4px 14px rgba(15,23,42,0.04);
+      transition:transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .mobile-quick-tile:active{
+      transform:scale(0.98);
+      border-color:#93c5fd;
+    }
+
+    .mobile-quick-tile-icon{
+      font-size:22px;
+      line-height:1;
+    }
+
+    .mobile-quick-tile strong{
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .mobile-quick-tile span{
+      font-size:11px;
+      color:#64748b;
+      line-height:1.35;
+    }
+
+    button.mobile-quick-tile{
+      width:100%;
+      font:inherit;
+      text-align:left;
+      cursor:pointer;
+    }
+
+    .mobile-quick-sheet:not(.open),
+    .mobile-quick-backdrop:not(.open){
+      pointer-events:none;
+      visibility:hidden;
+    }
+
+    .mobile-quick-backdrop.open,
+    .mobile-quick-sheet.open{
+      visibility:visible;
+      pointer-events:auto;
+    }
+
+    body.mobile-sheet-open{
+      overflow:hidden;
+    }
+
     .toc-header .toc-kbd-hint{
       display:inline-block;
       margin-top:10px;
@@ -1487,45 +1716,42 @@
 
     .journey-track{
       display:flex;
-      flex-direction:column;
-      align-items:stretch;
-      gap:12px;
+      align-items:flex-start;
+      justify-content:space-between;
       position:relative;
+      flex-wrap:wrap;
+      gap:12px;
     }
 
     .journey-track::before{
       content:'';
       position:absolute;
-      top:12px;
-      bottom:12px;
-      left:31px;
-      width:4px;
-      background:linear-gradient(180deg,#2563eb,#f97316,#22c55e,#7c3aed,#ea580c);
+      top:32px;
+      left:8%;
+      right:8%;
+      height:4px;
+      background:linear-gradient(90deg,#2563eb,#f97316,#22c55e,#7c3aed,#ea580c);
       border-radius:999px;
       z-index:0;
       opacity:0.35;
     }
 
     .journey-dot{
-      flex:none;
-      min-width:0;
-      width:100%;
-      display:flex;
-      align-items:center;
-      gap:16px;
-      text-align:left;
-      background:#f8fafc;
-      padding:12px 14px;
-      border-radius:16px;
-      border:1px solid #e2e8f0;
-      transition:transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+      flex:1;
+      min-width:100px;
+      text-align:center;
+      position:relative;
+      z-index:1;
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      transition:transform 0.35s ease;
     }
 
     .journey-dot .icon{
       width:64px;
       height:64px;
-      margin:0;
-      flex-shrink:0;
+      margin:0 auto 10px;
       border-radius:50%;
       display:flex;
       align-items:center;
@@ -1533,34 +1759,33 @@
       overflow:hidden;
       box-shadow:0 8px 25px rgba(0,0,0,0.15);
       border:3px solid #e2e8f0;
+      animation:dotBounce 2s ease-in-out infinite;
     }
 
     .journey-dot.reveal-step{
       opacity:0;
-      transform:translateX(-24px);
+      transform:translateY(18px);
       transition:opacity 0.55s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1);
     }
 
     .journey-map.visible .journey-dot.reveal-step{
       opacity:1;
-      transform:translateX(0);
+      transform:translateY(0);
     }
 
-    .journey-map.visible .journey-dot:nth-child(1).reveal-step{ transition-delay:0.05s; }
-    .journey-map.visible .journey-dot:nth-child(2).reveal-step{ transition-delay:0.12s; }
-    .journey-map.visible .journey-dot:nth-child(3).reveal-step{ transition-delay:0.19s; }
-    .journey-map.visible .journey-dot:nth-child(4).reveal-step{ transition-delay:0.26s; }
-    .journey-map.visible .journey-dot:nth-child(5).reveal-step{ transition-delay:0.33s; }
+    .journey-map.visible .journey-dot:nth-of-type(1).reveal-step{ transition-delay:0.05s; }
+    .journey-map.visible .journey-dot:nth-of-type(2).reveal-step{ transition-delay:0.12s; }
+    .journey-map.visible .journey-dot:nth-of-type(3).reveal-step{ transition-delay:0.19s; }
+    .journey-map.visible .journey-dot:nth-of-type(4).reveal-step{ transition-delay:0.26s; }
+    .journey-map.visible .journey-dot:nth-of-type(5).reveal-step{ transition-delay:0.33s; }
 
     .journey-dot:hover{
-      transform:translateX(4px);
-      box-shadow:0 10px 28px rgba(15,23,42,0.08);
-      border-color:#bfdbfe;
+      transform:translateY(-4px);
     }
 
     .journey-dot span{
       display:block;
-      font-size:14px;
+      font-size:12px;
       font-weight:600;
       color:#475569;
       text-transform:uppercase;
@@ -1569,31 +1794,37 @@
 
     .journey-dot small{
       display:block;
-      font-size:12px;
+      font-size:11px;
       color:#94a3b8;
       margin-top:2px;
     }
 
     .journey-dot-label{
-      flex:1;
-      min-width:0;
-    }
-
-    a.journey-dot{
-      text-decoration:none;
-      color:inherit;
+      display:block;
     }
 
     a.journey-dot:focus-visible{
       outline:3px solid #93c5fd;
       outline-offset:3px;
+      border-radius:12px;
     }
 
-    .journey-dot:nth-child(1) .icon{ border-color:#2563eb; }
-    .journey-dot:nth-child(2) .icon{ border-color:#dc2626; }
-    .journey-dot:nth-child(3) .icon{ border-color:#0891b2; }
-    .journey-dot:nth-child(4) .icon{ border-color:#7c3aed; }
-    .journey-dot:nth-child(5) .icon{ border-color:#ea580c; }
+    .journey-dot:nth-of-type(1) .icon{ border-color:#2563eb; animation-delay:0s; }
+    .journey-dot:nth-of-type(2) .icon{ border-color:#dc2626; animation-delay:0.35s; }
+    .journey-dot:nth-of-type(3) .icon{ border-color:#0891b2; animation-delay:0.7s; }
+    .journey-dot:nth-of-type(4) .icon{ border-color:#7c3aed; animation-delay:1.05s; }
+    .journey-dot:nth-of-type(5) .icon{ border-color:#ea580c; animation-delay:1.4s; }
+
+    .traveler{
+      position:absolute;
+      top:18px;
+      left:8%;
+      font-size:22px;
+      z-index:2;
+      animation:travelPath 8s ease-in-out infinite;
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      pointer-events:none;
+    }
 
     .temple-gallery{
       display:grid;
@@ -1848,6 +2079,14 @@
       50%{ transform:translateY(-8px); }
     }
 
+    @keyframes travelPath{
+      0%{ left:8%; transform:scaleX(1); }
+      45%{ left:78%; transform:scaleX(1); }
+      50%{ left:78%; transform:scaleX(-1); }
+      95%{ left:8%; transform:scaleX(-1); }
+      100%{ left:8%; transform:scaleX(1); }
+    }
+
     /* ── Mobile quick nav ── */
     .mobile-nav{
       display:none;
@@ -1893,6 +2132,13 @@
       color:#fff;
     }
 
+    .mobile-nav a.active{
+      background:rgba(249,115,22,0.5);
+      border-color:rgba(249,115,22,0.75);
+      color:#fff;
+      box-shadow:0 0 0 1px rgba(249,115,22,0.25);
+    }
+
     /* ── Tablet ── */
     @media(max-width:1024px){
       .hero{ padding:40px 28px; }
@@ -1921,6 +2167,22 @@
         margin-right:max(-12px, calc(-1 * env(safe-area-inset-right)));
         padding-left:max(12px, env(safe-area-inset-left));
         padding-right:max(12px, env(safe-area-inset-right));
+      }
+
+      .toc-shortcut{ display:none; }
+
+      .mobile-quick-fab,
+      .mobile-quick-backdrop,
+      .mobile-quick-sheet{
+        display:block;
+      }
+
+      .mobile-quick-fab{
+        display:flex;
+      }
+
+      body.journey-rail-visible .mobile-quick-fab{
+        bottom:max(88px, calc(env(safe-area-inset-bottom) + 80px));
       }
 
       .hero{
@@ -1966,18 +2228,51 @@
       .journey-map{ padding:20px 16px; border-radius:18px; }
       .journey-map h3{ font-size:18px; margin-bottom:16px; }
 
-      .journey-track::before{ left:25px; }
+      .journey-track{
+        flex-direction:column;
+        align-items:stretch;
+        gap:10px;
+      }
+
+      .journey-track::before{
+        top:12px;
+        bottom:12px;
+        left:25px;
+        right:auto;
+        width:4px;
+        height:auto;
+        background:linear-gradient(180deg,#2563eb,#f97316,#22c55e,#7c3aed,#ea580c);
+      }
+
+      .traveler{ display:none; }
 
       .journey-dot{
+        flex:none;
+        min-width:0;
+        width:100%;
+        display:flex;
+        align-items:center;
+        gap:14px;
+        text-align:left;
+        background:#f8fafc;
         padding:10px 12px;
         border-radius:14px;
-        gap:14px;
+        border:1px solid #e2e8f0;
       }
+
+      .journey-dot.reveal-step{ transform:translateX(-24px); }
+      .journey-map.visible .journey-dot.reveal-step{ transform:translateX(0); }
+      .journey-dot:hover{ transform:translateX(4px); }
 
       .journey-dot .icon{
         width:52px;
         height:52px;
+        margin:0;
+        flex-shrink:0;
+        animation:none;
       }
+
+      .journey-dot-label{ flex:1; min-width:0; }
 
       .journey-dot span{ font-size:13px; }
       .journey-dot small{ font-size:11px; }
@@ -2251,6 +2546,16 @@
       }
 
       .toc-shortcut kbd{ display:none; }
+
+      .mobile-quick-fab{
+        padding:0 16px;
+        min-height:46px;
+        font-size:12px;
+        bottom:max(14px, env(safe-area-inset-bottom));
+      }
+
+      .mobile-quick-grid{ gap:8px; }
+      .mobile-quick-tile{ min-height:68px; padding:12px; }
     }
 
     /* ── Touch devices: reduce hover shift ── */
@@ -2276,6 +2581,8 @@
       .reveal{ opacity:1; transform:none; }
       .journey-dot.reveal-step{ opacity:1; transform:none; }
       .journey-scroll-rail{ transition:none; }
+      .mobile-quick-sheet,
+      .mobile-quick-backdrop{ transition:none; }
     }
 
   </style>
@@ -2416,6 +2723,7 @@
   <div class="journey-map reveal" id="journey-route">
     <h3>🗺️ Your Sacred Journey Route</h3>
     <div class="journey-track">
+      <span class="traveler" aria-hidden="true">🚐</span>
       <a class="journey-dot reveal-step" href="#day-1">
         <div class="icon"><img src="assets/images/haridwar.jpg" alt="Haridwar" loading="lazy"/></div>
         <div class="journey-dot-label"><span>Haridwar</span><small>Day 1 · Gateway</small></div>
@@ -3900,6 +4208,71 @@
   <kbd>Alt+T</kbd>
 </a>
 
+<button type="button" class="mobile-quick-fab" id="mobileQuickFab" aria-expanded="false" aria-controls="mobileQuickSheet" aria-label="Open quick jump menu">
+  <span class="mobile-quick-fab-icon" aria-hidden="true">⚡</span>
+  <span>Jump</span>
+</button>
+
+<div class="mobile-quick-backdrop" id="mobileQuickBackdrop" aria-hidden="true"></div>
+
+<div class="mobile-quick-sheet" id="mobileQuickSheet" role="dialog" aria-modal="true" aria-labelledby="mobileQuickTitle" aria-hidden="true">
+  <div class="mobile-quick-handle" aria-hidden="true"></div>
+  <div class="mobile-quick-head">
+    <h2 id="mobileQuickTitle">Quick Jump</h2>
+    <p id="mobileQuickContext">Shortcuts for mobile — days, health &amp; travel info</p>
+  </div>
+  <div class="mobile-day-jump">
+    <button type="button" class="mobile-day-btn" id="mobilePrevDay" aria-label="Previous day">←</button>
+    <div class="mobile-day-current" id="mobileDayCurrent">
+      <strong id="mobileDayLabel">Outside day plan</strong>
+      <span id="mobileDayPlace">Open daily cards or use shortcuts below</span>
+    </div>
+    <button type="button" class="mobile-day-btn" id="mobileNextDay" aria-label="Next day">→</button>
+  </div>
+  <div class="mobile-quick-grid">
+    <a href="#table-of-contents" class="mobile-quick-tile" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">📑</span>
+      <strong>Contents</strong>
+      <span>Full table of contents</span>
+    </a>
+    <a href="#journey-route" class="mobile-quick-tile" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">🗺️</span>
+      <strong>Route Map</strong>
+      <span>Sacred journey overview</span>
+    </a>
+    <a href="#time-estimate" class="mobile-quick-tile" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">🕐</span>
+      <strong>Ertiga Plan</strong>
+      <span>Day-wise drive times</span>
+    </a>
+    <a href="#daily-plan" class="mobile-quick-tile" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">📅</span>
+      <strong>All Days</strong>
+      <span>12-day itinerary cards</span>
+    </a>
+    <a href="#packing-checklist" class="mobile-quick-tile" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">💊</span>
+      <strong>Health Kit</strong>
+      <span>Packing &amp; medicine</span>
+    </a>
+    <a href="#photo-gallery" class="mobile-quick-tile" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">📸</span>
+      <strong>Gallery</strong>
+      <span>Four Dhams photos</span>
+    </a>
+    <button type="button" class="mobile-quick-tile" id="mobileScrollTop" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">⬆️</span>
+      <strong>Back to Top</strong>
+      <span>Return to hero section</span>
+    </button>
+    <a href="#flight-ticket" class="mobile-quick-tile" data-close-sheet>
+      <span class="mobile-quick-tile-icon" aria-hidden="true">✈️</span>
+      <strong>Flight</strong>
+      <span>Confirmed Day 1 ticket</span>
+    </a>
+  </div>
+</div>
+
 <aside class="journey-scroll-rail" id="journeyScrollRail" aria-label="Sacred journey route progress">
   <div class="journey-rail-panel">
     <span class="journey-rail-title">🗺️ Sacred Route</span>
@@ -3950,6 +4323,7 @@
     const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
     progress.style.width = pct + '%';
     updateJourneyRail();
+    updateMobileNavActive();
   }, { passive: true });
 
   const journeyDayIds = ['day-1','day-3','day-5','day-7','day-10'];
@@ -4010,6 +4384,7 @@
     const routeOverlapping = routeRect.bottom > 120 && routeRect.top < vh * 0.45;
     const showRail = isDailySectionVisible() && !pastTrip && !routeOverlapping;
     rail.classList.toggle('visible', showRail);
+    document.body.classList.toggle('journey-rail-visible', showRail && window.innerWidth <= 768);
 
     const active = getActiveJourneyIndex();
 
@@ -4086,7 +4461,183 @@
       e.preventDefault();
       if(tocBlock){ tocBlock.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     }
+    if(e.key === 'Escape'){ closeMobileSheet(); }
   });
+
+  const dayPlanMeta = [
+    { id: 'day-1', label: 'Day 1', place: 'Haridwar · Gateway' },
+    { id: 'day-2', label: 'Day 2', place: 'Barkot' },
+    { id: 'day-3', label: 'Day 3', place: 'Yamunotri · 1st Dham' },
+    { id: 'day-4', label: 'Day 4', place: 'Uttarkashi' },
+    { id: 'day-5', label: 'Day 5', place: 'Gangotri · 2nd Dham' },
+    { id: 'day-6', label: 'Day 6', place: 'Guptkashi' },
+    { id: 'day-7', label: 'Day 7', place: 'Kedarnath · 3rd Dham' },
+    { id: 'day-8', label: 'Day 8', place: 'Return trek ↓' },
+    { id: 'day-9', label: 'Day 9', place: 'Pipalkoti' },
+    { id: 'day-10', label: 'Day 10', place: 'Badrinath · 4th Dham' },
+    { id: 'day-11', label: 'Day 11', place: 'Haridwar return' },
+    { id: 'day-12', label: 'Day 12', place: 'Delhi · Flight ✈' }
+  ];
+
+  function getActiveDayIndex(){
+    const dailyPlan = document.getElementById('daily-plan');
+    if(!dailyPlan) return -1;
+
+    const vh = window.innerHeight;
+    const probe = vh * 0.32;
+    let active = -1;
+
+    dayPlanMeta.forEach(function(day, i){
+      const el = document.getElementById(day.id);
+      if(!el) return;
+      const rect = el.getBoundingClientRect();
+      if(rect.top <= probe && rect.bottom > probe + 40){ active = i; }
+    });
+
+    if(active < 0){
+      let bestDist = Infinity;
+      dayPlanMeta.forEach(function(day, i){
+        const el = document.getElementById(day.id);
+        if(!el) return;
+        const rect = el.getBoundingClientRect();
+        if(rect.bottom < 0 || rect.top > vh) return;
+        const center = rect.top + rect.height / 2;
+        const dist = Math.abs(center - probe);
+        if(dist < bestDist){
+          bestDist = dist;
+          active = i;
+        }
+      });
+    }
+
+    return active;
+  }
+
+  let lastMobileNavDay = '';
+
+  function updateMobileNavActive(){
+    if(window.innerWidth > 768) return;
+
+    const active = getActiveDayIndex();
+    const activeId = active >= 0 ? dayPlanMeta[active].id : '';
+
+    document.querySelectorAll('.mobile-nav a[href^="#day-"]').forEach(function(link){
+      link.classList.toggle('active', activeId && link.getAttribute('href') === '#' + activeId);
+    });
+
+    if(activeId && activeId !== lastMobileNavDay){
+      lastMobileNavDay = activeId;
+      const activeLink = document.querySelector('.mobile-nav a[href="#' + activeId + '"]');
+      if(activeLink){
+        activeLink.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+
+    if(active < 0){ lastMobileNavDay = ''; }
+
+    updateMobileDayJump(active);
+  }
+
+  const mobileFab = document.getElementById('mobileQuickFab');
+  const mobileSheet = document.getElementById('mobileQuickSheet');
+  const mobileBackdrop = document.getElementById('mobileQuickBackdrop');
+  const mobilePrevDay = document.getElementById('mobilePrevDay');
+  const mobileNextDay = document.getElementById('mobileNextDay');
+  const mobileDayLabel = document.getElementById('mobileDayLabel');
+  const mobileDayPlace = document.getElementById('mobileDayPlace');
+  const mobileScrollTop = document.getElementById('mobileScrollTop');
+
+  function updateMobileDayJump(active){
+    if(!mobileDayLabel || !mobileDayPlace) return;
+
+    if(active < 0){
+      mobileDayLabel.textContent = 'Outside day plan';
+      mobileDayPlace.textContent = 'Jump to daily cards or pick a shortcut';
+      if(mobilePrevDay) mobilePrevDay.disabled = true;
+      if(mobileNextDay) mobileNextDay.disabled = false;
+      return;
+    }
+
+    const day = dayPlanMeta[active];
+    mobileDayLabel.textContent = day.label;
+    mobileDayPlace.textContent = day.place;
+    if(mobilePrevDay) mobilePrevDay.disabled = active <= 0;
+    if(mobileNextDay) mobileNextDay.disabled = active >= dayPlanMeta.length - 1;
+  }
+
+  function scrollToDayIndex(index){
+    if(index < 0 || index >= dayPlanMeta.length) return;
+    const el = document.getElementById(dayPlanMeta[index].id);
+    if(el){ el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+
+  function openMobileSheet(){
+    if(!mobileSheet || !mobileFab || !mobileBackdrop) return;
+    updateMobileDayJump(getActiveDayIndex());
+    mobileSheet.classList.add('open');
+    mobileBackdrop.classList.add('open');
+    mobileFab.classList.add('open');
+    mobileFab.setAttribute('aria-expanded', 'true');
+    mobileFab.setAttribute('aria-label', 'Close quick jump menu');
+    mobileSheet.setAttribute('aria-hidden', 'false');
+    mobileBackdrop.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('mobile-sheet-open');
+  }
+
+  function closeMobileSheet(){
+    if(!mobileSheet || !mobileFab || !mobileBackdrop) return;
+    mobileSheet.classList.remove('open');
+    mobileBackdrop.classList.remove('open');
+    mobileFab.classList.remove('open');
+    mobileFab.setAttribute('aria-expanded', 'false');
+    mobileFab.setAttribute('aria-label', 'Open quick jump menu');
+    mobileSheet.setAttribute('aria-hidden', 'true');
+    mobileBackdrop.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('mobile-sheet-open');
+    mobileFab.focus();
+  }
+
+  if(mobileFab && mobileSheet && mobileBackdrop){
+    mobileFab.addEventListener('click', function(){
+      if(mobileSheet.classList.contains('open')){ closeMobileSheet(); }
+      else { openMobileSheet(); }
+    });
+
+    mobileBackdrop.addEventListener('click', closeMobileSheet);
+
+    document.querySelectorAll('[data-close-sheet]').forEach(function(el){
+      el.addEventListener('click', closeMobileSheet);
+    });
+
+    if(mobilePrevDay){
+      mobilePrevDay.addEventListener('click', function(){
+        scrollToDayIndex(getActiveDayIndex() - 1);
+        closeMobileSheet();
+      });
+    }
+
+    if(mobileNextDay){
+      mobileNextDay.addEventListener('click', function(){
+        const active = getActiveDayIndex();
+        scrollToDayIndex(active < 0 ? 0 : active + 1);
+        closeMobileSheet();
+      });
+    }
+
+    if(mobileScrollTop){
+      mobileScrollTop.addEventListener('click', function(){
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        closeMobileSheet();
+      });
+    }
+  }
+
+  window.addEventListener('resize', function(){
+    updateMobileNavActive();
+    if(window.innerWidth > 768){ closeMobileSheet(); }
+  }, { passive: true });
+
+  updateMobileNavActive();
 
   const observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
