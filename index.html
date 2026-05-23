@@ -1262,11 +1262,11 @@
       font-weight:600;
     }
 
-    /* ── Mobile quick jump (FAB + bottom sheet) ── */
+    /* ── Quick jump (FAB + panel — mobile sheet / desktop modal) ── */
     .mobile-quick-fab,
     .mobile-quick-backdrop,
     .mobile-quick-sheet{
-      display:none;
+      display:block;
     }
 
     .mobile-quick-fab{
@@ -1274,9 +1274,10 @@
       right:max(16px, env(safe-area-inset-right));
       bottom:max(20px, env(safe-area-inset-bottom));
       z-index:960;
+      display:flex;
       align-items:center;
       justify-content:center;
-      gap:6px;
+      gap:8px;
       min-height:48px;
       padding:0 18px;
       border:none;
@@ -1289,7 +1290,29 @@
       box-shadow:0 10px 32px rgba(37,99,235,0.45);
       border:1px solid rgba(255,255,255,0.2);
       cursor:pointer;
-      transition:transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+      transition:transform 0.3s ease, opacity 0.35s ease, box-shadow 0.3s ease, background 0.3s ease, visibility 0.35s;
+    }
+
+    .mobile-quick-fab.hidden{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transform:translateY(16px) scale(0.95);
+    }
+
+    .mobile-quick-fab:hover{
+      transform:translateY(-2px);
+      box-shadow:0 14px 38px rgba(37,99,235,0.5);
+    }
+
+    .mobile-quick-fab-kbd{
+      font-size:10px;
+      padding:3px 7px;
+      border-radius:6px;
+      background:rgba(15,23,42,0.22);
+      border:1px solid rgba(255,255,255,0.15);
+      font-family:inherit;
+      font-weight:600;
     }
 
     .mobile-quick-fab:active{
@@ -1490,6 +1513,81 @@
     body.mobile-sheet-open{
       overflow:hidden;
     }
+
+    .quick-jump-keys{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:-4px 0 14px;
+    }
+
+    .quick-jump-keys span{
+      font-size:11px;
+      color:#64748b;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:999px;
+      padding:5px 10px;
+    }
+
+    .quick-jump-keys kbd{
+      display:inline-block;
+      padding:1px 5px;
+      margin:0 1px;
+      border-radius:4px;
+      background:#fff;
+      border:1px solid #cbd5e1;
+      font-size:10px;
+      font-family:inherit;
+    }
+
+    .quick-tile-kbd{
+      display:none;
+      margin-top:auto;
+      font-size:10px;
+      padding:2px 6px;
+      border-radius:5px;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      color:#1d4ed8;
+      font-family:inherit;
+    }
+
+    @media(min-width:769px){
+      .mobile-quick-sheet{
+        top:50%;
+        left:50%;
+        right:auto;
+        bottom:auto;
+        width:min(520px, calc(100vw - 48px));
+        max-height:min(82vh, 680px);
+        border-radius:22px;
+        padding:20px 22px 22px;
+        transform:translate(-50%, -46%) scale(0.94);
+        opacity:0;
+        transition:transform 0.32s cubic-bezier(0.22,1,0.36,1), opacity 0.28s ease;
+      }
+
+      .mobile-quick-sheet.open{
+        transform:translate(-50%, -50%) scale(1);
+        opacity:1;
+      }
+
+      .mobile-quick-handle{ display:none; }
+
+      .mobile-quick-head p{ margin-bottom:12px; }
+
+      .quick-tile-kbd{ display:inline-block; }
+
+      .mobile-quick-fab-kbd{ display:inline-block; }
+    }
+
+    @media(max-width:768px){
+      .quick-jump-keys,
+      .mobile-quick-fab-kbd{ display:none; }
+    }
+
+    .toc-shortcut{ display:none; }
 
     .toc-header .toc-kbd-hint{
       display:inline-block;
@@ -2171,16 +2269,6 @@
 
       .toc-shortcut{ display:none; }
 
-      .mobile-quick-fab,
-      .mobile-quick-backdrop,
-      .mobile-quick-sheet{
-        display:block;
-      }
-
-      .mobile-quick-fab{
-        display:flex;
-      }
-
       body.journey-rail-visible .mobile-quick-fab{
         bottom:max(88px, calc(env(safe-area-inset-bottom) + 80px));
       }
@@ -2669,7 +2757,7 @@
       <span>Quick Navigation</span>
       <h2>📑 Table of Contents</h2>
       <p>Jump to any section — itinerary, travel times, daily plan & health guides</p>
-      <span class="toc-kbd-hint">Shortcut: press <kbd>Alt</kbd> + <kbd>T</kbd> anytime</span>
+      <span class="toc-kbd-hint">Laptop: <kbd>Alt</kbd>+<kbd>J</kbd> Quick Jump · <kbd>Alt</kbd>+<kbd>T</kbd> Contents · <kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd> Prev/Next day · <kbd>Esc</kbd> Close</span>
     </div>
     <div class="toc-grid">
       <div class="toc-group">
@@ -4208,9 +4296,10 @@
   <kbd>Alt+T</kbd>
 </a>
 
-<button type="button" class="mobile-quick-fab" id="mobileQuickFab" aria-expanded="false" aria-controls="mobileQuickSheet" aria-label="Open quick jump menu">
+<button type="button" class="mobile-quick-fab" id="mobileQuickFab" aria-expanded="false" aria-controls="mobileQuickSheet" aria-label="Open quick jump menu" title="Quick Jump (Alt+J)">
   <span class="mobile-quick-fab-icon" aria-hidden="true">⚡</span>
   <span>Jump</span>
+  <kbd class="mobile-quick-fab-kbd">Alt+J</kbd>
 </button>
 
 <div class="mobile-quick-backdrop" id="mobileQuickBackdrop" aria-hidden="true"></div>
@@ -4219,7 +4308,15 @@
   <div class="mobile-quick-handle" aria-hidden="true"></div>
   <div class="mobile-quick-head">
     <h2 id="mobileQuickTitle">Quick Jump</h2>
-    <p id="mobileQuickContext">Shortcuts for mobile — days, health &amp; travel info</p>
+    <p id="mobileQuickContext">Jump to days, travel info &amp; health guides</p>
+    <div class="quick-jump-keys" aria-label="Keyboard shortcuts">
+      <span><kbd>Alt</kbd>+<kbd>J</kbd> Toggle</span>
+      <span><kbd>Alt</kbd>+<kbd>T</kbd> Contents</span>
+      <span><kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd> Days</span>
+      <span><kbd>Alt</kbd>+<kbd>D</kbd> All days</span>
+      <span><kbd>Alt</kbd>+<kbd>H</kbd> Health</span>
+      <span><kbd>Esc</kbd> Close</span>
+    </div>
   </div>
   <div class="mobile-day-jump">
     <button type="button" class="mobile-day-btn" id="mobilePrevDay" aria-label="Previous day">←</button>
@@ -4234,6 +4331,7 @@
       <span class="mobile-quick-tile-icon" aria-hidden="true">📑</span>
       <strong>Contents</strong>
       <span>Full table of contents</span>
+      <kbd class="quick-tile-kbd">Alt+T</kbd>
     </a>
     <a href="#journey-route" class="mobile-quick-tile" data-close-sheet>
       <span class="mobile-quick-tile-icon" aria-hidden="true">🗺️</span>
@@ -4245,20 +4343,23 @@
       <strong>Ertiga Plan</strong>
       <span>Day-wise drive times</span>
     </a>
-    <a href="#daily-plan" class="mobile-quick-tile" data-close-sheet>
+    <a href="#daily-plan" class="mobile-quick-tile" data-close-sheet data-hotkey="d">
       <span class="mobile-quick-tile-icon" aria-hidden="true">📅</span>
       <strong>All Days</strong>
       <span>12-day itinerary cards</span>
+      <kbd class="quick-tile-kbd">Alt+D</kbd>
     </a>
-    <a href="#packing-checklist" class="mobile-quick-tile" data-close-sheet>
+    <a href="#packing-checklist" class="mobile-quick-tile" data-close-sheet data-hotkey="h">
       <span class="mobile-quick-tile-icon" aria-hidden="true">💊</span>
       <strong>Health Kit</strong>
       <span>Packing &amp; medicine</span>
+      <kbd class="quick-tile-kbd">Alt+H</kbd>
     </a>
-    <a href="#photo-gallery" class="mobile-quick-tile" data-close-sheet>
+    <a href="#photo-gallery" class="mobile-quick-tile" data-close-sheet data-hotkey="g">
       <span class="mobile-quick-tile-icon" aria-hidden="true">📸</span>
       <strong>Gallery</strong>
       <span>Four Dhams photos</span>
+      <kbd class="quick-tile-kbd">Alt+G</kbd>
     </a>
     <button type="button" class="mobile-quick-tile" id="mobileScrollTop" data-close-sheet>
       <span class="mobile-quick-tile-icon" aria-hidden="true">⬆️</span>
@@ -4444,25 +4545,15 @@
   updateTocActive();
 
   const tocBlock = document.getElementById('table-of-contents');
-  const tocShortcut = document.getElementById('tocShortcut');
+  const quickJumpFab = document.getElementById('mobileQuickFab');
 
-  if(tocBlock && tocShortcut){
+  if(tocBlock && quickJumpFab){
     new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
-        tocShortcut.classList.toggle('hidden', entry.isIntersecting);
+        quickJumpFab.classList.toggle('hidden', entry.isIntersecting);
       });
     }, { threshold: 0.25, rootMargin: '-20px 0px 0px 0px' }).observe(tocBlock);
   }
-
-  document.addEventListener('keydown', function(e){
-    if(e.altKey && !e.ctrlKey && !e.metaKey && (e.key === 't' || e.key === 'T')){
-      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
-      if(tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable)) return;
-      e.preventDefault();
-      if(tocBlock){ tocBlock.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-    }
-    if(e.key === 'Escape'){ closeMobileSheet(); }
-  });
 
   const dayPlanMeta = [
     { id: 'day-1', label: 'Day 1', place: 'Haridwar · Gateway' },
@@ -4634,10 +4725,84 @@
 
   window.addEventListener('resize', function(){
     updateMobileNavActive();
-    if(window.innerWidth > 768){ closeMobileSheet(); }
   }, { passive: true });
 
   updateMobileNavActive();
+
+  function isTypingContext(e){
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    return tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable);
+  }
+
+  function scrollToSection(id){
+    const el = document.getElementById(id);
+    if(el){ el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+
+  function isQuickJumpOpen(){
+    return mobileSheet && mobileSheet.classList.contains('open');
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(isTypingContext(e)) return;
+
+    if(e.key === 'Escape'){
+      if(isQuickJumpOpen()){ closeMobileSheet(); e.preventDefault(); }
+      return;
+    }
+
+    if(!e.altKey || e.ctrlKey || e.metaKey) return;
+
+    if(e.key === 'j' || e.key === 'J'){
+      e.preventDefault();
+      if(isQuickJumpOpen()){ closeMobileSheet(); }
+      else { openMobileSheet(); }
+      return;
+    }
+
+    if(e.key === 't' || e.key === 'T'){
+      e.preventDefault();
+      closeMobileSheet();
+      scrollToSection('table-of-contents');
+      return;
+    }
+
+    if(e.key === 'ArrowLeft'){
+      e.preventDefault();
+      const active = getActiveDayIndex();
+      if(active <= 0){ scrollToDayIndex(0); }
+      else { scrollToDayIndex(active - 1); }
+      return;
+    }
+
+    if(e.key === 'ArrowRight'){
+      e.preventDefault();
+      const active = getActiveDayIndex();
+      scrollToDayIndex(active < 0 ? 0 : Math.min(active + 1, dayPlanMeta.length - 1));
+      return;
+    }
+
+    if(e.key === 'd' || e.key === 'D'){
+      e.preventDefault();
+      closeMobileSheet();
+      scrollToSection('daily-plan');
+      return;
+    }
+
+    if(e.key === 'h' || e.key === 'H'){
+      e.preventDefault();
+      closeMobileSheet();
+      scrollToSection('packing-checklist');
+      return;
+    }
+
+    if(e.key === 'g' || e.key === 'G'){
+      e.preventDefault();
+      closeMobileSheet();
+      scrollToSection('photo-gallery');
+      return;
+    }
+  });
 
   const observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
