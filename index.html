@@ -6,6 +6,7 @@
   <title>Chardham Yatra Planner</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/images/himalaya.jpg"/>
 
   <style>
     :root{
@@ -167,16 +168,18 @@
       position:absolute;
       inset:0;
       background:
-        linear-gradient(135deg,rgba(15,23,42,0.82) 0%,rgba(30,64,175,0.75) 45%,rgba(124,45,18,0.65) 100%),
+        linear-gradient(135deg,rgba(15,23,42,0.78) 0%,rgba(30,64,175,0.68) 45%,rgba(124,45,18,0.55) 100%),
         var(--img-himalaya);
-      background-size:110%;
-      background-position:center 30%;
-      animation:heroKenBurns 20s ease-in-out infinite alternate;
+      background-size:cover;
+      background-position:center 35%;
+      animation:heroKenBurns 22s ease-in-out infinite alternate;
+      image-rendering:auto;
+      transform:translateZ(0);
     }
 
     @keyframes heroKenBurns{
-      0%{ background-size:105%; background-position:center 25%; }
-      100%{ background-size:115%; background-position:center 55%; }
+      0%{ transform:scale(1) translateZ(0); background-position:center 30%; }
+      100%{ transform:scale(1.08) translateZ(0); background-position:center 50%; }
     }
 
     .hero-orbs span{
@@ -382,28 +385,64 @@
     .day-card.temple-badrinath::after{ background-image:var(--img-badrinath); }
 
     .day-banner{
-      height:200px;
+      height:220px;
       margin:-28px -28px 24px;
-      background-size:cover;
-      background-position:center;
       position:relative;
       z-index:3;
       display:flex;
       align-items:flex-end;
       padding:22px 26px;
       border-radius:16px 16px 0 0;
+      overflow:hidden;
+      isolation:isolate;
     }
+
+    .banner-photo{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      z-index:0;
+      filter:saturate(1.15) contrast(1.08) brightness(0.92);
+      transform:scale(1.02);
+      transition:transform 0.8s ease;
+    }
+
+    .day-card:hover .banner-photo{
+      transform:scale(1.08);
+    }
+
+    .pos-haridwar{ object-position:center 45%; }
+    .pos-yamunotri{ object-position:center 25%; }
+    .pos-gangotri{ object-position:center 40%; }
+    .pos-kedarnath{ object-position:center 30%; }
+    .pos-badrinath{ object-position:center 35%; }
 
     .day-banner::before{
       content:'';
       position:absolute;
       inset:0;
-      background:linear-gradient(to top,rgba(15,23,42,0.92) 0%,rgba(15,23,42,0.35) 55%,rgba(15,23,42,0.1) 100%);
+      z-index:1;
+      background:
+        linear-gradient(to top,rgba(15,23,42,0.93) 0%,rgba(15,23,42,0.4) 50%,rgba(15,23,42,0.15) 100%),
+        linear-gradient(135deg,rgba(249,115,22,0.15),transparent 50%);
+    }
+
+    .day-banner::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      z-index:2;
+      border-radius:16px 16px 0 0;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12);
+      pointer-events:none;
     }
 
     .day-banner h4{
       position:relative;
-      z-index:1;
+      z-index:3;
       color:white;
       font-family:'Playfair Display',serif;
       font-size:clamp(22px,3vw,30px);
@@ -413,7 +452,7 @@
 
     .day-banner p{
       position:relative;
-      z-index:1;
+      z-index:3;
       color:rgba(255,255,255,0.85);
       font-size:13px;
       margin-top:4px;
@@ -421,11 +460,149 @@
       text-transform:uppercase;
     }
 
-    .banner-haridwar{ background-image:var(--img-haridwar); background-position:center 40%; }
-    .banner-yamunotri{ background-image:var(--img-yamunotri); }
-    .banner-gangotri{ background-image:var(--img-gangotri); }
-    .banner-kedarnath{ background-image:var(--img-kedarnath); }
-    .banner-badrinath{ background-image:var(--img-badrinath); }
+    .day-banner > div{
+      position:relative;
+      z-index:3;
+    }
+
+    .banner-haridwar,.banner-yamunotri,.banner-gangotri,.banner-kedarnath,.banner-badrinath{}
+
+    /* ── Photo showcase (graphic design gallery) ── */
+    .photo-showcase{
+      margin-bottom:30px;
+    }
+
+    .showcase-intro{
+      text-align:center;
+      margin-bottom:22px;
+      color:white;
+    }
+
+    .showcase-intro span{
+      display:inline-block;
+      font-size:12px;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:8px;
+    }
+
+    .showcase-intro h2{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(26px,4vw,38px);
+      background:linear-gradient(90deg,#fff,#fde68a);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+
+    .showcase-grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:16px;
+    }
+
+    .showcase-card{
+      position:relative;
+      border-radius:22px;
+      overflow:hidden;
+      min-height:280px;
+      grid-column:span 3;
+      box-shadow:0 20px 50px rgba(0,0,0,0.35);
+      border:1px solid rgba(255,255,255,0.12);
+      isolation:isolate;
+    }
+
+    .showcase-card.wide{
+      grid-column:span 12;
+      min-height:340px;
+    }
+
+    .showcase-card img{
+      width:100%;
+      height:100%;
+      min-height:inherit;
+      object-fit:cover;
+      display:block;
+      filter:saturate(1.14) contrast(1.07) brightness(0.94);
+      transition:transform 0.7s cubic-bezier(0.22,1,0.36,1), filter 0.5s ease;
+    }
+
+    .showcase-card:hover img{
+      transform:scale(1.07);
+      filter:saturate(1.22) contrast(1.1) brightness(1);
+    }
+
+    .showcase-card::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      z-index:1;
+      background:linear-gradient(to top,rgba(15,23,42,0.92) 0%,rgba(15,23,42,0.25) 45%,transparent 100%);
+    }
+
+    .showcase-card::after{
+      content:'';
+      position:absolute;
+      inset:0;
+      z-index:2;
+      box-shadow:inset 0 -80px 80px -40px rgba(249,115,22,0.25);
+      pointer-events:none;
+    }
+
+    .showcase-caption{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      z-index:3;
+      padding:22px 24px;
+      color:white;
+    }
+
+    .showcase-caption .dham-num{
+      display:inline-block;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:6px;
+    }
+
+    .showcase-caption strong{
+      display:block;
+      font-family:'Playfair Display',serif;
+      font-size:clamp(20px,2.5vw,28px);
+      line-height:1.15;
+      text-shadow:0 2px 20px rgba(0,0,0,0.5);
+    }
+
+    .showcase-caption span{
+      display:block;
+      margin-top:6px;
+      font-size:13px;
+      opacity:0.88;
+    }
+
+    .showcase-card.wide .showcase-caption strong{ font-size:clamp(28px,4vw,42px); }
+
+    .img-yamunotri{ object-position:center 20%; }
+    .img-gangotri{ object-position:center 35%; }
+    .img-kedarnath{ object-position:center 25%; }
+    .img-badrinath{ object-position:center 40%; }
+    .img-haridwar-wide{ object-position:center 50%; }
+
+    .journey-dot .icon img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:50%;
+      display:block;
+      filter:saturate(1.1) contrast(1.05);
+    }
+
+    .temple-gallery{
+      display:none;
+    }
 
     .day-card::before{
       content:'';
@@ -679,6 +856,286 @@
     .flight-meta-item strong{
       font-size:15px;
       color:#0f172a;
+    }
+
+    /* ── Cost estimate (private car) ── */
+    .cost-summary{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:14px;
+      margin-bottom:24px;
+    }
+
+    .cost-summary-card{
+      background:linear-gradient(145deg,#fff7ed,#ffedd5);
+      border:1px solid #fed7aa;
+      border-radius:16px;
+      padding:18px 16px;
+      text-align:center;
+    }
+
+    .cost-summary-card.highlight{
+      background:linear-gradient(145deg,#eff6ff,#dbeafe);
+      border-color:#93c5fd;
+    }
+
+    .cost-summary-card span{
+      display:block;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:#64748b;
+      margin-bottom:6px;
+    }
+
+    .cost-summary-card strong{
+      display:block;
+      font-family:'Playfair Display',serif;
+      font-size:clamp(22px,3vw,28px);
+      color:#c2410c;
+      line-height:1.1;
+    }
+
+    .cost-summary-card.highlight strong{ color:#1d4ed8; }
+
+    .cost-summary-card small{
+      display:block;
+      margin-top:6px;
+      font-size:11px;
+      color:#64748b;
+    }
+
+    .cost-table-wrap{
+      overflow-x:auto;
+      margin-top:16px;
+      border-radius:16px;
+      border:1px solid #e2e8f0;
+    }
+
+    .cost-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+      min-width:520px;
+    }
+
+    .cost-table th,
+    .cost-table td{
+      padding:12px 14px;
+      text-align:left;
+      border-bottom:1px solid #e2e8f0;
+    }
+
+    .cost-table th{
+      background:#f1f5f9;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      color:#475569;
+    }
+
+    .cost-table tr:last-child td{ border-bottom:none; }
+
+    .cost-table .subtotal td{
+      background:#fefce8;
+      font-weight:600;
+      color:#92400e;
+    }
+
+    .cost-table .grand td{
+      background:linear-gradient(90deg,#eff6ff,#dbeafe);
+      font-weight:700;
+      color:#1e40af;
+      font-size:15px;
+    }
+
+    .cost-table td:last-child,
+    .cost-table th:last-child{
+      text-align:right;
+      white-space:nowrap;
+    }
+
+    .cost-note{
+      margin-top:14px;
+      padding:14px 16px;
+      background:#f0fdf4;
+      border:1px solid #bbf7d0;
+      border-radius:12px;
+      font-size:13px;
+      color:#166534;
+      line-height:1.55;
+    }
+
+    .cost-note.warn{
+      background:#fffbeb;
+      border-color:#fde68a;
+      color:#92400e;
+    }
+
+    /* ── Table of contents ── */
+    [id]{
+      scroll-margin-top:88px;
+    }
+
+    .toc{
+      margin-bottom:28px;
+      background:rgba(255,255,255,0.98);
+      border-radius:var(--radius);
+      padding:28px 30px 26px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.9);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .toc::before{
+      content:'';
+      position:absolute;
+      top:0; left:0; right:0;
+      height:4px;
+      background:linear-gradient(90deg,var(--saffron),var(--gold),var(--royal),var(--mint));
+    }
+
+    .toc-header{
+      text-align:center;
+      margin-bottom:24px;
+    }
+
+    .toc-header span{
+      display:inline-block;
+      font-size:11px;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      color:var(--saffron);
+      margin-bottom:8px;
+      font-weight:600;
+    }
+
+    .toc-header h2{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(24px,3.5vw,34px);
+      color:#0f172a;
+      margin-bottom:6px;
+    }
+
+    .toc-header p{
+      color:#64748b;
+      font-size:14px;
+    }
+
+    .toc-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:18px;
+    }
+
+    .toc-group{
+      background:#f8fafc;
+      border-radius:16px;
+      padding:18px 16px 16px;
+      border:1px solid #e2e8f0;
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .toc-group:hover{
+      transform:translateY(-3px);
+      box-shadow:0 12px 30px rgba(15,23,42,0.08);
+    }
+
+    .toc-group:nth-child(1){ border-top:3px solid #f97316; }
+    .toc-group:nth-child(2){ border-top:3px solid #2563eb; }
+    .toc-group:nth-child(3){ border-top:3px solid #7c3aed; }
+    .toc-group:nth-child(4){ border-top:3px solid #16a34a; }
+
+    .toc-group h3{
+      font-size:14px;
+      color:#0f172a;
+      margin-bottom:12px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .toc-list{
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+
+    .toc-list li{ margin-bottom:6px; }
+
+    .toc-list a,
+    .toc-day-link{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:10px;
+      color:#334155;
+      text-decoration:none;
+      font-size:13px;
+      line-height:1.35;
+      transition:background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+    }
+
+    .toc-list a::before{
+      content:'›';
+      color:var(--saffron);
+      font-weight:700;
+      font-size:16px;
+      line-height:1;
+      flex-shrink:0;
+    }
+
+    .toc-list a:hover,
+    .toc-day-link:hover{
+      background:white;
+      color:#1d4ed8;
+      transform:translateX(4px);
+      box-shadow:0 4px 12px rgba(37,99,235,0.08);
+    }
+
+    .toc-list a.active,
+    .toc-day-link.active{
+      background:linear-gradient(90deg,#eff6ff,#dbeafe);
+      color:#1d4ed8;
+      font-weight:600;
+      box-shadow:inset 0 0 0 1px #bfdbfe;
+    }
+
+    .toc-day-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+    }
+
+    .toc-day-link{
+      justify-content:center;
+      text-align:center;
+      flex-direction:column;
+      gap:2px;
+      padding:10px 6px;
+      background:white;
+      border:1px solid #e2e8f0;
+      font-weight:600;
+      font-size:12px;
+    }
+
+    .toc-day-link span{
+      display:block;
+      font-size:10px;
+      font-weight:500;
+      color:#64748b;
+      line-height:1.2;
+    }
+
+    .toc-day-link:hover span{ color:#1d4ed8; }
+
+    .toc-day-link::before{ display:none; }
+
+    .toc-day-link.dham{
+      border-color:#fed7aa;
+      background:linear-gradient(180deg,#fff7ed,#fff);
     }
 
     /* ── Keyframes ── */
@@ -1000,7 +1457,9 @@
       .grid{ grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
       .check-grid{ grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
       .flight-meta{ grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
-      .temple-gallery{ grid-template-columns:repeat(2,1fr); }
+      .showcase-grid{ grid-template-columns:repeat(6,1fr); }
+      .showcase-card{ grid-column:span 3; min-height:240px; }
+      .showcase-card.wide{ grid-column:span 6; min-height:280px; }
     }
 
     /* ── Mobile ── */
@@ -1037,15 +1496,15 @@
       .stat-card h2{ font-size:28px; }
       .stat-card p{ font-size:11px; }
 
-      .temple-gallery{
-        grid-template-columns:repeat(2,1fr);
-        gap:12px;
-        margin-bottom:20px;
-      }
+      .showcase-grid{ grid-template-columns:repeat(2,1fr); gap:12px; }
+      .showcase-card{ grid-column:span 1; min-height:200px; }
+      .showcase-card.wide{ grid-column:span 2; min-height:220px; }
+      .showcase-caption{ padding:16px 18px; }
+      .showcase-intro h2{ font-size:24px; }
 
-      .temple-photo{ height:150px; border-radius:16px; }
-      .temple-photo figcaption{ padding:12px; }
-      .temple-photo figcaption strong{ font-size:16px; }
+      .toc{ padding:20px 16px; }
+      .toc-grid{ grid-template-columns:1fr 1fr; gap:12px; }
+      .toc-day-grid{ grid-template-columns:repeat(4,1fr); }
 
       .journey-map{ padding:20px 16px; border-radius:18px; }
       .journey-map h3{ font-size:18px; margin-bottom:16px; }
@@ -1202,8 +1661,12 @@
       .stats{ grid-template-columns:1fr 1fr; gap:8px; }
       .stat-card h2{ font-size:24px; }
 
-      .temple-gallery{ grid-template-columns:1fr; }
-      .temple-photo{ height:180px; }
+      .showcase-grid{ grid-template-columns:1fr; }
+      .showcase-card,
+      .showcase-card.wide{ grid-column:span 1; min-height:200px; }
+
+      .toc-grid{ grid-template-columns:1fr; }
+      .toc-day-grid{ grid-template-columns:repeat(3,1fr); }
 
       .flight-meta{ grid-template-columns:1fr; }
 
@@ -1309,54 +1772,142 @@
     </div>
   </div>
 
-  <div class="temple-gallery reveal">
-    <figure class="temple-photo photo-yamunotri">
-      <figcaption><strong>Yamunotri</strong><span>1st Dham · Day 3</span></figcaption>
-    </figure>
-    <figure class="temple-photo photo-gangotri">
-      <figcaption><strong>Gangotri</strong><span>2nd Dham · Day 5</span></figcaption>
-    </figure>
-    <figure class="temple-photo photo-kedarnath">
-      <figcaption><strong>Kedarnath</strong><span>3rd Dham · Day 7</span></figcaption>
-    </figure>
-    <figure class="temple-photo photo-badrinath">
-      <figcaption><strong>Badrinath</strong><span>4th Dham · Day 10</span></figcaption>
-    </figure>
-  </div>
+  <nav class="toc reveal" id="table-of-contents" aria-label="Table of contents">
+    <div class="toc-header">
+      <span>Quick Navigation</span>
+      <h2>📑 Table of Contents</h2>
+      <p>Jump to any section — itinerary, costs, daily plan & health guides</p>
+    </div>
+    <div class="toc-grid">
+      <div class="toc-group">
+        <h3>📸 Overview</h3>
+        <ul class="toc-list">
+          <li><a href="#photo-gallery">Sacred Himalaya Gallery</a></li>
+          <li><a href="#journey-route">Journey Route Map</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <h3>🗂️ Trip Planning</h3>
+        <ul class="toc-list">
+          <li><a href="#agent-itinerary">Agent Itinerary & Package</a></li>
+          <li><a href="#cost-estimate">Private Car Cost Estimate</a></li>
+          <li><a href="#flight-ticket">Confirmed Flight (Day 1)</a></li>
+          <li><a href="#time-plan">12-Day Overview Schedule</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <h3>📅 Day-by-Day Plan</h3>
+        <div class="toc-day-grid">
+          <a class="toc-day-link dham" href="#day-1">D1<span>Haridwar</span></a>
+          <a class="toc-day-link" href="#day-2">D2<span>Barkot</span></a>
+          <a class="toc-day-link dham" href="#day-3">D3<span>Yamunotri</span></a>
+          <a class="toc-day-link" href="#day-4">D4<span>Uttarkashi</span></a>
+          <a class="toc-day-link dham" href="#day-5">D5<span>Gangotri</span></a>
+          <a class="toc-day-link" href="#day-6">D6<span>Guptkashi</span></a>
+          <a class="toc-day-link dham" href="#day-7">D7<span>Kedarnath</span></a>
+          <a class="toc-day-link" href="#day-8">D8<span>Return ↓</span></a>
+          <a class="toc-day-link" href="#day-9">D9<span>Pipalkoti</span></a>
+          <a class="toc-day-link dham" href="#day-10">D10<span>Badrinath</span></a>
+          <a class="toc-day-link" href="#day-11">D11<span>Haridwar</span></a>
+          <a class="toc-day-link" href="#day-12">D12<span>Delhi ✈</span></a>
+        </div>
+      </div>
+      <div class="toc-group">
+        <h3>💊 Health & Packing</h3>
+        <ul class="toc-list">
+          <li><a href="#packing-checklist">Master Packing Checklist</a></li>
+          <li><a href="#medicine-kit">Medicine & Health Kit</a></li>
+          <li><a href="#hydration">Trek Hydration Guide</a></li>
+          <li><a href="#senior-care">Mom & Dad — Sugar Care</a></li>
+          <li><a href="#bp-care">Wife — BP Care</a></li>
+          <li><a href="#kedarnath-trek">Kedarnath Trek Plan</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-  <div class="journey-map reveal">
+  <section class="photo-showcase reveal" id="photo-gallery" aria-label="Sacred destinations gallery">
+    <div class="showcase-intro">
+      <span>Visual Journey</span>
+      <h2>Sacred Himalaya · Four Dhams</h2>
+    </div>
+    <div class="showcase-grid">
+      <article class="showcase-card wide">
+        <img src="assets/images/haridwar.jpg" alt="Ganga Aarti at Har Ki Pauri, Haridwar" class="img-haridwar-wide" loading="eager" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">Gateway · Day 1</span>
+          <strong>Har Ki Pauri · Haridwar</strong>
+          <span>Evening Ganga Aarti on the holy ghats</span>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/images/yamunotri.jpg" alt="Yamunotri Temple in the Himalayas" class="img-yamunotri" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">1st Dham · Day 3</span>
+          <strong>Yamunotri</strong>
+          <span>Source of River Yamuna</span>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/images/gangotri.jpg" alt="Gangotri Temple" class="img-gangotri" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">2nd Dham · Day 5</span>
+          <strong>Gangotri</strong>
+          <span>Origin of River Ganga</span>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/images/kedarnath.jpg" alt="Kedarnath Temple in monsoon mist" class="img-kedarnath" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">3rd Dham · Day 7</span>
+          <strong>Kedarnath</strong>
+          <span>Abode of Lord Shiva</span>
+        </div>
+      </article>
+      <article class="showcase-card">
+        <img src="assets/images/badrinath.jpg" alt="Badrinath Temple" class="img-badrinath" loading="lazy" decoding="async"/>
+        <div class="showcase-caption">
+          <span class="dham-num">4th Dham · Day 10</span>
+          <strong>Badrinath</strong>
+          <span>Abode of Lord Vishnu</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="journey-map reveal" id="journey-route">
     <h3>🗺️ Your Sacred Journey Route</h3>
     <div class="journey-track">
       <span class="traveler">🚐</span>
       <div class="journey-dot">
-        <div class="icon"></div>
+        <div class="icon"><img src="assets/images/haridwar.jpg" alt="Haridwar" loading="lazy"/></div>
         <span>Haridwar</span>
         <small>Day 1</small>
       </div>
       <div class="journey-dot">
-        <div class="icon"></div>
+        <div class="icon"><img src="assets/images/yamunotri.jpg" alt="Yamunotri" loading="lazy"/></div>
         <span>Yamunotri</span>
         <small>Day 3</small>
       </div>
       <div class="journey-dot">
-        <div class="icon"></div>
+        <div class="icon"><img src="assets/images/gangotri.jpg" alt="Gangotri" loading="lazy"/></div>
         <span>Gangotri</span>
         <small>Day 5</small>
       </div>
       <div class="journey-dot">
-        <div class="icon"></div>
+        <div class="icon"><img src="assets/images/kedarnath.jpg" alt="Kedarnath" loading="lazy"/></div>
         <span>Kedarnath</span>
         <small>Day 7</small>
       </div>
       <div class="journey-dot">
-        <div class="icon"></div>
+        <div class="icon"><img src="assets/images/badrinath.jpg" alt="Badrinath" loading="lazy"/></div>
         <span>Badrinath</span>
         <small>Day 10</small>
       </div>
     </div>
   </div>
 
-  <div class="footer">
+  <div class="footer" id="agent-itinerary">
     <h2>📋 Travel Agent Itinerary — Travel Key Solution</h2>
     <p class="schedule-note" style="margin-bottom:16px;">
       Source: CHARDHAM + PANCH PRAYAG YATRA PDF · Contact: <strong>+91 99134 65556</strong> ·
@@ -1415,7 +1966,141 @@
 
   </div>
 
-  <div class="footer">
+  <div class="footer" id="cost-estimate">
+
+    <h2>💰 Estimated Cost — Private Car (4 Persons)</h2>
+    <p class="schedule-note" style="margin-bottom:18px;">
+      May–June 2026 peak season · Based on your <strong>12-day agent route</strong> (Delhi pickup → Chardham + Panch Prayag → Delhi return) ·
+      Family: <strong>4 travellers</strong> · Vehicle: <strong>Toyota Innova Crysta</strong> (recommended for hills + luggage + seniors)
+    </p>
+
+    <div class="cost-summary">
+      <div class="cost-summary-card highlight">
+        <span>Land Package Estimate</span>
+        <strong>~₹1.96 L</strong>
+        <small>Car + hotels + meals</small>
+      </div>
+      <div class="cost-summary-card">
+        <span>Per Person (Land)</span>
+        <strong>~₹49,000</strong>
+        <small>÷ 4 travellers</small>
+      </div>
+      <div class="cost-summary-card">
+        <span>Private Car Only</span>
+        <strong>~₹92,000</strong>
+        <small>12 days · all-inclusive cab</small>
+      </div>
+      <div class="cost-summary-card">
+        <span>Hotels (11 Nights)</span>
+        <strong>~₹70,000</strong>
+        <small>2 rooms · mid-range</small>
+      </div>
+    </div>
+
+    <div class="check-grid" style="margin-bottom:20px;">
+
+      <div class="check check-border-sky">
+        <h3>🚗 Private Car Breakdown</h3>
+        <div class="cost-table-wrap">
+          <table class="cost-table">
+            <thead>
+              <tr><th>Item</th><th>Details</th><th>Amount</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Innova Crysta hire</td><td>12 days × ₹6,500/day</td><td>₹78,000</td></tr>
+              <tr><td>Driver night halt</td><td>11 nights × ₹500</td><td>₹5,500</td></tr>
+              <tr><td>Toll · parking · permit</td><td>Chardham hill route</td><td>₹4,500</td></tr>
+              <tr><td>GST 5%</td><td>On vehicle charges</td><td>₹4,400</td></tr>
+              <tr class="subtotal"><td colspan="2">Subtotal — Private Car</td><td>~₹92,400</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="check check-border-green">
+        <h3>🏨 Accommodation (Agent Night Stays)</h3>
+        <div class="cost-table-wrap">
+          <table class="cost-table">
+            <thead>
+              <tr><th>Location</th><th>Nights</th><th>Est. Total</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Haridwar (Day 1)</td><td>1 · 2 rooms</td><td>₹7,000</td></tr>
+              <tr><td>Barkot (Day 2–3)</td><td>2 · 2 rooms</td><td>₹12,000</td></tr>
+              <tr><td>Uttarkashi (Day 4–5)</td><td>2 · 2 rooms</td><td>₹12,000</td></tr>
+              <tr><td>Guptkashi (Day 6 & 8)</td><td>2 · 2 rooms</td><td>₹14,000</td></tr>
+              <tr><td>Near Kedarnath (Day 7)*</td><td>1 · 4 beds</td><td>₹6,000</td></tr>
+              <tr><td>Pipalkoti (Day 9–10)</td><td>2 · 2 rooms</td><td>₹12,000</td></tr>
+              <tr><td>Haridwar / Rishikesh (Day 11)</td><td>1 · 2 rooms</td><td>₹7,000</td></tr>
+              <tr class="subtotal"><td colspan="2">Subtotal — Hotels</td><td>~₹70,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="schedule-note" style="margin-top:10px;margin-bottom:0;">* Kedarnath dharamshala/tent — agent package excludes premium near-temple stay</p>
+      </div>
+
+    </div>
+
+    <div class="check-grid">
+
+      <div class="check check-border-orange">
+        <h3>🍽️ Meals & Daily Expenses</h3>
+        <ul>
+          <li>Breakfast + dinner (mostly at hotels): <strong>~₹700/person/day</strong></li>
+          <li>12 days × 4 persons ≈ <strong>₹33,600</strong></li>
+          <li>Lunch on road / tea breaks: add <strong>₹300–500/person/day</strong></li>
+          <li>Driver tip (end of trip): <strong>₹2,000–3,000</strong></li>
+        </ul>
+      </div>
+
+      <div class="check check-border-amber">
+        <h3>⚠️ Extra (Not in Base Estimate)</h3>
+        <ul>
+          <li>Yamunotri pony/palkhi (Mom & Dad): <strong>₹2,500–4,000</strong> each way/person</li>
+          <li>Kedarnath pony/palkhi: <strong>₹3,000–5,000</strong> each way/person</li>
+          <li>Kedarnath helicopter (optional): <strong>₹7,000–12,000</strong>/person</li>
+          <li>Chardham registration · puja · personal shopping</li>
+          <li>Return flight Delhi → Ahmedabad (Day 12): <strong>~₹6,000–10,000</strong>/person</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-blue">
+        <h3>✈️ Flights (Separate)</h3>
+        <ul>
+          <li>Day 1 AMD → DEL — <strong>booked</strong> (IndiGo 6E-983 · PNR GCCVTA)</li>
+          <li>Agent quoted flight add-on: <strong>₹41,000/person</strong> — confirm if one-way or round trip</li>
+          <li>Self-book return (4 persons): est. <strong>₹24,000–40,000</strong> total</li>
+        </ul>
+      </div>
+
+      <div class="check check-border-red">
+        <h3>📊 Grand Total Snapshot</h3>
+        <div class="cost-table-wrap">
+          <table class="cost-table">
+            <tbody>
+              <tr><td>Private car (all-inclusive)</td><td>~₹92,400</td></tr>
+              <tr><td>Hotels (11 nights, 2 rooms)</td><td>~₹70,000</td></tr>
+              <tr><td>Meals (12 days, 4 persons)</td><td>~₹34,000</td></tr>
+              <tr class="grand"><td>Estimated land cost (family of 4)</td><td>~₹1,96,400</td></tr>
+              <tr class="grand"><td>Per person (land only)</td><td>~₹49,100</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cost-note">
+      <strong>✓ Best for your family:</strong> Innova Crysta gives comfortable legroom for Mom, Dad & Hetal (BP/sugar care), AC for heat, and enough boot space for medicines & warm layers. Sedan (Dzire) is cheaper (~₹42,000 car total) but tight for 4 adults + hills.
+    </div>
+
+    <div class="cost-note warn" style="margin-top:12px;">
+      <strong>⚠️ Note:</strong> These are <strong>market estimates</strong> for May–June 2026 (peak yatra season). Your agent <strong>Travel Key Solution (+91 99134 65556)</strong> may offer a bundled rate — compare their package vs booking private car + hotels yourself. Always ask for a <strong>written all-inclusive quote</strong> (fuel, driver food, night halt, toll, GST) before paying advance.
+    </div>
+
+  </div>
+
+  <div class="footer" id="flight-ticket">
 
     <h2>✈️ Confirmed Flight Ticket — Day 1</h2>
 
@@ -1511,7 +2196,7 @@
 
   </div>
 
-  <div class="footer">
+  <div class="footer" id="time-plan">
 
     <h2>📅 12-Day Time Plan — Agent Itinerary</h2>
     <p class="schedule-note" style="margin-bottom:20px;">Matched to Travel Key Solution PDF · Day 1 flight confirmed · Road times estimated</p>
@@ -1587,6 +2272,7 @@
 
   <nav class="mobile-nav" aria-label="Jump to day">
     <div class="mobile-nav-inner">
+      <a href="#table-of-contents">📑 TOC</a>
       <a href="#day-1">D1</a>
       <a href="#day-2">D2</a>
       <a href="#day-3">D3</a>
@@ -1602,11 +2288,12 @@
     </div>
   </nav>
 
-  <div class="timeline">
+  <div class="timeline" id="daily-plan">
 
     <!-- DAY 1 -->
     <div class="day-card temple-day temple-haridwar" id="day-1">
       <div class="day-banner banner-haridwar">
+        <img class="banner-photo pos-haridwar" src="assets/images/haridwar.jpg" alt="Ganga Aarti Haridwar" loading="lazy"/>
         <div>
           <h4>🌊 Har Ki Pauri · Haridwar</h4>
           <p>Day 1 · Ganga Aarti</p>
@@ -1789,6 +2476,7 @@
     <div class="day-card temple-day temple-yamunotri" id="day-3" style="border-left-color:#dc2626">
 
       <div class="day-banner banner-yamunotri">
+        <img class="banner-photo pos-yamunotri" src="assets/images/yamunotri.jpg" alt="Yamunotri Temple" loading="lazy"/>
         <div>
           <h4>🙏 Yamunotri Temple</h4>
           <p>Day 3 · 1st Dham Darshan</p>
@@ -1894,6 +2582,7 @@
     <!-- DAY 5 -->
     <div class="day-card temple-day temple-gangotri" id="day-5" style="border-left-color:#0891b2">
       <div class="day-banner banner-gangotri">
+        <img class="banner-photo pos-gangotri" src="assets/images/gangotri.jpg" alt="Gangotri Temple" loading="lazy"/>
         <div>
           <h4>🧊 Gangotri Temple</h4>
           <p>Day 5 · 2nd Dham Darshan</p>
@@ -1957,6 +2646,7 @@
     <div class="day-card temple-day temple-kedarnath" id="day-7" style="border-left-color:#7c3aed">
 
       <div class="day-banner banner-kedarnath">
+        <img class="banner-photo pos-kedarnath" src="assets/images/kedarnath.jpg" alt="Kedarnath Temple" loading="lazy"/>
         <div>
           <h4>🛕 Kedarnath Temple</h4>
           <p>Day 7 · 3rd Dham Darshan</p>
@@ -2087,6 +2777,7 @@
     <!-- DAY 10 -->
     <div class="day-card temple-day temple-badrinath" id="day-10" style="border-left-color:#ea580c">
       <div class="day-banner banner-badrinath">
+        <img class="banner-photo pos-badrinath" src="assets/images/badrinath.jpg" alt="Badrinath Temple" loading="lazy"/>
         <div>
           <h4>🙏 Badrinath Temple</h4>
           <p>Day 10 · 4th Dham Darshan</p>
@@ -2168,7 +2859,7 @@
 
   </div>
 
-  <div class="footer">
+  <div class="footer" id="packing-checklist">
 
     <h2>🧳 Master Packing Checklist</h2>
 
@@ -2223,7 +2914,7 @@
 
   </div>
 
-  <div class="footer">
+  <div class="footer" id="medicine-kit">
 
     <h2>💊 Medicine, Health & Trek Energy Kit</h2>
 
@@ -2301,7 +2992,7 @@
 
   </div>
 
-  <div class="footer">
+  <div class="footer" id="hydration">
 
     <h2>⚡ Trek Energy Drinks & Hydration</h2>
 
@@ -2356,7 +3047,7 @@
 
   </div>
 
-  <div class="footer">
+  <div class="footer" id="senior-care">
 
     <h2>👴👵 Mom & Dad — Senior Citizen & Sugar Patient Care</h2>
 
@@ -2549,7 +3240,7 @@
     progress.style.width = pct + '%';
   });
 
-  document.querySelectorAll('.day-card, .footer, .journey-map, .temple-gallery').forEach(function(el){
+  document.querySelectorAll('.day-card, .footer, .journey-map, .photo-showcase').forEach(function(el){
     el.classList.add('reveal');
   });
 
